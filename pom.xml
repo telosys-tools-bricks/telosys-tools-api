@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<name>telosys-tools-api</name>
+	<artifactId>telosys-tools-api</artifactId>
+	
+	<packaging>jar</packaging>
+
+    <parent>
+        <groupId>org.telosys.tools</groupId>
+        <artifactId>telosys-tools-parent</artifactId>
+        <version>3.0.0</version>
+        <relativePath>../telosys-tools-parent/pom.xml</relativePath>
+    </parent>
+
+	<dependencies>
+		<!-- For COMPILATION -->
+		<dependency>
+			<groupId>org.telosys.tools</groupId>
+			<artifactId>telosys-tools-commons</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+	 	<dependency>
+			<groupId>org.telosys.tools</groupId>
+		  	<artifactId>telosys-tools-repository</artifactId>
+			<version>${project.parent.version}</version>
+	 	</dependency>
+	 	<dependency>
+			<groupId>org.telosys.tools</groupId>
+		  	<artifactId>telosys-tools-dsl-parser</artifactId>
+			<version>${project.parent.version}</version>
+	 	</dependency>
+	 	<dependency>
+			<groupId>org.telosys.tools</groupId>
+		  	<artifactId>telosys-tools-generic-model</artifactId>
+			<version>${project.parent.version}</version>
+	 	</dependency>
+ 	 	<dependency>
+			<groupId>org.telosys.tools</groupId>
+		  	<artifactId>telosys-tools-generator</artifactId>
+			<version>${project.parent.version}</version>
+	 	</dependency>
+		
+		
+        <!-- For TESTS -->
+	</dependencies>
+
+
+</project>

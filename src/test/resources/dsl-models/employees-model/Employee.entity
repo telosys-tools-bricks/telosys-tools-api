@@ -1,0 +1,6 @@
+Employee {
+	id : integer {@Id}; // the id
+	firstName : string ;
+	birthDate : date ;
+	country : Country {@Max(3)};
+}

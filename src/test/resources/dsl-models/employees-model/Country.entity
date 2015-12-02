@@ -1,0 +1,4 @@
+Country {
+	id : integer {@Id};
+	name : string;
+}
