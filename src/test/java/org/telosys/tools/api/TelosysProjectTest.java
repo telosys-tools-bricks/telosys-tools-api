@@ -34,7 +34,7 @@ public class TelosysProjectTest {
 		System.out.println(s);
 		
 		TestsEnv.copyDbModelFile(projectFolderFullPath, "bookstore.dbrep");
-		TestsEnv.copyDslModelFiles(projectFolderFullPath, "employees-model");
+		TestsEnv.copyDslModelFiles(projectFolderFullPath, "employees");
 		TestsEnv.copyTemplatesFiles(projectFolderFullPath, "basic-templates-TT210");
 		
 		return telosysProject ;
@@ -57,7 +57,8 @@ public class TelosysProjectTest {
 		TelosysProject telosysProject = initProject() ;
 		
 		System.out.println("Loading dbmodel...");
-		Model model = telosysProject.loadDatabaseModel("bookstore.dbrep");
+//		Model model = telosysProject.loadDatabaseModel("bookstore.dbrep");
+		Model model = telosysProject.loadModel("bookstore.dbrep");
 		System.out.println("Model loaded.");
 		System.out.println(model.getEntities().size() + " entities");
 	}
@@ -68,7 +69,9 @@ public class TelosysProjectTest {
 		TelosysProject telosysProject = initProject() ;
 		
 		System.out.println("Loading model...");
-		Model model = telosysProject.loadDslModel("employees-model");
+//		Model model = telosysProject.loadDslModel("employees-model");
+//		Model model = telosysProject.loadDslModel("employees");
+		Model model = telosysProject.loadModel("employees.model");
 		System.out.println("Model loaded.");
 		System.out.println("Name = " + model.getName() + " ( " + model.getEntities().size() + " ) entities");
 		
@@ -96,11 +99,11 @@ public class TelosysProjectTest {
 			}
 		}
 		testModelLoadingAndGeneration(telosysProject, 
-				"employees-model", null,
+				"employees.model", null,
 				"basic-templates-TT210", selectedTargets, false );
 
 		testModelLoadingAndGeneration(telosysProject, 
-				"employees-model", null,
+				"employees.model", null,
 				"basic-templates-TT210", null, false ); // All templates
 	}
 	

@@ -1,17 +1,14 @@
 package org.telosys.tools.api;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.telosys.tools.commons.ConsoleLogger;
-import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.TelosysToolsLogger;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.commons.cfg.TelosysToolsCfgManager;
 import org.telosys.tools.commons.env.EnvironmentManager;
-import org.telosys.tools.dsl.loader.ModelLoader;
 import org.telosys.tools.generator.GeneratorException;
 import org.telosys.tools.generator.target.TargetDefinition;
 import org.telosys.tools.generator.target.TargetsDefinitions;
@@ -21,9 +18,6 @@ import org.telosys.tools.generator.task.GenerationTaskResult;
 import org.telosys.tools.generator.task.StandardGenerationTask;
 import org.telosys.tools.generic.model.Entity;
 import org.telosys.tools.generic.model.Model;
-import org.telosys.tools.repository.model.RepositoryModel;
-import org.telosys.tools.repository.persistence.PersistenceManager;
-import org.telosys.tools.repository.persistence.PersistenceManagerFactory;
 
 public class TelosysProject {
 
@@ -102,90 +96,80 @@ public class TelosysProject {
 		return this.telosysToolsCfg;
 	}
 	
-	//-----------------------------------------------------------------------------------------------------
-	// Database model loading ('dbrep') 
-	//-----------------------------------------------------------------------------------------------------
-	/**
-	 * Loads a 'database model' from the given model file name
-	 * @param dbModelFileName the short file name in the current project models ( eg 'mymodel.dbrep' ) 
-	 * @return
-	 * @throws TelosysToolsException
-	 */
-	public Model loadDatabaseModel(final String dbModelFileName) throws TelosysToolsException {
-		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-		String dbrepAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), dbModelFileName);
-		File repositoryFile = new File(dbrepAbsolutePath);
-		return loadDatabaseModel( repositoryFile ) ;
-	}
+//	//-----------------------------------------------------------------------------------------------------
+//	// Database model loading ('dbrep') 
+//	//-----------------------------------------------------------------------------------------------------
+//	/**
+//	 * Loads a 'database model' from the given model file name
+//	 * @param dbModelFileName the short file name in the current project models ( eg 'mymodel.dbrep' ) 
+//	 * @return
+//	 * @throws TelosysToolsException
+//	 */
+//	public Model loadDatabaseModel(final String dbModelFileName) throws TelosysToolsException {
+////		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
+////		String dbrepAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), dbModelFileName);
+////		File repositoryFile = new File(dbrepAbsolutePath);
+////		return loadDatabaseModel( repositoryFile ) ;
+//		GenericModelLoader genericModelLoader = new GenericModelLoader(getTelosysToolsCfg());
+//		return genericModelLoader.loadDatabaseModel(dbModelFileName);
+//	}
 	
-	private Model loadDatabaseModel( File repositoryFile ) {
-		System.out.println("Load repository from file " + repositoryFile.getAbsolutePath());
-		PersistenceManager persistenceManager = PersistenceManagerFactory.createPersistenceManager(repositoryFile);
-		RepositoryModel repositoryModel = null ;
-		try {
-			repositoryModel = persistenceManager.load();
-			System.out.println("Repository loaded : " + repositoryModel.getNumberOfEntities() + " entitie(s)"  );
-		} catch (TelosysToolsException e) {
-			System.out.println("Cannot load repository! Exception :" + e.getMessage() );
-		}		
-		return repositoryModel ;
-	}
-
 	//-----------------------------------------------------------------------------------------------------
-	// Model loading DSL or Database model ('modelName/xxx.model') 
+	// Model loading DSL or Database model 
 	//-----------------------------------------------------------------------------------------------------
 	/**
-	 * Loads a 'model' from the given model name <br>
-	 * The model name can be a 'dbmodel' file name or a 'dsl model' folder name <br>
-	 * eg : 'books.dbrep' (file name) or 'books-model' (folder name) <br>
+	 * Loads a 'model' from the given model file name <br>
+	 * The model name can be a 'database model' file name or a 'DSL model' file name <br>
+	 * e.g. : 'books.dbrep' or 'books.model'  <br>
 	 * 
-	 * @param modelName the model name in the current project models 
+	 * @param modelFileName the model file name in the current project models 
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public Model loadModel(final String modelName) throws TelosysToolsException {
-		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-		String modelAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), modelName);
-
-		File file = new File(modelAbsolutePath);
-		if ( file.exists() ) {
-			if ( file.isFile() ) {
-				//--- File : supposed to be a db model file
-				return loadDatabaseModel(file) ;
-			}
-			else if ( file.isDirectory() ) {
-				//--- Directory : supposed to be a DSL model directory
-				return loadDslModel(file);
-			}
-			else {
-				
-			}
-		}
-		throw new TelosysToolsException("File or folder '" + modelAbsolutePath + "' not found");
+	public Model loadModel(final String modelFileName) throws TelosysToolsException {
+//		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
+//		String modelAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), modelFileName);
+//
+//		File file = new File(modelAbsolutePath);
+//		if ( file.exists() ) {
+//			if ( file.isFile() ) {
+//				if ( file.getName().endsWith(".dbrep") || file.getName().endsWith(".dbmodel") ) {
+//					//--- This file is supposed to be a db model file
+//					return loadDatabaseModel(file) ;
+//				}
+//				else if ( file.getName().endsWith(".model") ) {
+//					//--- This file is supposed to be a DSL model file
+//					return loadDslModel(file);
+//				}
+//				else {
+//					new TelosysToolsException("Invalid file extension '" + file.getName() + "' ");
+//				}
+//			}
+//			else {
+//				new TelosysToolsException("Not a file '" + file.getName() + "' ");				
+//			}
+//		}
+//		throw new TelosysToolsException("File '" + modelAbsolutePath + "' not found");
+		GenericModelLoader genericModelLoader = new GenericModelLoader(getTelosysToolsCfg());
+		return genericModelLoader.loadModel(modelFileName);
 	}
 	
-	//-----------------------------------------------------------------------------------------------------
-	// DSL model loading ('modelName/xxx.model') 
-	//-----------------------------------------------------------------------------------------------------
-	/**
-	 * Loads a 'DSL model' from the given model folder name
-	 * @param modelFolderName the short folder name in the current project models ( eg 'bookstore-model' ) 
-	 * @return
-	 * @throws TelosysToolsException
-	 */
-	public Model loadDslModel(final String modelFolderName) throws TelosysToolsException {
-		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-		String modelFolderAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), modelFolderName);
-
-//		ModelLoader modelLoader = new ModelLoader();
-//		return modelLoader.loadModel( modelFolderAbsolutePath );
-		return loadDslModel( new File(modelFolderAbsolutePath) );
-	}
-	
-	private Model loadDslModel(final File modelFolder) throws TelosysToolsException {
-		ModelLoader modelLoader = new ModelLoader();
-		return modelLoader.loadModel( modelFolder );
-	}
+//	//-----------------------------------------------------------------------------------------------------
+//	// DSL model loading ('modelName/xxx.model') 
+//	//-----------------------------------------------------------------------------------------------------
+//	/**
+//	 * Loads a 'DSL model' from the given model name
+//	 * @param modelName the name of the model to be loaded ( e.g. 'bookstore' or 'employees' ) 
+//	 * @return
+//	 * @throws TelosysToolsException
+//	 */
+//	public Model loadDslModel(final String modelName) throws TelosysToolsException {
+////		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
+////		String modelFileAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), modelName+".model");
+////		return loadDslModel( new File(modelFileAbsolutePath) );
+//		GenericModelLoader genericModelLoader = new GenericModelLoader(getTelosysToolsCfg());
+//		return genericModelLoader.loadDslModel(modelName);
+//	}
 	
 	//-----------------------------------------------------------------------------------------------------
 	// Targets definitions 

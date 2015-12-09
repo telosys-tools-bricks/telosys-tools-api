@@ -71,15 +71,33 @@ public class TestsEnv {
 	}
 
 	public static void copyDslModelFiles(String projectFolderAbsolutePath, String dslModelName) throws Exception {
-		System.out.println("initializing 'DSL model' in project from folder '" + dslModelName +"'" );
+		System.out.println("initializing 'DSL model' mane = '" + dslModelName +"'" );
+		copyDslModelFile(projectFolderAbsolutePath, dslModelName+".model");
+		copyDslModelFolder(projectFolderAbsolutePath, dslModelName+"_model");
+	}
+	private static void copyDslModelFile(String projectFolderAbsolutePath, String dslModelFile) throws Exception {
+		System.out.println("Copy 'DSL model' file '" + dslModelFile +"'" );
+		String originalFileAbsolutePath = buildTestResourceAbsolutePath(FileUtil.buildFilePath("dsl-models", dslModelFile ));
+		File dbrepInputFile = new File( originalFileAbsolutePath ) ;
+		
+		// destination folder
+		String projectModelsFolder = FileUtil.buildFilePath(projectFolderAbsolutePath, TelosysToolsEnv.getInstance().getModelsFolder() );
+		File destDir = new File(projectModelsFolder);
+		
+		System.out.println(" copy " + dbrepInputFile ); 
+		System.out.println("   to " + destDir ); 
+		FileUtil.copyToDirectory(dbrepInputFile, destDir, true);
+	}
+	private static void copyDslModelFolder(String projectFolderAbsolutePath, String dslModelFolder) throws Exception {
+		System.out.println("Copy 'DSL model' folder '" + dslModelFolder +"'" );
 		
 		// original file is stored in "src/test/resources/"
-		String originalFolderAbsolutePath = buildTestResourceAbsolutePath(FileUtil.buildFilePath("dsl-models", dslModelName ));
+		String originalFolderAbsolutePath = buildTestResourceAbsolutePath(FileUtil.buildFilePath("dsl-models", dslModelFolder ));
 		File sourceDir = new File( originalFolderAbsolutePath ) ;
 		
 		// destination folder
 		String projectModelsFolder = FileUtil.buildFilePath(projectFolderAbsolutePath, TelosysToolsEnv.getInstance().getModelsFolder() );
-		File destDir = new File(FileUtil.buildFilePath(projectModelsFolder, dslModelName) );
+		File destDir = new File(FileUtil.buildFilePath(projectModelsFolder, dslModelFolder) );
 		
 		System.out.println(" copy " + sourceDir ); 
 		System.out.println("   to " + destDir ); 
