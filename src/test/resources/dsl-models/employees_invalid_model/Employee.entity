@@ -1,0 +1,6 @@
+Employee {
+	id : integer {@Bad}; // invalid "@Bad"
+	firstName : string ;
+	birthDate : date ;
+	country : Country {@Max(3)};
+}

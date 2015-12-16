@@ -16,6 +16,7 @@
 package org.telosys.tools.api;
 
 import java.io.File;
+import java.util.Hashtable;
 
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.TelosysToolsException;
@@ -28,6 +29,18 @@ import org.telosys.tools.repository.persistence.PersistenceManagerFactory;
 public class GenericModelLoader {
 	
 	private final TelosysToolsCfg   _telosysToolsCfg ;
+	
+    private Hashtable<String,String> _parsingErrors = null ;
+    private String _parsingErrorMessage = null ;
+
+    public Hashtable<String, String> getParsingErrors() {
+		return _parsingErrors;
+	}
+
+	public String getErrorMessage() {
+		return _parsingErrorMessage;
+	}
+
 
 	public GenericModelLoader(TelosysToolsCfg telosysToolsCfg) {
 		this._telosysToolsCfg = telosysToolsCfg ;
@@ -117,9 +130,18 @@ public class GenericModelLoader {
 //		return loadDslModel( new File(modelFileAbsolutePath) );
 //	}
 	
-	private Model loadDslModel(final File modelFile) throws TelosysToolsException {
+	private Model loadDslModel(final File modelFile) { // throws TelosysToolsException {
 		ModelLoader modelLoader = new ModelLoader();
-		return modelLoader.loadModel( modelFile );
+		Model model = modelLoader.loadModel( modelFile );
+		if ( model == null ) {
+			_parsingErrorMessage = modelLoader.getErrorMessage() ;
+			_parsingErrors = modelLoader.getParsingErrors();
+		}
+		else {
+			_parsingErrorMessage = null ;
+			_parsingErrors = null ;
+		}
+		return model ;
 	}
 	
 }
