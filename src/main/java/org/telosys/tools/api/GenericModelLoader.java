@@ -21,7 +21,7 @@ import java.util.Hashtable;
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
-import org.telosys.tools.dsl.loader.ModelLoader;
+import org.telosys.tools.dsl.DslModelManager;
 import org.telosys.tools.generic.model.Model;
 import org.telosys.tools.repository.persistence.PersistenceManager;
 import org.telosys.tools.repository.persistence.PersistenceManagerFactory;
@@ -131,7 +131,7 @@ public class GenericModelLoader {
 //	}
 	
 	private Model loadDslModel(final File modelFile) { // throws TelosysToolsException {
-		ModelLoader modelLoader = new ModelLoader();
+		DslModelManager modelLoader = new DslModelManager();
 		Model model = modelLoader.loadModel( modelFile );
 		if ( model == null ) {
 			_parsingErrorMessage = modelLoader.getErrorMessage() ;
