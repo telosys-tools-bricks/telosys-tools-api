@@ -21,6 +21,8 @@ import java.util.List;
 import org.telosys.tools.commons.ConsoleLogger;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.TelosysToolsLogger;
+import org.telosys.tools.commons.bundles.BundleStatus;
+import org.telosys.tools.commons.bundles.BundlesManager;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.commons.cfg.TelosysToolsCfgManager;
 import org.telosys.tools.commons.env.EnvironmentManager;
@@ -110,6 +112,38 @@ public class TelosysProject {
 		}
 		return this.telosysToolsCfg;
 	}
+
+	//-----------------------------------------------------------------------------------------------------
+	// Project bundles management 
+	//-----------------------------------------------------------------------------------------------------
+	/**
+	 * Returns a list of bundles available on the given user's name (on GitHub)
+	 * @param userName the GitHub user name (e.g. "telosys-tools")
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public List<String> getBundlesList(String userName) throws TelosysToolsException {
+		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
+		try {
+			return bm.getBundlesList(userName);
+		} catch (Exception e) {
+			throw new TelosysToolsException("Cannot get bundles list", e);
+		}
+	}
+
+	/**
+	 * Download and install a bundle (from GitHub repositories) 
+	 * 
+	 * @param userName the GitHub user name (e.g. "telosys-tools")
+	 * @param bundleName the bundle name, in other words the GitHub repository name 
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public BundleStatus downloadAndInstallBundle(String userName, String bundleName) throws TelosysToolsException {
+		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
+		return bm.downloadAndInstallBundle(userName, bundleName);
+	}
+	
 	
 //	//-----------------------------------------------------------------------------------------------------
 //	// Database model loading ('dbrep') 
@@ -142,29 +176,6 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public Model loadModel(final String modelFileName) throws TelosysToolsException {
-//		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-//		String modelAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), modelFileName);
-//
-//		File file = new File(modelAbsolutePath);
-//		if ( file.exists() ) {
-//			if ( file.isFile() ) {
-//				if ( file.getName().endsWith(".dbrep") || file.getName().endsWith(".dbmodel") ) {
-//					//--- This file is supposed to be a db model file
-//					return loadDatabaseModel(file) ;
-//				}
-//				else if ( file.getName().endsWith(".model") ) {
-//					//--- This file is supposed to be a DSL model file
-//					return loadDslModel(file);
-//				}
-//				else {
-//					new TelosysToolsException("Invalid file extension '" + file.getName() + "' ");
-//				}
-//			}
-//			else {
-//				new TelosysToolsException("Not a file '" + file.getName() + "' ");				
-//			}
-//		}
-//		throw new TelosysToolsException("File '" + modelAbsolutePath + "' not found");
 		GenericModelLoader genericModelLoader = new GenericModelLoader(getTelosysToolsCfg());
 		return genericModelLoader.loadModel(modelFileName);
 	}
