@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.generator.target.TargetDefinition;
 import org.telosys.tools.generator.target.TargetsDefinitions;
+import org.telosys.tools.generator.task.ErrorReport;
 import org.telosys.tools.generator.task.GenerationTaskResult;
 import org.telosys.tools.generic.model.Model;
 
@@ -140,6 +141,11 @@ public class TelosysProjectTest {
 		System.out.println("End of code generation");
 		System.out.println( generationTaskResult.getNumberOfFilesGenerated() + " file(s) generated ");
 		System.out.println( generationTaskResult.getNumberOfResourcesCopied() + " resources(s) copied ");
+		
+		List<ErrorReport> errors = generationTaskResult.getErrors();
+		for ( ErrorReport error : errors ) {
+			System.out.println( " . " + error.getErrorType() + " : " + error.getMessage() );
+		}
 		return generationTaskResult ;
 	}
 }
