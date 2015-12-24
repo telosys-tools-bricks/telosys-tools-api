@@ -322,6 +322,14 @@ public class TelosysProject {
 		return generationTaskResult ;
 	}
 	
+	/**
+	 * Creates a new DSL model in the project <br>
+	 * Creates the '.model' file (initialized with default values) and the '_model' folder <br>
+	 * 
+	 * @param modelName the short model name without extension ( e.g. 'mymodel' )
+	 * @return the '.model' file created 
+	 * @throws TelosysToolsException
+	 */
 	public final File createNewDslModel(String modelName) throws TelosysToolsException {
 		
 		//--- Build the model file 
