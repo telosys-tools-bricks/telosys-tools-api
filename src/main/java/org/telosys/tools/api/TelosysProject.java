@@ -15,6 +15,7 @@
  */
 package org.telosys.tools.api;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import org.telosys.tools.commons.bundles.BundlesManager;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.commons.cfg.TelosysToolsCfgManager;
 import org.telosys.tools.commons.env.EnvironmentManager;
+import org.telosys.tools.dsl.DslModelUtil;
 import org.telosys.tools.generator.GeneratorException;
 import org.telosys.tools.generator.target.TargetDefinition;
 import org.telosys.tools.generator.target.TargetsDefinitions;
@@ -320,4 +322,16 @@ public class TelosysProject {
 		return generationTaskResult ;
 	}
 	
+	public final File createNewDslModel(String modelName) throws TelosysToolsException {
+		
+		//--- Build the model file 
+		String modelFileName = DslModelUtil.getModelShortFileName(modelName);
+		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
+		File modelFile = new File( telosysToolsCfg.getDslModelFileAbsolutePath(modelFileName));
+		
+		//--- Create the model file and model folder 
+		DslModelUtil.createNewModel(modelFile);
+		
+		return modelFile;
+	}
 }

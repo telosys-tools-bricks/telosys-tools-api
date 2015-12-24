@@ -1,5 +1,8 @@
 package org.telosys.tools.api;
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,6 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
+import org.telosys.tools.dsl.DslModelUtil;
 import org.telosys.tools.generator.target.TargetDefinition;
 import org.telosys.tools.generator.target.TargetsDefinitions;
 import org.telosys.tools.generator.task.ErrorReport;
@@ -148,4 +152,21 @@ public class TelosysProjectTest {
 		}
 		return generationTaskResult ;
 	}
+	
+	@Test
+	public void testCreateNewModel() throws Exception {
+		
+		TelosysProject telosysProject = initProject() ;
+		
+		System.out.println("getTelosysToolsCfg...");
+		System.out.println("Create new dsl model 'foo' ...");
+		File modelFile = telosysProject.createNewDslModel("foo");
+		System.out.println("Model file created : " + modelFile.getAbsolutePath() );
+		assertTrue(modelFile.exists());
+		File modelFolder = DslModelUtil.getModelFolder(modelFile);
+		System.out.println("Model folder created : " + modelFolder.getAbsolutePath() );
+		assertTrue(modelFolder.exists());
+	}
+
+	
 }
