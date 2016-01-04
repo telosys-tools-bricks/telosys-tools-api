@@ -169,6 +169,15 @@ public class TelosysProject {
 	// Model loading DSL or Database model 
 	//-----------------------------------------------------------------------------------------------------
 	/**
+	 * Returns a new instance of GenericModelLoader
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public GenericModelLoader getGenericModelLoader() throws TelosysToolsException {
+		return new GenericModelLoader(getTelosysToolsCfg());
+	}
+
+	/**
 	 * Loads a 'model' from the given model file name <br>
 	 * The model name can be a 'database model' file name or a 'DSL model' file name <br>
 	 * e.g. : 'books.dbrep' or 'books.model'  <br>
@@ -178,7 +187,7 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public Model loadModel(final String modelFileName) throws TelosysToolsException {
-		GenericModelLoader genericModelLoader = new GenericModelLoader(getTelosysToolsCfg());
+		GenericModelLoader genericModelLoader = getGenericModelLoader() ;
 		return genericModelLoader.loadModel(modelFileName);
 	}
 	
