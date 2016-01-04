@@ -323,6 +323,20 @@ public class TelosysProject {
 	}
 	
 	/**
+	 * Returns a File instance for the given DSL model name  
+	 * @param modelName
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final File getDslModelFile(String modelName) throws TelosysToolsException {
+		
+		//--- Build the model file 
+		String modelFileName = DslModelUtil.getModelShortFileName(modelName);
+		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
+		return new File( telosysToolsCfg.getDslModelFileAbsolutePath(modelFileName));
+	}
+
+	/**
 	 * Creates a new DSL model in the project <br>
 	 * Creates the '.model' file (initialized with default values) and the '_model' folder <br>
 	 * 
@@ -332,10 +346,8 @@ public class TelosysProject {
 	 */
 	public final File createNewDslModel(String modelName) throws TelosysToolsException {
 		
-		//--- Build the model file 
-		String modelFileName = DslModelUtil.getModelShortFileName(modelName);
-		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-		File modelFile = new File( telosysToolsCfg.getDslModelFileAbsolutePath(modelFileName));
+		//--- Build the model file 		
+		File modelFile = getDslModelFile(modelName) ;
 		
 		//--- Create the model file and model folder 
 		DslModelUtil.createNewModel(modelFile);
