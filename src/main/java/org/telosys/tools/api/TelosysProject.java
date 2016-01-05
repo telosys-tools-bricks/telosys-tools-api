@@ -363,4 +363,30 @@ public class TelosysProject {
 		
 		return modelFile;
 	}
+	
+	/**
+	 * Deletes the DSL model identified by the given name (deletes the '.model' file and the '_model' folder)
+	 * @param modelName the model name ( eg 'mymodel' )
+	 * @throws TelosysToolsException
+	 */
+	public final void deleteDslModel(String modelName) throws TelosysToolsException {
+		
+		//--- Build the model file 		
+		File modelFile = getDslModelFile(modelName) ;
+		
+		//--- Delete the model file and model folder 
+		DslModelUtil.deleteModel(modelFile);
+	}
+	
+	/**
+	 * Deletes the DSL model identified by the given file (deletes the '.model' file and the '_model' folder)
+	 * @param modelFile the model file ( e.g. a File instance for 'xxx/TelosysTools/mymodel.model' )
+	 * @throws TelosysToolsException
+	 */
+	public final void deleteDslModel(File modelFile) throws TelosysToolsException {
+		
+		//--- Delete the model file and model folder 
+		DslModelUtil.deleteModel(modelFile);
+	}
+	
 }
