@@ -21,12 +21,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.telosys.tools.commons.FileUtil;
@@ -34,7 +29,7 @@ import org.telosys.tools.commons.FileUtil;
 public class UsersFileDAO {
 	
 	//private static final String DATE_FORMAT = "dd/MM/YYYY";
-	private static final String DATE_FORMAT = "YYYY-MM-dd"; // ISO 8601 FORMAT
+//	private static final String DATE_FORMAT = "YYYY-MM-dd"; // ISO 8601 FORMAT
 	
 	private final File usersFile ;
 	
@@ -98,11 +93,13 @@ public class UsersFileDAO {
 		
 		//Set<User> users = new TreeSet<User>();
 		
+		UserSerializer userSerializer = new UserSerializer();
         try {
     		BufferedReader br = new BufferedReader(new FileReader(file)) ;
             String line;
 	        while ( (line = br.readLine()) != null ) {
-	            User user = this.convertStringToUser(line);
+	            //User user = this.convertStringToUser(line);
+	            User user = userSerializer.deserialize(line);
 	            if (user != null) {
 	            	usersMap.put(user.getLogin(), user);
 	            }
@@ -122,14 +119,15 @@ public class UsersFileDAO {
 	public synchronized int saveAllUsers(Map<String, User> users) {
 		
 		File file = getUsersFile(true);
-		
+		UserSerializer userSerializer = new UserSerializer();
 		int n = 0 ;
 		try {
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
 			// for each user defined in the Map
 			for ( Map.Entry<String, User> entry : users.entrySet()  ) {
-				String content = convertUserToString(entry.getValue());
+				//String content = convertUserToString(entry.getValue());
+				String content = userSerializer.serialize(entry.getValue());
 				bw.write(content);
 				bw.write("\n");
 				n++;
@@ -142,99 +140,99 @@ public class UsersFileDAO {
 		return n ;
 	}
 	
-	private User convertStringToUser(String line) {
-		if(line == null || "".equals(line.trim())) {
-			return null;
-		}
-		if(line.charAt(0) == '#') {
-			return null;
-		}
-		String[] splits = splitWithNullIfEmpty(line, ';');
-		User user = new User();
-		int pos = 0;
-		user.setLogin(splits[pos]);
-		pos++;
-		user.setEncryptedPassword(splits[pos]);
-		pos++;
-		user.setMail(splits[pos]);
-		pos++;
-		user.setFirstName(splits[pos]);
-		pos++;
-		user.setLastName(splits[pos]);
-		pos++;
-		user.setAvatar(splits[pos]);
-		pos++;
-		user.setLastConnectionDate(convertStringToDate(splits[pos]));
-		return user;
-	}
-	
-	private String convertUserToString(User user) {
-		StringBuffer buf = new StringBuffer();
-		append(buf, user.getLogin());
-		buf.append(";");
-		append(buf, user.getEncryptedPassword());
-		buf.append(";");
-		append(buf, user.getMail());
-		buf.append(";");
-		append(buf, user.getFirstName());
-		buf.append(";");
-		append(buf, user.getLastName());
-		buf.append(";");
-		append(buf, user.getAvatar());
-		buf.append(";");
-		append(buf, user.getLastConnectionDate());
-		buf.append(";");
-		return buf.toString();
-	}
-	
-	
-	private Date convertStringToDate(String dateAsString) {
-		if(dateAsString == null || "".equals(dateAsString.trim())) {
-			return null;
-		}
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		try {
-			return sdf.parse(dateAsString);
-		} catch (ParseException e) {
-			return null;
-		}
-	}
-	
-	private String convertDateToString(Date date) {
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		return sdf.format(date);
-	}
-	
-	private void append(StringBuffer buf, String str) {
-		if(str == null || "".equals(str.trim())) {
-			return;
-		}
-		buf.append(str.trim());
-	}
-
-	private void append(StringBuffer buf, Date date) {
-		if(date == null) {
-			return;
-		}
-		buf.append(convertDateToString(date));
-	}
-	
-	private String[] splitWithNullIfEmpty(String str, char separator) {
-		if ( str == null || "".equals(str.trim()) ) {
-			return new String[0];
-		}
-		List<String> splitteds = new ArrayList<String>();
-		int lastPos = 0;
-		int pos = -1;
-		while((pos = str.indexOf(separator, lastPos)) != -1) {
-			if(pos == lastPos) {
-				splitteds.add(null);
-			} else {
-				String substring = str.substring(lastPos, pos);
-				splitteds.add(substring);
-			}
-			lastPos = pos + 1;
-		}
-		return splitteds.toArray(new String[] {});
-	}	
+//	private User convertStringToUser(String line) {
+//		if(line == null || "".equals(line.trim())) {
+//			return null;
+//		}
+//		if(line.charAt(0) == '#') {
+//			return null;
+//		}
+//		String[] splits = splitWithNullIfEmpty(line, ';');
+//		User user = new User();
+//		int pos = 0;
+//		user.setLogin(splits[pos]);
+//		pos++;
+//		user.setEncryptedPassword(splits[pos]);
+//		pos++;
+//		user.setMail(splits[pos]);
+//		pos++;
+//		user.setFirstName(splits[pos]);
+//		pos++;
+//		user.setLastName(splits[pos]);
+//		pos++;
+//		user.setAvatar(splits[pos]);
+//		pos++;
+//		user.setLastConnectionDate(convertStringToDate(splits[pos]));
+//		return user;
+//	}
+//	
+//	private String convertUserToString(User user) {
+//		StringBuffer buf = new StringBuffer();
+//		append(buf, user.getLogin());
+//		buf.append(";");
+//		append(buf, user.getEncryptedPassword());
+//		buf.append(";");
+//		append(buf, user.getMail());
+//		buf.append(";");
+//		append(buf, user.getFirstName());
+//		buf.append(";");
+//		append(buf, user.getLastName());
+//		buf.append(";");
+//		append(buf, user.getAvatar());
+//		buf.append(";");
+//		append(buf, user.getLastConnectionDate());
+//		buf.append(";");
+//		return buf.toString();
+//	}
+//	
+//	
+//	private Date convertStringToDate(String dateAsString) {
+//		if(dateAsString == null || "".equals(dateAsString.trim())) {
+//			return null;
+//		}
+//		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+//		try {
+//			return sdf.parse(dateAsString);
+//		} catch (ParseException e) {
+//			return null;
+//		}
+//	}
+//	
+//	private String convertDateToString(Date date) {
+//		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+//		return sdf.format(date);
+//	}
+//	
+//	private void append(StringBuffer buf, String str) {
+//		if(str == null || "".equals(str.trim())) {
+//			return;
+//		}
+//		buf.append(str.trim());
+//	}
+//
+//	private void append(StringBuffer buf, Date date) {
+//		if(date == null) {
+//			return;
+//		}
+//		buf.append(convertDateToString(date));
+//	}
+//	
+//	private String[] splitWithNullIfEmpty(String str, char separator) {
+//		if ( str == null || "".equals(str.trim()) ) {
+//			return new String[0];
+//		}
+//		List<String> splitteds = new ArrayList<String>();
+//		int lastPos = 0;
+//		int pos = -1;
+//		while((pos = str.indexOf(separator, lastPos)) != -1) {
+//			if(pos == lastPos) {
+//				splitteds.add(null);
+//			} else {
+//				String substring = str.substring(lastPos, pos);
+//				splitteds.add(substring);
+//			}
+//			lastPos = pos + 1;
+//		}
+//		return splitteds.toArray(new String[] {});
+//	}	
 }

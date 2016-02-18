@@ -73,7 +73,7 @@ public class TelosysUsersTest {
 		assertEquals("bwayne", user.getLogin() );
 		assertEquals("Bruce", user.getFirstName() );
 		assertEquals("Wayne", user.getLastName() );
-		assertEquals(null, user.getMail() );
+		assertEquals("", user.getMail() );
 	}
 
 	//@Test
@@ -86,7 +86,7 @@ public class TelosysUsersTest {
 		user1.setFirstName("Brice");
 		user1.setLastName("De Nice");
 		user1.setMail("bwayne@gmail.com");
-		assertNull(user1.getEncryptedPassword() );
+		assertEquals("", user1.getEncryptedPassword() );
 		
 		// UPDATE with a new password
 		TelosysUsers.saveUser(user1);
@@ -98,7 +98,7 @@ public class TelosysUsersTest {
 		assertEquals("Brice", user2.getFirstName() );
 		assertEquals("De Nice",  user2.getLastName() );
 		assertEquals("bwayne@gmail.com",  user2.getMail());
-		assertNull(user2.getEncryptedPassword() ); // Still null
+		assertEquals("", user2.getEncryptedPassword() ); // Still void
 	}
 
 	// @Test
@@ -108,7 +108,7 @@ public class TelosysUsersTest {
 		User user1 = TelosysUsers.getUserByLogin("bwayne");
 		System.out.println("user1 = " + user1);
 		assertNotNull(user1 );
-		assertNull(user1.getEncryptedPassword() );
+		assertEquals("",user1.getEncryptedPassword() );
 		user1.setMail("bwayne@gmail.com");
 		
 		// UPDATE with a new password
