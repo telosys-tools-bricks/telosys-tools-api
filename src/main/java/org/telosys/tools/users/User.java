@@ -22,45 +22,16 @@ public class User implements Serializable, Comparable<User> {
 	
 	private static final long serialVersionUID = 12375932534108120L;
 
-	@Override
-	public boolean equals(Object obj) {
-		if(obj == null) {
-			return false;
-		}
-		if(!(obj instanceof User)) {
-			return false;
-		}
-		User user2 = (User) obj;
-		if (user2.getLogin() == null) {
-			return this.getLogin() == null;
-		}
-		if(this.getLogin() == null) {
-			return false;
-		}
-		return this.getLogin().equals(user2.getLogin());
-	}
-	
-	@Override
-	public int compareTo(User user2) {
-		if(user2 == null) {
-			return 1;
-		}
-		if (this.getLogin() == null) {
-			return (user2.getLogin() == null) ? 0 : -1;
-		}
-		if(user2.getLogin() == null) {
-			return 1;
-		}
-		return this.getLogin().compareTo(user2.getLogin());
-	}
-	
 	private String login;
 	private String mail;
 	private String encryptedPassword;
 	private String firstName;
 	private String lastName;
 	private String avatar;
-	private Date   lastConnection;
+	private Date   lastConnectionDate;
+	private Date   creationDate;
+	private String country ;  // ISO-3166 Country Code
+	private String language ; // ISO-639 Language Code
 	
 	public String getLogin() {
 		return login;
@@ -104,19 +75,91 @@ public class User implements Serializable, Comparable<User> {
 		this.avatar = avatar;
 	}
 	
-	public Date getLastConnection() {
-		return lastConnection;
+	public Date getLastConnectionDate() {
+		return lastConnectionDate;
 	}
-	public void setLastConnection(Date lastConnection) {
-		this.lastConnection = lastConnection;
+	public void setLastConnectionDate(Date lastConnection) {
+		this.lastConnectionDate = lastConnection;
 	}
 
+	public Date getCreationDate() {
+		return creationDate;
+	}
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+	
+	/**
+	 * Returns the ISO-3166 Country Code ( eg : 'FR', 'ES', etc )
+	 * @return
+	 */
+	public String getCountry() {
+		return country;
+	}
+	/**
+	 * Set the ISO-3166 Country Code ( eg : 'FR', 'ES', etc )
+	 * @param country
+	 */
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	/**
+	 * Returns the ISO-639 Language Code ( eg : 'fr', 'es', etc )
+	 * @return
+	 */
+	public String getLanguage() {
+		return language;
+	}
+	/**
+	 * Set the ISO-639 Language Code ( eg : 'fr', 'es', etc )
+	 * @param language
+	 */
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) {
+			return false;
+		}
+		if(!(obj instanceof User)) {
+			return false;
+		}
+		User user2 = (User) obj;
+		if (user2.getLogin() == null) {
+			return this.getLogin() == null;
+		}
+		if(this.getLogin() == null) {
+			return false;
+		}
+		return this.getLogin().equals(user2.getLogin());
+	}
+	
+	@Override
+	public int compareTo(User user2) {
+		if(user2 == null) {
+			return 1;
+		}
+		if (this.getLogin() == null) {
+			return (user2.getLogin() == null) ? 0 : -1;
+		}
+		if(user2.getLogin() == null) {
+			return 1;
+		}
+		return this.getLogin().compareTo(user2.getLogin());
+	}
+	
 	@Override
 	public String toString() {
 		return "User [login=" + login + ", mail=" + mail
-				+ ", passwordEncrypted=" + encryptedPassword + ", firstname="
-				+ firstName + ", lastname=" + lastName + ", avatar=" + avatar
-				+ ", dateLastConnection=" + lastConnection + "]";
+				+ ", encryptedPassword=" + encryptedPassword + ", firstName="
+				+ firstName + ", lastName=" + lastName + ", avatar=" + avatar
+				+ ", lastConnectionDate=" + lastConnectionDate
+				+ ", creationDate=" + creationDate + ", country=" + country
+				+ ", language=" + language + "]";
 	}
 	
 }

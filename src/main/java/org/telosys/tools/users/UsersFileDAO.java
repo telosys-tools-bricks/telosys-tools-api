@@ -164,7 +164,7 @@ public class UsersFileDAO {
 		pos++;
 		user.setAvatar(splits[pos]);
 		pos++;
-		user.setLastConnection(convertStringToDate(splits[pos]));
+		user.setLastConnectionDate(convertStringToDate(splits[pos]));
 		return user;
 	}
 	
@@ -182,7 +182,7 @@ public class UsersFileDAO {
 		buf.append(";");
 		append(buf, user.getAvatar());
 		buf.append(";");
-		append(buf, user.getLastConnection());
+		append(buf, user.getLastConnectionDate());
 		buf.append(";");
 		return buf.toString();
 	}
