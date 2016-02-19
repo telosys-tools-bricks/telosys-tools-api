@@ -18,6 +18,7 @@ package org.telosys.tools.api;
 import org.telosys.tools.users.User;
 import org.telosys.tools.users.UsersFileName;
 import org.telosys.tools.users.UsersManager;
+import org.telosys.tools.users.crypto.PasswordEncoder;
 
 
 public class TelosysUsers {
@@ -47,6 +48,23 @@ public class TelosysUsers {
 		return UsersManager.getInstance().getUserByLogin(login);
 	}
 
+	/**
+	 * Returns true if the given login/password pair is valid
+	 * @param login
+	 * @param password
+	 * @return
+	 */
+	public static final boolean isValidLogin(String login, String password) {
+		User user = getUserByLogin(login);
+		if ( user != null ) {
+			// encrypt the given password
+			PasswordEncoder passwordEncoder = new PasswordEncoder();
+			String encryptedPassword = passwordEncoder.encrypt(password) ;
+			return encryptedPassword.equals( user.getEncryptedPassword() ) ;
+		}
+		return false ;
+	}
+	
 	/**
 	 * Returns the number of users currently stored in memory
 	 * @return

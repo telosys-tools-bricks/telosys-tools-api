@@ -4,8 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
@@ -52,6 +55,9 @@ public class TelosysUsersTest {
 		deleteUserTest() ;
 		deleteUserByLoginTest();
 		
+		createUserTest();
+		authenticationTest();
+		
 		System.out.println("----------");
 	}
 
@@ -88,7 +94,7 @@ public class TelosysUsersTest {
 		user1.setMail("bwayne@gmail.com");
 		assertEquals("", user1.getEncryptedPassword() );
 		
-		// UPDATE with a new password
+		// UPDATE without password
 		TelosysUsers.saveUser(user1);
 		
 		TelosysUsers.loadAllUsers(); // FORCE RELOAD (just for test)
@@ -99,6 +105,60 @@ public class TelosysUsersTest {
 		assertEquals("De Nice",  user2.getLastName() );
 		assertEquals("bwayne@gmail.com",  user2.getMail());
 		assertEquals("", user2.getEncryptedPassword() ); // Still void
+	}
+
+	public void createUserTest()  {
+		System.out.println("--- createUserTest");
+		
+		User user = TelosysUsers.getUserByLogin("bspringsteen");
+		System.out.println("user = " + user);
+		assertNull(user );
+		// Doesn't exist 
+		
+		User user1 = new User();
+		user1.setLogin("bspringsteen");
+		user1.setFirstName("Bruce");
+		user1.setLastName("Springsteen");
+		user1.setMail("bruce.springsteen@gmail.com");
+		user1.setCountry("US");
+		user1.setLanguage("en");
+		user1.setCreationDate(new Date());
+		
+		// UPDATE with a new password
+		TelosysUsers.saveUser(user1, "theriver");
+		System.out.println("user1 = " + user1);
+		
+		TelosysUsers.loadAllUsers(); // FORCE RELOAD (just for test)
+		User user2 = TelosysUsers.getUserByLogin("bspringsteen");
+		System.out.println("user2 = " + user2);
+		
+		assertEquals(user1.getFirstName(), user2.getFirstName() );
+		assertEquals(user1.getLastName(),  user2.getLastName() );
+		assertEquals(user1.getMail(),      user2.getMail() );
+		assertEquals(user1.getCountry(),   user2.getCountry() );
+		assertEquals(user1.getLanguage(),  user2.getLanguage() );
+		assertNotNull( user2.getEncryptedPassword() ); 
+	}
+
+	public void authenticationTest()  {
+		System.out.println("--- authenticationTest");
+		assertFalse( TelosysUsers.isValidLogin("bspringsteen", "azerty") ) ;
+		
+		try {
+			assertFalse( TelosysUsers.isValidLogin("bspringsteen", "") ) ;
+			fail("Not supposed to reach this line");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Expected exception ");
+		}
+
+		try {
+			assertFalse( TelosysUsers.isValidLogin("bspringsteen", null) ) ;
+			fail("Not supposed to reach this line");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Expected exception ");
+		}
+
+		assertTrue( TelosysUsers.isValidLogin("bspringsteen", "theriver") ) ;
 	}
 
 	// @Test
