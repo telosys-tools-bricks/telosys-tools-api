@@ -22,11 +22,22 @@ import java.util.Formatter;
 
 public class PasswordEncoder {
 	
+	/**
+	 * Encrypt the given password
+	 * @param originalPassword
+	 * @return
+	 */
 	public String encrypt(String originalPassword) {
 		checkString(originalPassword);
 		return encryptPassword(originalPassword);
 	}
 	
+	/**
+	 * Verify if the given password is valid according to the given encrypted password
+	 * @param originalPassword the password to verify (not encrypted)
+	 * @param encryptedPassword the expected encrypted password
+	 * @return
+	 */
 	public boolean verify(String originalPassword, String encryptedPassword) {
 		checkString(originalPassword);
 		checkString(encryptedPassword);

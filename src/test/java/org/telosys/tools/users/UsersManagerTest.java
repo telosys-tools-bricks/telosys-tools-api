@@ -1,7 +1,9 @@
 package org.telosys.tools.users;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -88,7 +90,8 @@ public class UsersManagerTest {
 		} catch (Exception e) {	}
 		
 		test5UpdateUser();
-		test6AddUser();		
+		test6AddUser();
+		test7CheckPassword();
 	}
 	
 	//@Test
@@ -181,5 +184,32 @@ public class UsersManagerTest {
 		n = usersManager.getUsersCount();
 		System.out.println("Users count after reload = " + n);
 		assertEquals(6, n );
+	}
+
+	public void test7CheckPassword() {
+		System.out.println("--- test7CheckPassword");
+
+		UsersManager usersManager = getUsersManagerForTests(); 
+		assertFalse( usersManager.checkPassword((String)null, null) );
+		assertFalse( usersManager.checkPassword((String)null, "bbb") );
+		assertFalse( usersManager.checkPassword("", "") );
+		assertFalse( usersManager.checkPassword("user1", null) );
+		assertFalse( usersManager.checkPassword("user1", "") );
+		
+		assertFalse( usersManager.checkPassword((User)null, null) );
+		assertFalse( usersManager.checkPassword((User)null, "bbb") );
+
+
+		User user = new User() ;
+		user.setLogin("foo");
+		user.setFirstName("aaaa");
+		user.setLastName("bbbbb");
+		usersManager.saveUser(user, "secret");
+		
+		assertTrue( usersManager.checkPassword("foo", "secret"));
+		assertFalse( usersManager.checkPassword("foo", "azerty"));
+
+		assertTrue( usersManager.checkPassword(user, "secret"));
+		assertFalse( usersManager.checkPassword(user, "azerty"));
 	}
 }

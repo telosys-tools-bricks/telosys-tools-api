@@ -63,6 +63,36 @@ public class UsersManager {
 	}
 
 	/**
+	 * Checks the password for the user identified by the given login<br>
+	 * Returns true if OK <br>
+	 * @param login the user's login
+	 * @param password the password to be checked
+	 * @return
+	 */
+	public boolean checkPassword(String login, String password) {
+		if ( login == null || password == null ) {
+			return false ;
+		}
+		User user = getUserByLogin(login);
+		return checkPassword(user, password);
+	}
+
+	/**
+	 * Checks the password for the given User (returns true if OK)
+	 * @param user
+	 * @param password
+	 * @return
+	 */
+	public boolean checkPassword(User user, String password) {
+		if ( user == null || password == null ) {
+			return false ;
+		}
+		// encrypt the given password
+		PasswordEncoder passwordEncoder = new PasswordEncoder();
+		return passwordEncoder.verify(password, user.getEncryptedPassword() ) ;
+	}
+
+	/**
 	 * Returns the number of users currently stored in memory
 	 * @return
 	 */
