@@ -30,7 +30,7 @@ public interface StatsProvider {
 	 * Returns the global stats overview
 	 * @return
 	 */
-	FilesystemStatsOverview getFilesystemStatsOverview() ;
+	GlobalStatsOverview getFilesystemStatsOverview() ;
 	
 	/**
 	 * Returns the user stats for the given user

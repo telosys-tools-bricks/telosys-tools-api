@@ -17,7 +17,7 @@ package org.telosys.tools.stats.services;
 
 import java.io.File;
 
-import org.telosys.tools.stats.FilesystemStatsOverview;
+import org.telosys.tools.stats.GlobalStatsOverview;
 
 public class FilesystemUtil {
 
@@ -25,7 +25,7 @@ public class FilesystemUtil {
 		return 0 ;
 	}
 
-	public static FilesystemStatsOverview getFilesystemStatsOverview(File folder) {
+	public static GlobalStatsOverview getFilesystemStatsOverview(File folder) {
 		return null ;
 	}
 

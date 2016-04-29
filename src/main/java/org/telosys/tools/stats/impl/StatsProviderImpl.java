@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.List;
 
 import org.telosys.tools.stats.BundleStats;
-import org.telosys.tools.stats.FilesystemStatsOverview;
+import org.telosys.tools.stats.GlobalStatsOverview;
 import org.telosys.tools.stats.ModelStats;
 import org.telosys.tools.stats.ProjectStats;
 import org.telosys.tools.stats.StatsProvider;
@@ -40,7 +40,7 @@ public class StatsProviderImpl implements StatsProvider {
 	}
 	
 	@Override
-	public FilesystemStatsOverview getFilesystemStatsOverview() {
+	public GlobalStatsOverview getFilesystemStatsOverview() {
 		// TODO Auto-generated method stub
 		return null;
 	}

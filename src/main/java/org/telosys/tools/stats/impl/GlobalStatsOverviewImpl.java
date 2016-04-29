@@ -13,38 +13,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.telosys.tools.stats;
+package org.telosys.tools.stats.impl;
 
-/**
- * Global filesystem information for all users <br>
- * 
- * Information is based on the files and folders in the filesystem
- *
- */
-public interface FilesystemStatsOverview {
+import org.telosys.tools.stats.GlobalStatsOverview;
 
-	/**
-	 * Returns the total number of users folders
-	 * @return
-	 */
-	public int getUsersCount() ;
-	
-	/**
-	 * Returns the total number of projects folders for all the users
-	 * @return
-	 */
-	public int getProjectsCount() ;
-	
-	/**
-	 * Return the total number of ".model" files for all the users
-	 * @return
-	 */
-	public int getModelsCount() ;
-	
-	/**
-	 * Return the total disk usage for all the users
-	 * @return
-	 */
-	public int getDiskUsage() ;
-	
+public class GlobalStatsOverviewImpl implements GlobalStatsOverview  {
+
+	@Override
+	public int getUsersCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getProjectsCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getModelsCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getDiskUsage() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
