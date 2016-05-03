@@ -21,10 +21,19 @@ import org.telosys.tools.users.crypto.PasswordEncoder;
 
 public class UsersManager {
 	
+	private static String USERS_FILE_NAME = null ;
+
 	/**
 	 * SINGLETON INSTANCE
 	 */
 	private static final UsersManager singleInstance = new UsersManager();
+	
+	public final static void setUsersFileName(String fileName) {
+		USERS_FILE_NAME = fileName ;
+	}
+	public final static String getUsersFileName() {
+		return USERS_FILE_NAME ;
+	}
 	
 	public static UsersManager getInstance() {
 		return singleInstance;
@@ -42,7 +51,12 @@ public class UsersManager {
 	}
 	
 	private UsersFileDAO getUsersFileDAO() {
-		return new UsersFileDAO( UsersFileName.getFileName() );
+		if ( USERS_FILE_NAME != null ) {
+			return new UsersFileDAO( USERS_FILE_NAME );
+		}
+		else {
+			throw new IllegalStateException("Users file name has not been initialized ( setUsersFileName() must be called before )");
+		}
 	}
 
 	private Map<String, User> getUsersMap() {

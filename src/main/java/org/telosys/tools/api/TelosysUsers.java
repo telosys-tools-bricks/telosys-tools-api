@@ -16,7 +16,6 @@
 package org.telosys.tools.api;
 
 import org.telosys.tools.users.User;
-import org.telosys.tools.users.UsersFileName;
 import org.telosys.tools.users.UsersManager;
 import org.telosys.tools.users.crypto.PasswordEncoder;
 
@@ -24,11 +23,12 @@ import org.telosys.tools.users.crypto.PasswordEncoder;
 public class TelosysUsers {
 
 	/**
-	 * Set a specific users file name (for tests or any special use case) <br>
+	 * Initializes the users file name. <br>
 	 * Supposed to be called before any other method
 	 */
-	public static final void setSpecificUsersFileName(String fileName) {
-		UsersFileName.setSpecificFileName(fileName);
+	public static final void setUsersFileName(String fileName) {
+		//UsersFileName.setSpecificFileName(fileName);
+		UsersManager.setUsersFileName(fileName);
 	}
 	
 	/**

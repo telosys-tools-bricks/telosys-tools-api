@@ -1,10 +1,10 @@
 package org.telosys.tools.api;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -12,11 +12,13 @@ import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.users.User;
 
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING) // No parallel processing due to file copy
+@FixMethodOrder(MethodSorters.NAME_ASCENDING) // No parallel processing
 public class TelosysUsersTest {
 	
 	private final static String USERS_FILE1 = "src/test/resources/users/users3.data" ; // read-only
@@ -31,7 +33,7 @@ public class TelosysUsersTest {
 		System.out.println("File 2 : " + file2.getAbsolutePath() ) ;
 		
 		FileUtil.copy(file1, file2, true);
-		TelosysUsers.setSpecificUsersFileName(USERS_FILE2);
+		TelosysUsers.setUsersFileName(USERS_FILE2);
 		TelosysUsers.loadAllUsers();
 	}
 

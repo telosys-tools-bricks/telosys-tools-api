@@ -19,13 +19,13 @@ public class UsersManagerTest {
 	
 	private final static String USERS_FILE = "target/tests-tmp/users/usersFile2.data" ;
 	
-	private final static File getUsersFile() {
+	private final File getUsersFile() {
 		return new File(USERS_FILE);
 	}
 	
 	//@BeforeClass
-	public static void init() {
-		System.out.println("--- Init ");
+	public void init() {
+		System.out.println("--- Init users file");
 		Map<String,User> usersMap = new HashMap<String, User>();
 		for ( int i = 0 ; i < 5 ; i++ ) {
 			User user = createUser(i);
@@ -40,7 +40,7 @@ public class UsersManagerTest {
 		System.out.println("--- Init OK");
 
 	}
-	private static User createUser(int i) {
+	private User createUser(int i) {
 		User user = new User() ;
 		user.setFirstName("John"+i);
 		user.setLastName("Wayne"+i);
@@ -58,43 +58,75 @@ public class UsersManagerTest {
 	
 	private UsersManager getUsersManagerForTests() {
 		//UsersFileName.setSpecificFileName(USERS_FILE) ;
-		File usersFile = getUsersFile(); 
-		System.out.println("getUsersManagerForTests() : " + usersFile.getAbsolutePath() );
-		UsersFileName.setSpecificFileName(usersFile.getAbsolutePath()) ;
+//		File usersFile = getUsersFile(); 
+//		System.out.println("getUsersManagerForTests() : " + usersFile.getAbsolutePath() );
+		//UsersFileName.setSpecificFileName(usersFile.getAbsolutePath()) ;
 		return UsersManager.getInstance() ;
 	}
-
+	
 	@Test
 	public void globalTest() {
 		
-		init();
+		System.out.println("========== TEST 0");
+		test0NoFileName();
 		
+		System.out.println("========== INIT");
+		init();
+
+		String usersFile = getUsersFile().getAbsolutePath() ; 
+		System.out.println("--- Init users file name ..." );
+		System.out.println("setUsersFileName( '" + usersFile + "' ) " );
+		UsersManager.setUsersFileName(usersFile);
+		System.out.println("--- Init users file name OK" );
+
 		// force the SINGLETON to use the new file for this test case
 		getUsersManagerForTests().loadAllUsers();
 		
+		System.out.println("========== TEST 1");
 		test1GetExistingUser();
 		
+		System.out.println("========== TEST 2");
 		try {
 			test2UpdateUserNoLogin();
 			fail("Exception expected");
 		} catch (Exception e) {	}
 		
+		System.out.println("========== TEST 3");
 		try {
 			test3UpdateUserVoidPassword();
 			fail("Exception expected");
 		} catch (Exception e) {	}
 		
+		System.out.println("========== TEST 4");
 		try {
 			test4UpdateUserNullPassword();
 			fail("Exception expected");
 		} catch (Exception e) {	}
 		
+		System.out.println("========== TEST 5");
 		test5UpdateUser();
+		System.out.println("========== TEST 6");
 		test6AddUser();
+		System.out.println("========== TEST 7");
 		test7CheckPassword();
 	}
 	
-	//@Test
+	public void test0NoFileName() {
+		System.out.println("Test without file name");
+		// NB : File Name can be already set previously in a full test cycle ( i.e. : mvn install )
+		System.out.println("Current file name = " + UsersManager.getUsersFileName()) ; 
+		System.out.println("Set file name to null..." ) ; 
+		UsersManager.setUsersFileName(null); // No file name
+		System.out.println("Current file name = " + UsersManager.getUsersFileName()) ; 
+		try {
+			// UsersManager.getInstance().getUsersCount(); // Can be already loaded previously
+			UsersManager.getInstance().loadAllUsers(); // Force fileName usage 
+			fail("IllegalStateException expected");
+		} catch (IllegalStateException e) {	
+			System.out.println("OK : expected exception thrown");
+		}
+	}
+	
 	public void test1GetExistingUser() {
 		System.out.println("--- test1GetExistingUser");
 		UsersManager usersManager = getUsersManagerForTests(); 
