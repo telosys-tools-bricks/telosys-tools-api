@@ -17,6 +17,7 @@ package org.telosys.tools.stats.services;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -32,11 +33,19 @@ import org.telosys.tools.commons.StrUtil;
  */
 public class CounterFileManager {
 	
-	private final String fileName ;
+	private final String  fileName ;
+	private final boolean createParentFolder ;
 	
 	public CounterFileManager(String fileName) {
 		super();
 		this.fileName = fileName;
+		this.createParentFolder = false ;
+	}
+
+	public CounterFileManager(String fileName, boolean createParentFolder) {
+		super();
+		this.fileName = fileName;
+		this.createParentFolder = createParentFolder ;
 	}
 
 	public String getFileName() {
@@ -81,6 +90,15 @@ public class CounterFileManager {
 	}
 
 	protected void writeCounter(int counter) {
+		
+		//--- Check file existence in order to create parent folder if necessary
+		File file = new File(fileName);
+		if ( ! file.exists() ) {
+			if ( this.createParentFolder ) {
+				FileUtil.createParentFolderIfNecessary(file);
+			}
+		}
+
 		FileWriter fileWriter;
 		try {
 			fileWriter = new FileWriter(fileName);

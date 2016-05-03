@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.telosys.tools.commons.ConsoleLogger;
+import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.TelosysToolsLogger;
 import org.telosys.tools.commons.bundles.BundleStatus;
@@ -37,6 +38,7 @@ import org.telosys.tools.generator.task.GenerationTaskResult;
 import org.telosys.tools.generator.task.StandardGenerationTask;
 import org.telosys.tools.generic.model.Entity;
 import org.telosys.tools.generic.model.Model;
+import org.telosys.tools.stats.services.CounterFileManager;
 
 public class TelosysProject {
 
@@ -328,9 +330,20 @@ public class TelosysProject {
 				telosysToolsCfg, this.telosysToolsLogger );
 		
 		GenerationTaskResult generationTaskResult = generationTask.launch();
+		
+		afterGeneration();
+		
 		return generationTaskResult ;
 	}
 	
+	private int afterGeneration() throws TelosysToolsException {
+		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
+		
+		String fileName = FileUtil.buildFilePath( telosysToolsCfg.getTelosysToolsFolderAbsolutePath(), "/stats/gen.count" );
+		CounterFileManager counterFileManager = new CounterFileManager(fileName, true);
+		return counterFileManager.incrementCounter() ;
+	}
+
 	/**
 	 * Returns a File instance for the given DSL model name  
 	 * @param modelName

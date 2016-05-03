@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.telosys.tools.commons.DirUtil;
 import org.telosys.tools.commons.FileUtil;
 
 public class UsersFileDAOTest {
@@ -75,6 +76,23 @@ public class UsersFileDAOTest {
 		file.delete();
 		FileUtil.createParentFolderIfNecessary(file);
 		CounterFileManager cfm = new CounterFileManager(fileName);
+		int c = 0 ;
+		c = cfm.incrementCounter();
+		System.out.println("counter = " + c );
+		assertEquals(1, c );
+		c = cfm.incrementCounter();
+		System.out.println("counter = " + c );
+		assertEquals(2, c );
+		c = cfm.incrementCounter();
+		System.out.println("counter = " + c );
+		assertEquals(3, c );
+	}
+
+	@Test
+	public void testFileCreationWithSubFolders() {
+		String fileName = "target/tests-tmp/stats/foo/bar/fileIncr1.count" ;
+		DirUtil.deleteDirectory( new File("target/tests-tmp/stats/foo/") );
+		CounterFileManager cfm = new CounterFileManager(fileName, true);
 		int c = 0 ;
 		c = cfm.incrementCounter();
 		System.out.println("counter = " + c );
