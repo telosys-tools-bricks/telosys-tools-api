@@ -1,0 +1,6 @@
+// Entity CarType
+
+CarType {
+  code : string { @Id, @NotNull, @SizeMin(2), @SizeMax(2)} ; 
+  name : string { @SizeMax(40) } ;
+}
