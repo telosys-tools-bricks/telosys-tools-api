@@ -1,7 +1,6 @@
 Employee {
-	id : integer {@Id}; // the id
-	firstName : string ;
-	birthDate : date ;
-//	country : Country {@Max(3)};
-	country : Country;
+	id : integer {@Id, @NotNull}; // the id
+	firstName : string { @SizeMax(40) } ;
+	birthDate : date { @Past } ;
+	country : Country { @Embedded } ;
 }

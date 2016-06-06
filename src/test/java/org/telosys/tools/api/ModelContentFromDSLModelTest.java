@@ -86,6 +86,8 @@ public class ModelContentFromDSLModelTest {
 		
 		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
 		Model model = genericModelLoader.loadModel("cars-and-drivers.model");
+		System.out.println("Loading result :");
+		System.out.println(" - Error message = " + genericModelLoader.getErrorMessage() );
 		assertNotNull(model);
 		assertNull(genericModelLoader.getErrorMessage());
 		assertNull(genericModelLoader.getParsingErrors());

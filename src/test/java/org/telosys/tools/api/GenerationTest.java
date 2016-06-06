@@ -1,6 +1,7 @@
 package org.telosys.tools.api;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -58,6 +59,7 @@ public class GenerationTest {
 		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
 		Model model = genericModelLoader.loadModel("cars-and-drivers.model");
 		assertNotNull(model);
+		assertNull(genericModelLoader.getErrorMessage());
 		System.out.println("Model loaded. Model name = " + model.getName() );
 
 		String bundleName = TEST_BUNDLE1 ;

@@ -2,14 +2,19 @@ package org.telosys.tools.api;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
+import org.telosys.tools.generic.model.Attribute;
+import org.telosys.tools.generic.model.Entity;
 import org.telosys.tools.generic.model.Model;
 
 public class GenericModelLoaderTest {
@@ -54,6 +59,33 @@ public class GenericModelLoaderTest {
 		assertNull(genericModelLoader.getErrorMessage());
 		assertNull(genericModelLoader.getParsingErrors());
 		System.out.println("Model loaded : " + model.getEntities().size() + " entities");
+		
+		Entity employeeEntity = model.getEntityByClassName("Employee");
+		assertNotNull(employeeEntity);
+		List<Attribute> employeeAttributes = employeeEntity.getAttributes();
+		for ( Attribute attribute : employeeAttributes ) {
+			System.out.println(" . " + attribute.getName() + " isKeyElement ? " + attribute.isKeyElement());
+			if ( attribute.getName().equals("id") ) {
+				System.out.println("  'id' attribute");
+				assertTrue( attribute.isKeyElement()) ;
+				assertTrue( attribute.isNotNull()) ;
+			}
+			if ( attribute.getName().equals("firstName") ) {
+				System.out.println("  'firstName' attribute");
+				assertEquals(Integer.valueOf(40), attribute.getMaxLength()) ;
+			}
+			if ( attribute.getName().equals("birthDate") ) {
+				System.out.println("  'birthDate' attribute");
+				assertTrue( attribute.isDatePast() ) ;
+			}
+		}
+		assertEquals(3, employeeAttributes.size());
+
+		//LINKS...
+//		if ( attribute.getName().equals("country") ) {
+//			System.out.println(" 'country' attribute");
+//			assertEquals(Integer.valueOf(40), attribute.getMaxLength()) ;
+//		}
 	}
 
 	@Test

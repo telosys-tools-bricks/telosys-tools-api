@@ -3,7 +3,7 @@
 Car {
   id : integer { @Id, @NotNull } ; // the car id
   type : CarType ;
-  comment : string ;
+  comment : string { } ;
   name : string { @SizeMax(40) } ;
   driver : Driver ;
   image : binary ;

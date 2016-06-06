@@ -147,6 +147,8 @@ attribute.formattedType(20) = "$attribute.formattedType(20)"
 attribute.fullType = "$attribute.fullType"
 attribute.wrapperType = "$attribute.wrapperType"
 
+attribute.isKeyElement = $attribute.isKeyElement()
+
 attribute.getter = "$attribute.getter"
 attribute.setter = "$attribute.setter"
 
