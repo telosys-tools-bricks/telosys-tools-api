@@ -1,5 +1,5 @@
 Employee {
-	id : integer {@Bad}; // invalid "@Bad"
+	id : int {@Bad}; // invalid "@Bad"
 	firstName : string ;
 	birthDate : date ;
 	country : Country {@Max(3)};

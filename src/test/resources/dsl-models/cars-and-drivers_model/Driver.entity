@@ -1,7 +1,7 @@
 // Entity Driver
 
 Driver {
-  id : integer { @Id } ; 
+  id : int { @Id } ; 
   firstName : string { @SizeMax(40) } ;
   lastName : string { @SizeMax(40) } ;
 }
