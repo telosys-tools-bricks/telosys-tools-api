@@ -35,7 +35,11 @@ public class UserSerializerTest {
 	}
 	
 	private void checkIdentical(User user1, User user2) {
-		checkIdentical(user1.getLogin(), user2.getLogin() );
+		assertEquals(user1.getType(), user2.getType());
+		
+//		checkIdentical(user1.getLogin(), user2.getLogin() );
+		assertEquals(user1.getLogin(), user2.getLogin() );
+
 		checkIdentical(user1.getEncryptedPassword(), user2.getEncryptedPassword() );
 		checkIdentical(user1.getFirstName(), user2.getFirstName() );
 		checkIdentical(user1.getLastName(), user2.getLastName() );
@@ -77,16 +81,14 @@ public class UserSerializerTest {
 	
 	@Test
 	public void test1() {
-		User user = new User();
-		user.setLogin("foo");
+		User user = new User(UserType.TELOSYS_USER, "foo");
 		serializeDeserializeAndCheck(user);
 	}
 	
 	@Test
 	public void test2() {
-		User user = new User();
 		// Test with ";" inside 
-		user.setLogin("fo;o");
+		User user = new User(UserType.TELOSYS_USER, "fo;o");
 		user.setEncryptedPassword("xyzxyzxyzxyzxyz");
 		user.setFirstName("Bart;");
 		user.setLastName("Sim;pson");
@@ -106,9 +108,8 @@ public class UserSerializerTest {
 
 	@Test
 	public void test4() {
-		User user = new User();
+		User user = new User(UserType.TELOSYS_USER, "foo");
 		
-		user.setLogin("foo");
 		user.setEncryptedPassword("xyzxyzxyzxyzxyz");
 		user.setFirstName("Bart");
 		user.setLastName("Simpson");
@@ -125,9 +126,8 @@ public class UserSerializerTest {
 
 	@Test
 	public void test5() {
-		User user = new User();
+		User user = new User(UserType.TELOSYS_USER, "foo");
 		
-		user.setLogin("foo");
 		user.setEncryptedPassword("   ");
 		user.setFirstName(" ");
 		//user.setLastName(""); 

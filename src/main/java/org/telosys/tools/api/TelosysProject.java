@@ -215,7 +215,8 @@ public class TelosysProject {
 	//-----------------------------------------------------------------------------------------------------
 	public TargetsDefinitions loadTargetsDefinitions(final String bundleName) throws TelosysToolsException, GeneratorException {
 		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-		TargetsLoader targetsLoader = new TargetsLoader( telosysToolsCfg.getTemplatesFolderAbsolutePath() );
+		//TargetsLoader targetsLoader = new TargetsLoader( telosysToolsCfg.getTemplatesFolderAbsolutePath() );
+		TargetsLoader targetsLoader = new TargetsLoader(telosysToolsCfg) ;
 
 		TargetsDefinitions targetsDefinitions = targetsLoader.loadTargetsDefinitions(bundleName);
 		return targetsDefinitions ;

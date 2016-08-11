@@ -18,11 +18,15 @@ package org.telosys.tools.users;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.telosys.tools.commons.StrUtil;
+
 public class User implements Serializable, Comparable<User> {
 	
 	private static final long serialVersionUID = 12375932534108120L;
 
-	private String login;
+	private final UserType type ;
+	private final String   login;
+	
 	private String mail;
 	private String encryptedPassword;
 	private String firstName;
@@ -33,11 +37,27 @@ public class User implements Serializable, Comparable<User> {
 	private String country ;  // ISO-3166 Country Code
 	private String language ; // ISO-639 Language Code
 	
+
+	/**
+	 * Constructor
+	 * @param userType
+	 * @param login
+	 */
+	public User(UserType userType, String login) {
+		super();
+		if ( StrUtil.nullOrVoid(login) ) {
+			throw new IllegalArgumentException("Invalid user login (null or void)");
+		}
+		this.type  = userType;
+		this.login = login;
+	}
+	
+	public UserType getType() {
+		return type;
+	}
+	
 	public String getLogin() {
 		return login;
-	}
-	public void setLogin(String login) {
-		this.login = login;
 	}
 	
 	public String getMail() {
@@ -119,47 +139,54 @@ public class User implements Serializable, Comparable<User> {
 		this.language = language;
 	}
 	
-	
-	@Override
-	public boolean equals(Object obj) {
-		if(obj == null) {
-			return false;
-		}
-		if(!(obj instanceof User)) {
-			return false;
-		}
-		User user2 = (User) obj;
-		if (user2.getLogin() == null) {
-			return this.getLogin() == null;
-		}
-		if(this.getLogin() == null) {
-			return false;
-		}
-		return this.getLogin().equals(user2.getLogin());
-	}
+// equals => hashcode	
+//	@Override
+//	public boolean equals(Object obj) {
+//		if(obj == null) {
+//			return false;
+//		}
+//		if(!(obj instanceof User)) {
+//			return false;
+//		}
+//		User user2 = (User) obj;
+//		if (user2.getLogin() == null) {
+//			return this.getLogin() == null;
+//		}
+//		if(this.getLogin() == null) {
+//			return false;
+//		}
+//		return this.getLogin().equals(user2.getLogin());
+//	}
 	
 	@Override
 	public int compareTo(User user2) {
 		if(user2 == null) {
 			return 1;
 		}
-		if (this.getLogin() == null) {
-			return (user2.getLogin() == null) ? 0 : -1;
-		}
-		if(user2.getLogin() == null) {
-			return 1;
-		}
+//		if (this.getLogin() == null) {
+//			return (user2.getLogin() == null) ? 0 : -1;
+//		}
+//		if(user2.getLogin() == null) {
+//			return 1;
+//		}
 		return this.getLogin().compareTo(user2.getLogin());
 	}
 	
 	@Override
 	public String toString() {
-		return "User [login=" + login + ", mail=" + mail
-				+ ", encryptedPassword=" + encryptedPassword + ", firstName="
-				+ firstName + ", lastName=" + lastName + ", avatar=" + avatar
+		return "User ["
+				+ "type=" + type 
+				+ ", login=" + login 
+				+ ", mail=" + mail
+				+ ", encryptedPassword=" + encryptedPassword 
+				+ ", firstName=" + firstName 
+				+ ", lastName=" + lastName 
+				+ ", avatar=" + avatar
 				+ ", lastConnectionDate=" + lastConnectionDate
-				+ ", creationDate=" + creationDate + ", country=" + country
-				+ ", language=" + language + "]";
+				+ ", creationDate=" + creationDate 
+				+ ", country=" + country
+				+ ", language=" + language 
+				+ "]";
 	}
 	
 }

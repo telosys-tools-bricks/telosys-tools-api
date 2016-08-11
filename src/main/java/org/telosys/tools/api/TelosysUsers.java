@@ -98,7 +98,7 @@ public class TelosysUsers {
 	 * @param user
 	 * @return
 	 */
-	public static boolean deleteUser(User user) {
+	public static final boolean deleteUser(User user) {
 		return UsersManager.getInstance().deleteUser(user);
 	}
 
@@ -108,7 +108,7 @@ public class TelosysUsers {
 	 * @param login
 	 * @return
 	 */
-	public static boolean deleteUser(String login) {
+	public static final boolean deleteUser(String login) {
 		return UsersManager.getInstance().deleteUser(login);
 	}
 	

@@ -2,82 +2,69 @@ package org.telosys.tools.users;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 public class UserTest {
 	
-	@Test
-	public void testEquals1() {
-		User user1 = new User();
-		user1.setLogin("foo");
-		
-		User user2 = new User();
-		user2.setLogin("foo");
-		
-		assertTrue(user1.equals(user2));
+	@Test ( expected=IllegalArgumentException.class)
+	public void testInvalidLogin1() {
+		new User(UserType.TELOSYS_USER, null);
 	}
-	
-	@Test
-	public void testEquals2() {
-		User user1 = new User();		
-		User user2 = new User();
-		assertTrue(user1.equals(user2));
+	@Test ( expected=IllegalArgumentException.class)
+	public void testInvalidLogin2() {
+		new User(UserType.TELOSYS_USER, "");
 	}
-
-	@Test
-	public void testEquals3() {
-		User user1 = new User();
-		user1.setLogin("");
-		
-		User user2 = new User();
-		user2.setLogin("");
-		
-		assertTrue(user1.equals(user2));
+	@Test ( expected=IllegalArgumentException.class)
+	public void testInvalidLogin3() {
+		new User(UserType.TELOSYS_USER, " ");
 	}
-	
-	@Test
-	public void testEquals4() {
-		User user1 = new User();
-		user1.setLogin(null);
-		
-		User user2 = new User();
-		user2.setLogin(null);
-		
-		assertTrue(user1.equals(user2));
+	@Test ( expected=IllegalArgumentException.class)
+	public void testInvalidLogin4() {
+		new User(UserType.TELOSYS_USER, "  ");
 	}
-	
-	@Test
-	public void testNotEquals1() {
-		User user1 = new User();
-		user1.setLogin(null);
-		
-		User user2 = new User();
-		user2.setLogin("foo");
-		
-		assertFalse(user1.equals(user2));
+	@Test ( expected=IllegalArgumentException.class)
+	public void testInvalidLogin5() {
+		new User(UserType.TELOSYS_USER, "\t");
+	}
+	@Test ( expected=IllegalArgumentException.class)
+	public void testInvalidLogin6() {
+		new User(UserType.TELOSYS_USER, " \n\r");
 	}
 
-	@Test
-	public void testNotEquals2() {
-		User user1 = new User();
-		user1.setLogin("foo");
-		
-		User user2 = new User();
-		user2.setLogin(null);
-		
-		assertFalse(user1.equals(user2));
-	}
+//	@Test
+//	public void testEquals1() {
+//		User user1 = new User(UserType.TELOSYS_USER, "foo");
+//		User user2 = new User(UserType.TELOSYS_USER, "foo");
+//		assertTrue(user1.equals(user2));
+//	}
+//	
+//	@Test
+//	public void testNotEquals3() {
+//		User user1 = new User(UserType.TELOSYS_USER, "foo");
+//		User user2 = new User(UserType.TELOSYS_USER, "bar");
+//		assertFalse(user1.equals(user2));
+//	}
 
 	@Test
-	public void testNotEquals3() {
-		User user1 = new User();
-		user1.setLogin("foo");
+	public void testUserType1() {
+		UserType userType1 = UserType.TELOSYS_USER ;
+		UserType userType2 = UserType.GITHUB_USER ;
+		UserType userType3 = UserType.TELOSYS_USER ;
 		
-		User user2 = new User();
-		user2.setLogin("bar");
+		System.out.println("userType1 = " + userType1 + "  value = " + userType1.getValue() );
+		System.out.println("userType2 = " + userType2 + "  value = " + userType2.getValue() );
 		
-		assertFalse(user1.equals(user2));
+		assertEquals(UserType.TELOSYS_USER, userType1);
+		assertEquals(0, userType1.getValue());
+		
+		assertEquals(UserType.GITHUB_USER, userType2);
+		assertEquals(1, userType2.getValue());
+		
+		assertFalse( userType1 == userType2 ) ;
+		assertTrue( userType1 == userType3 ) ;
+		
 	}
 
 }

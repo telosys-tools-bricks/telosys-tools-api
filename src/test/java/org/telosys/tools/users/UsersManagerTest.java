@@ -41,10 +41,9 @@ public class UsersManagerTest {
 
 	}
 	private User createUser(int i) {
-		User user = new User() ;
+		User user = new User(UserType.TELOSYS_USER, "johnWayne"+i) ;
 		user.setFirstName("John"+i);
 		user.setLastName("Wayne"+i);
-		user.setLogin("johnWayne"+i);
 		return user ;
 	}
 
@@ -146,17 +145,17 @@ public class UsersManagerTest {
 		
 		System.out.println("--- test2UpdateUserNoLogin");
 		// No user login
-		User user = new User() ;
+		User user = new User(UserType.TELOSYS_USER, null) ;
 		UsersManager usersManager = getUsersManagerForTests(); 
-		usersManager.saveUser(user, "abcd"); 
+		usersManager.saveUser(user, "abcd-password"); 
 	}
 
 	//@Test(expected=IllegalArgumentException.class)
 	public void test3UpdateUserVoidPassword() {
 		System.out.println("--- test3UpdateUserVoidPassword");
 		
-		User user = new User() ;
-		user.setLogin("johnWayne1");
+		User user = new User(UserType.TELOSYS_USER, "johnWayne1") ;
+		//user.setLogin("johnWayne1");
 		user.setFirstName("John updated");
 		user.setLastName("Wayne updated");
 
@@ -169,8 +168,8 @@ public class UsersManagerTest {
 	public void test4UpdateUserNullPassword() {
 		System.out.println("--- test4UpdateUserNullPassword");
 		
-		User user = new User() ;
-		user.setLogin("johnWayne1");
+		User user = new User(UserType.TELOSYS_USER, "johnWayne1") ;
+		//user.setLogin("johnWayne1");
 		user.setFirstName("John updated");
 		user.setLastName("Wayne updated");
 
@@ -188,8 +187,8 @@ public class UsersManagerTest {
 		System.out.println("Users count = " + usersManager.getUsersCount() );
 		assertEquals(5, usersManager.getUsersCount() );
 		
-		User user = new User() ;
-		user.setLogin("johnWayne1");
+		User user = new User(UserType.TELOSYS_USER, "johnWayne1") ;
+		//user.setLogin("johnWayne1");
 		user.setFirstName("John updated");
 		user.setLastName("Wayne updated");
 		usersManager.saveUser(user, "secret"); 
@@ -202,8 +201,8 @@ public class UsersManagerTest {
 		
 		UsersManager usersManager = getUsersManagerForTests(); 
 		
-		User user = new User() ;
-		user.setLogin("foo");
+		User user = new User(UserType.TELOSYS_USER, "foo") ;
+		//user.setLogin("foo");
 		user.setFirstName("aaaa");
 		user.setLastName("bbbbb");
 		usersManager.saveUser(user, "secret"); 
@@ -232,8 +231,8 @@ public class UsersManagerTest {
 		assertFalse( usersManager.checkPassword((User)null, "bbb") );
 
 
-		User user = new User() ;
-		user.setLogin("foo");
+		User user = new User(UserType.TELOSYS_USER, "foo") ;
+		//user.setLogin("foo");
 		user.setFirstName("aaaa");
 		user.setLastName("bbbbb");
 		usersManager.saveUser(user, "secret");

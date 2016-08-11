@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.users.User;
+import org.telosys.tools.users.UserType;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // No parallel processing
 public class TelosysUsersTest {
@@ -117,8 +118,8 @@ public class TelosysUsersTest {
 		assertNull(user );
 		// Doesn't exist 
 		
-		User user1 = new User();
-		user1.setLogin("bspringsteen");
+		User user1 = new User(UserType.TELOSYS_USER, "bspringsteen");
+//		user1.setLogin("bspringsteen");
 		user1.setFirstName("Bruce");
 		user1.setLastName("Springsteen");
 		user1.setMail("bruce.springsteen@gmail.com");

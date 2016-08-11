@@ -32,10 +32,9 @@ public class UsersFileDAOTest {
 	}
 	
 	private User createUser(int i) {
-		User user = new User() ;
+		User user = new User(UserType.TELOSYS_USER, "johnWayne"+i) ;
 		user.setFirstName("John"+i);
 		user.setLastName("Wayne"+i);
-		user.setLogin("johnWayne"+i);
 		return user ;
 	}
 	

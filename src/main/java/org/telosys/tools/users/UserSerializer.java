@@ -67,10 +67,12 @@ public class UserSerializer {
 		if ( splits.length < 10 ) {
 			throw new RuntimeException("invalid user record " + splits.length + " fields (10 expected)");
 		}
-		User user = new User();
-		int pos = 0;
 		
-		user.setLogin(splits[pos++]);
+		String login = splits[0];
+		User user = new User(UserType.TELOSYS_USER, login);
+		
+		int pos = 1; // 1 = 2nd position
+		//user.setLogin(splits[pos++]);
 		user.setEncryptedPassword(splits[pos++]);
 		
 		user.setMail(splits[pos++]);
