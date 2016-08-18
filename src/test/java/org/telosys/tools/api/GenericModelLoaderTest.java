@@ -79,7 +79,9 @@ public class GenericModelLoaderTest {
 				assertTrue( attribute.isDatePast() ) ;
 			}
 		}
-		assertEquals(3, employeeAttributes.size());
+		//assertEquals(3, employeeAttributes.size());
+		assertEquals(4, employeeAttributes.size()); // now all attributes are present !
+		//employeeEntity.get
 
 		//LINKS...
 //		if ( attribute.getName().equals("country") ) {
