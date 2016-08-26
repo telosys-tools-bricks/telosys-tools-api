@@ -3,6 +3,8 @@ package org.telosys.tools.api;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.List;
 
@@ -10,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
+import org.telosys.tools.generic.model.Attribute;
 import org.telosys.tools.generic.model.Cardinality;
 import org.telosys.tools.generic.model.Entity;
 import org.telosys.tools.generic.model.Link;
@@ -95,12 +98,12 @@ public class ModelContentFromDSLModelTest {
 		
 		assertEquals(3, model.getEntities().size() );
 		
-		Entity e = model.getEntityByClassName("Car");
-		assertNotNull(e);
-		assertEquals("Car", e.getClassName());
-		assertEquals("Car", e.getDatabaseTable());
+		Entity carEntity = model.getEntityByClassName("Car");
+		assertNotNull(carEntity);
+		assertEquals("Car", carEntity.getClassName());
+		assertEquals("Car", carEntity.getDatabaseTable());
 
-		List<Link> links = e.getLinks() ;
+		List<Link> links = carEntity.getLinks() ;
 		assertNotNull(links);
 		assertEquals(2, links.size() );
 		for ( Link link : links ) {
@@ -113,6 +116,43 @@ public class ModelContentFromDSLModelTest {
 			System.out.println("getCardinality() : " + link.getCardinality() );
 			assertEquals(Cardinality.MANY_TO_ONE, link.getCardinality() );
 		}
+		
+		for ( Attribute attribute : carEntity.getAttributes() ) {
+			if ( attribute.getName().equals("name")) {
+				checkAttributeCarName(attribute);
+			}
+			if ( attribute.getName().equals("driver")) {
+				checkAttributeCarDriver(attribute);
+			}
+		}
 	}
+	public void checkAttributeCarName(Attribute attribute) throws Exception {
+		System.out.println("Check 'name' attribute...");
+		assertEquals("name", attribute.getName());
 
+		assertFalse( attribute.isKeyElement() );
+		
+		assertFalse( attribute.isFK() );
+		assertFalse( attribute.isFKSimple() );
+		assertFalse( attribute.isFKComposite() );
+		assertNull(attribute.getReferencedEntityClassName());
+
+		assertFalse( attribute.isUsedInLinks() );
+		assertFalse( attribute.isUsedInSelectedLinks() );
+	}
+	
+	public void checkAttributeCarDriver(Attribute attribute) throws Exception {
+		System.out.println("Check 'driver' attribute...");
+		assertEquals("driver", attribute.getName());
+		
+		assertFalse( attribute.isKeyElement() );
+
+		assertTrue( attribute.isFK() );
+		assertTrue( attribute.isFKSimple() );
+		assertFalse( attribute.isFKComposite() );
+		assertEquals("Driver", attribute.getReferencedEntityClassName());
+
+		assertTrue( attribute.isUsedInLinks() );
+		assertTrue( attribute.isUsedInSelectedLinks() );
+	}
 }
