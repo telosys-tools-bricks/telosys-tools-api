@@ -1,0 +1,8 @@
+// Entity Driver
+
+Driver {
+  id : short { @Id } ;
+  firstName : string ;
+  lastName : string ;
+  birthDate : date { @Past } ;
+}

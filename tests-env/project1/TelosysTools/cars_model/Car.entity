@@ -1,0 +1,7 @@
+// Entity Car
+
+Car {
+  id : int { @Id} ;
+  name : string  { @SizeMax(40) } ; // field example 
+  driver : Driver ;
+}

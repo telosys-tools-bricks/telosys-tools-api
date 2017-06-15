@@ -1,0 +1,6 @@
+// Entity AutoIncr
+
+AutoIncr {
+  id : long { @Id, @AutoIncremented } ;
+  name : string ; // field example 
+}
