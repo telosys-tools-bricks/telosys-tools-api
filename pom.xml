@@ -46,4 +46,41 @@
         <!-- For TESTS -->
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<!-- get all project dependencies -->
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<finalName>telosys-launcher</finalName>
+					<!-- do not append "jar-with-dependencies" suffix to the jar file name -->
+					<appendAssemblyId>false</appendAssemblyId> 
+					<archive>
+						<manifest>
+							<mainClass>org.telosys.tools.launcher.TelosysLauncherApp</mainClass>
+						<!-- 
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+						 -->
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<!-- bind to the packaging phase -->
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

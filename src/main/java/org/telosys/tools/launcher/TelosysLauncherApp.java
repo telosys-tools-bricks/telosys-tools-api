@@ -18,7 +18,6 @@ package org.telosys.tools.launcher;
 import java.util.List;
 import java.util.Scanner;
 
-import org.telosys.tools.commons.DirUtil;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.generator.GeneratorException;
@@ -28,7 +27,18 @@ public class TelosysLauncherApp {
 	
 	public static void main(String[] args) throws TelosysToolsException, GeneratorException {
 
+		//String workingDirectory = DirUtil.getUserWorkingDirectory() + "/tests-env/project1";
+		String workingDirectory = "."; // the current directory
+		
+		launch(workingDirectory, args);
+	}
+	
+	public static void launch( String workingDirectory, String[] args) throws TelosysToolsException, GeneratorException {
+
+		print("--------------------------" );
 		print("Telosys Generator Launcher" );
+		print("--------------------------" );
+		print("Current working directory : " + workingDirectory );
 
 		checkArgs(args);
 		String  launcherName = args[0] ;
@@ -40,8 +50,6 @@ public class TelosysLauncherApp {
 		}
 		print("'yes' option = " + yesOption );
 
-		String workingDirectory = DirUtil.getUserWorkingDirectory() + "/tests-env/project1";
-		print("Current working directory : " + workingDirectory );
 
 		print("Creating launcher..." );
 		TelosysLauncher launcher = buildLauncher(workingDirectory, launcherName ) ;
