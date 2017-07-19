@@ -360,6 +360,19 @@ public class TelosysProject {
 	}
 
 	/**
+	 * Returns a File instance for the given DSL entity name in the given model name  
+	 * @param modelName
+	 * @param entityName
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final File getDslEntityFile(String modelName, String entityName) throws TelosysToolsException {
+		
+		File modelFile = getDslModelFile(modelName);
+		return DslModelUtil.buildEntityFile(modelFile, entityName);
+	}
+
+	/**
 	 * Creates a new DSL model in the project <br>
 	 * Creates the '.model' file (initialized with default values) and the '_model' folder <br>
 	 * 
