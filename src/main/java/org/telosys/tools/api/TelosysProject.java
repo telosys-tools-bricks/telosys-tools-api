@@ -148,6 +148,15 @@ public class TelosysProject {
 		return bm.downloadAndInstallBundle(userName, bundleName);
 	}
 	
+	/**
+	 * Returns a list containig all the bundles installed for the current project
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public List<String> getInstalledBundles() throws TelosysToolsException {
+		TargetsLoader targetsLoader = new TargetsLoader(getTelosysToolsCfg()) ;
+		return targetsLoader.loadBundlesList();
+	}
 	
 //	//-----------------------------------------------------------------------------------------------------
 //	// Database model loading ('dbrep') 
