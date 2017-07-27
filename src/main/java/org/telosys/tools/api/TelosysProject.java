@@ -354,6 +354,36 @@ public class TelosysProject {
 		return counterFileManager.incrementCounter() ;
 	}
 
+	//-----------------------------------------------------------------------------------------------------
+	// MODELS 
+	//-----------------------------------------------------------------------------------------------------
+	/**
+	 * Returns all the models files ( ".dbmodel", ".dbrep" or ".model" files ) for the current project
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final List<File> getModels() throws TelosysToolsException {
+
+		List<File> list = new LinkedList<File>();
+		File modelsFolder = new File( getTelosysToolsCfg().getModelsFolderAbsolutePath() );
+		if ( modelsFolder.exists() && modelsFolder.isDirectory() ) {
+			for ( File file : modelsFolder.listFiles() ) {
+				if ( file.isFile() ) {
+					if ( ApiUtil.isModelFile(file) ) {
+						list.add(file);
+					}
+				}
+			}
+		}
+		else {
+			throw new TelosysToolsException("Invalid models folder");
+		}
+		return list ;
+	}
+
+	//-----------------------------------------------------------------------------------------------------
+	// DSL MODELS 
+	//-----------------------------------------------------------------------------------------------------
 	/**
 	 * Returns a File instance for the given DSL model name  
 	 * @param modelName

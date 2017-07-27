@@ -76,11 +76,13 @@ public class GenericModelLoader {
 	public Model loadModel(final File file) throws TelosysToolsException {	
 		if ( file.exists() ) {
 			if ( file.isFile() ) {
-				if ( file.getName().endsWith(".dbrep") || file.getName().endsWith(".dbmodel") ) {
+				//if ( file.getName().endsWith(".dbrep") || file.getName().endsWith(".dbmodel") ) {
+				if ( ApiUtil.isDbModelFile(file) ) {
 					//--- This file is supposed to be a db model file
 					return loadDatabaseModel(file) ;
 				}
-				else if ( file.getName().endsWith(".model") ) {
+				//else if ( file.getName().endsWith(".model") ) {
+				else if (  ApiUtil.isDslModelFile(file) ) {
 					//--- This file is supposed to be a DSL model file
 					return loadDslModel(file);
 				}
