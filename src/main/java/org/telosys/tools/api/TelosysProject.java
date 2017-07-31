@@ -202,6 +202,21 @@ public class TelosysProject {
 		return genericModelLoader.loadModel(modelFileName);
 	}
 	
+	/**
+	 * Loads a 'model' from the given model file <br>
+	 * The model name can be a 'database model' file name or a 'DSL model' file name <br>
+	 * e.g. : 'books.dbrep' or 'books.model'  <br>
+	 * 
+	 * @param modelFile
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public Model loadModel(final File modelFile) throws TelosysToolsException {
+		GenericModelLoader genericModelLoader = getGenericModelLoader() ;
+		return genericModelLoader.loadModel(modelFile);
+	}
+	
+	
 //	//-----------------------------------------------------------------------------------------------------
 //	// DSL model loading ('modelName/xxx.model') 
 //	//-----------------------------------------------------------------------------------------------------
