@@ -19,10 +19,10 @@ import java.io.File;
 
 public class ApiUtil {
 	
-	public final static String  MODEL_SUFFIX   = ".model"  ;
+	protected final static String  MODEL_SUFFIX   = ".model"  ;
 
-	public final static String  DBREP_SUFFIX   = ".dbrep"  ;
-	public final static String  DBMODEL_SUFFIX = ".dbmodel"  ;
+	protected final static String  DBREP_SUFFIX   = ".dbrep"  ;
+	protected final static String  DBMODEL_SUFFIX = ".dbmodel"  ;
 
 	/**
 	 * Returns true if the given file name ends with ".model" suffix

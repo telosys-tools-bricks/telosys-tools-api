@@ -1,6 +1,10 @@
 package org.telosys.tools.api;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -168,5 +172,80 @@ public class TelosysProjectTest {
 		assertTrue(modelFolder.exists());
 	}
 
+	@Test
+	public void testGetModelFile() throws Exception {
+		
+		TelosysProject telosysProject = initProject() ;
+		File modelFile ; 
+		
+		modelFile = telosysProject.getModelFile("employees");
+		assertNotNull(modelFile);
+		modelFile = telosysProject.getModelFile("employees.model");
+		assertNotNull(modelFile);
+
+		modelFile = telosysProject.getModelFile("bookstore.dbrep");
+		assertNotNull(modelFile);
+		modelFile = telosysProject.getModelFile("bookstore");
+		assertNotNull(modelFile);
+		
+		modelFile = telosysProject.getModelFile("foo.dbrep");
+		assertNull(modelFile);
+		modelFile = telosysProject.getModelFile("foo");
+		assertNull(modelFile);
+		
+		telosysProject.createNewDslModel("bookstore"); // Same name as "bookstore.dbrep"
+		modelFile = telosysProject.getModelFile("bookstore.dbrep");
+		assertNotNull(modelFile);
+		modelFile = telosysProject.getModelFile("bookstore.model");
+		assertNotNull(modelFile);
+		
+		try {
+			modelFile = telosysProject.getModelFile("bookstore");
+			fail("Exception expected in this case");
+		} catch (Exception e) {
+			// OK
+			System.out.println("Expected exception thrown : " + e.getMessage());
+		}
+		
+	}
+	
+	@Test
+	public void testCreateNewDslEntityWithModelFile() throws Exception {
+		TelosysProject telosysProject = initProject() ;
+		
+		telosysProject.createNewDslModel("newmodel1"); 
+		File modelFile = telosysProject.getModelFile("newmodel1.model");
+		assertNotNull(modelFile);
+		
+		System.out.println("Creating entity 'Car'");
+		telosysProject.createNewDslEntity(modelFile, "Car");
+		File entityFile = telosysProject.buildDslEntityFile("newmodel1", "Car");
+		assertNotNull(entityFile);
+		assertTrue(entityFile.exists() ); // Must exists
+		
+		entityFile = telosysProject.buildDslEntityFile("newmodel1", "Driver");
+		assertNotNull(entityFile);
+		assertFalse(entityFile.exists() ); // Must not exists
+		
+	}
+	
+	@Test
+	public void testCreateNewDslEntityWithModelName() throws Exception {
+		TelosysProject telosysProject = initProject() ;
+		
+		String modelName = "newmodel1";
+		telosysProject.createNewDslModel(modelName); 
+		
+		System.out.println("Creating entity 'Car'");
+		telosysProject.createNewDslEntity(modelName, "Car");
+		File entityFile = telosysProject.buildDslEntityFile(modelName, "Car");
+		assertNotNull(entityFile); // Must exists
+		assertTrue(entityFile.exists() );
+		
+		entityFile = telosysProject.buildDslEntityFile(modelName, "Driver");
+		assertNotNull(entityFile);
+		assertFalse(entityFile.exists() ); // Must not exists
+		
+	}
 	
 }

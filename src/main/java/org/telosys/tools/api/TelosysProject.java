@@ -395,7 +395,54 @@ public class TelosysProject {
 		}
 		return list ;
 	}
-
+	
+	/**
+	 * Returns the model file for the given model name
+	 * @param modelName the model name with or without suffix (eg 'foo', 'foo.model', 'foo.dbrep', 'foo.dbmodel' )  
+	 * @return the model's File if found or null if not found  
+	 * @throws TelosysToolsException if the given model name is ambiguous ( eg 'foo' with 2 models 'foo.model' and 'foo.dbrep' )
+	 */
+	public final File getModelFile(String modelName) throws TelosysToolsException {
+		List<File> models = getModels();
+		File modelFile = null ;
+		int n = 0 ;
+		if ( modelName.contains(".") ) {
+			// Suffix is in the name ( foo.model, foo.dbrep, foo.dbmodel )
+			for ( File file : models ) {
+				if ( file.getName().equals(modelName) ) {
+					modelFile = file ;
+					n++;				
+				}
+			}
+		}
+		else {
+			// No suffix in the name => try to add all the suffixes 
+			for ( File file : models ) {
+				if ( file.getName().equals(modelName + ApiUtil.MODEL_SUFFIX) ) {
+					modelFile = file ;
+					n++;				
+				}
+				if ( file.getName().equals(modelName + ApiUtil.DBMODEL_SUFFIX) ) {
+					modelFile = file ;
+					n++;				
+				}
+				if ( file.getName().equals(modelName + ApiUtil.DBREP_SUFFIX) ) {
+					modelFile = file ;
+					n++;				
+				}
+			}
+		}
+		if ( n == 0 ) {
+			return null ; // Not found
+		}
+		else if ( n == 1 ) {
+			return modelFile ; // Found 1 matching file
+		}
+		else {
+			throw new TelosysToolsException("Ambiguous model name '" + modelName + "' (" + n + " files found)");
+		}		
+	}
+	
 	//-----------------------------------------------------------------------------------------------------
 	// DSL MODELS 
 	//-----------------------------------------------------------------------------------------------------
@@ -414,13 +461,14 @@ public class TelosysProject {
 	}
 
 	/**
-	 * Returns a File instance for the given DSL entity name in the given model name  
+	 * Returns a File instance for the given DSL entity name in the given model name <br>
+	 * There's no garanty that the file exists 
 	 * @param modelName
 	 * @param entityName
-	 * @return
+	 * @return the File instance (never null, even if the entity doesn't exist)
 	 * @throws TelosysToolsException
 	 */
-	public final File getDslEntityFile(String modelName, String entityName) throws TelosysToolsException {
+	public final File buildDslEntityFile(String modelName, String entityName) throws TelosysToolsException {
 		
 		File modelFile = getDslModelFile(modelName);
 		return DslModelUtil.buildEntityFile(modelFile, entityName);
@@ -443,6 +491,30 @@ public class TelosysProject {
 		DslModelUtil.createNewModel(modelFile);
 		
 		return modelFile;
+	}
+	
+	/**
+	 * Creates a new DSL entity in the given model
+	 * @param modelName
+	 * @param entityName
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final File createNewDslEntity(String modelName, String entityName) throws TelosysToolsException {
+		
+		return DslModelUtil.createNewEntity(getModelFile(modelName), entityName);
+	}
+	
+	/**
+	 * Creates a new DSL entity in the given model
+	 * @param modelFile
+	 * @param entityName
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final File createNewDslEntity(File modelFile, String entityName) throws TelosysToolsException {
+		
+		return DslModelUtil.createNewEntity(modelFile, entityName);
 	}
 	
 	/**
