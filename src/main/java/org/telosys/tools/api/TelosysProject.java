@@ -542,4 +542,22 @@ public class TelosysProject {
 		DslModelUtil.deleteModel(modelFile);
 	}
 	
+	/**
+	 * Deletes the DSL entity in the given model name
+	 * @param modelName
+	 * @param entityName
+	 * @return true if deletes, false if not found
+	 * @throws TelosysToolsException
+	 */
+	public final boolean deleteDslEntity(String modelName, String entityName) throws TelosysToolsException {
+		
+		File entityFile = buildDslEntityFile(modelName, entityName);
+		if ( entityFile.exists() ) {
+			return entityFile.delete() ;
+		}
+		else {
+			return false ;
+		}
+	}
+	
 }
