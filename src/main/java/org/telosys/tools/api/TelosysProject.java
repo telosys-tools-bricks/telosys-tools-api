@@ -158,6 +158,33 @@ public class TelosysProject {
 		return targetsLoader.loadBundlesList();
 	}
 	
+	/**
+	 * Returns a list with all the targets definitions for the given bundle name
+	 * @param bundleName
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public TargetsDefinitions getTargetDefinitions(String bundleName) throws TelosysToolsException {
+		TargetsLoader targetsLoader = new TargetsLoader( getTelosysToolsCfg() );
+		return targetsLoader.loadTargetsDefinitions(bundleName);
+	}
+	
+	/**
+	 * Returns a list with all the templates for the given bundle name
+	 * @param bundleName
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public List<String> getTemplates(String bundleName) throws TelosysToolsException {
+		TargetsDefinitions targetDef = getTargetDefinitions(bundleName);
+		List<TargetDefinition> templates = targetDef.getTemplatesTargets();
+		List<String> list = new LinkedList<String>();
+		for ( TargetDefinition t : templates ) {
+			list.add( t.getTemplate() );
+		}
+		return list ;
+	}
+
 //	//-----------------------------------------------------------------------------------------------------
 //	// Database model loading ('dbrep') 
 //	//-----------------------------------------------------------------------------------------------------
