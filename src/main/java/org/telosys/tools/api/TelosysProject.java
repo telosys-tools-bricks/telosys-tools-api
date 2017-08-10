@@ -25,14 +25,13 @@ import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.TelosysToolsLogger;
 import org.telosys.tools.commons.bundles.BundleStatus;
 import org.telosys.tools.commons.bundles.BundlesManager;
+import org.telosys.tools.commons.bundles.TargetDefinition;
+import org.telosys.tools.commons.bundles.TargetsDefinitions;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.commons.cfg.TelosysToolsCfgManager;
 import org.telosys.tools.commons.env.EnvironmentManager;
 import org.telosys.tools.dsl.DslModelUtil;
 import org.telosys.tools.generator.GeneratorException;
-import org.telosys.tools.generator.target.TargetDefinition;
-import org.telosys.tools.generator.target.TargetsDefinitions;
-import org.telosys.tools.generator.target.TargetsLoader;
 import org.telosys.tools.generator.task.GenerationTask;
 import org.telosys.tools.generator.task.GenerationTaskResult;
 import org.telosys.tools.generator.task.StandardGenerationTask;
@@ -126,10 +125,10 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public List<String> getBundlesList(String userName) throws TelosysToolsException {
+	public List<String> getGitHubBundlesList(String userName) throws TelosysToolsException {
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		try {
-			return bm.getBundlesList(userName);
+			return bm.getGitHubBundlesList(userName);
 		} catch (Exception e) {
 			throw new TelosysToolsException("Cannot get bundles list", e);
 		}
@@ -154,8 +153,21 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public List<String> getInstalledBundles() throws TelosysToolsException {
-		TargetsLoader targetsLoader = new TargetsLoader(getTelosysToolsCfg()) ;
-		return targetsLoader.loadBundlesList();
+		//TargetsLoader targetsLoader = new TargetsLoader(getTelosysToolsCfg()) ;		
+		//return targetsLoader.loadBundlesList();
+		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
+		return bm.getBundlesList();
+	}
+	
+	/**
+	 * Returns the 'templates.cfg' File object for the given bundle name <br>
+	 * There's no guarantee the returned file exists
+	 * @param bundleName
+	 * @return
+	 */
+	public File getBundleConfigFile(String bundleName) throws TelosysToolsException {
+		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
+		return bm.getBundleConfigFile(bundleName);
 	}
 	
 	/**
@@ -176,8 +188,11 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public TargetsDefinitions getTargetDefinitions(String bundleName) throws TelosysToolsException {
-		TargetsLoader targetsLoader = new TargetsLoader( getTelosysToolsCfg() );
-		return targetsLoader.loadTargetsDefinitions(bundleName);
+//		TargetsLoader targetsLoader = new TargetsLoader( getTelosysToolsCfg() );
+//		return targetsLoader.loadTargetsDefinitions(bundleName);
+		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
+		return bm.getTargetsDefinitions(bundleName);
+		
 	}
 	
 	/**
@@ -272,17 +287,17 @@ public class TelosysProject {
 //		return genericModelLoader.loadDslModel(modelName);
 //	}
 	
-	//-----------------------------------------------------------------------------------------------------
-	// Targets definitions 
-	//-----------------------------------------------------------------------------------------------------
-	public TargetsDefinitions loadTargetsDefinitions(final String bundleName) throws TelosysToolsException, GeneratorException {
-		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-		//TargetsLoader targetsLoader = new TargetsLoader( telosysToolsCfg.getTemplatesFolderAbsolutePath() );
-		TargetsLoader targetsLoader = new TargetsLoader(telosysToolsCfg) ;
-
-		TargetsDefinitions targetsDefinitions = targetsLoader.loadTargetsDefinitions(bundleName);
-		return targetsDefinitions ;
-	}
+//	//-----------------------------------------------------------------------------------------------------
+//	// Targets definitions 
+//	//-----------------------------------------------------------------------------------------------------
+//	public TargetsDefinitions loadTargetsDefinitions(final String bundleName) throws TelosysToolsException, GeneratorException {
+//		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
+//		//TargetsLoader targetsLoader = new TargetsLoader( telosysToolsCfg.getTemplatesFolderAbsolutePath() );
+//		TargetsLoader targetsLoader = new TargetsLoader(telosysToolsCfg) ;
+//
+//		TargetsDefinitions targetsDefinitions = targetsLoader.loadTargetsDefinitions(bundleName);
+//		return targetsDefinitions ;
+//	}
 	
 	//-----------------------------------------------------------------------------------------------------
 	// Generation 
@@ -372,7 +387,8 @@ public class TelosysProject {
 		List<TargetDefinition> selectedTemplatesTargets = targetsList ;
 		if ( selectedTemplatesTargets == null ) {
 			//--- Not defined => ALL TEMPLATES TARGETS 
-			targetsDefinitions = loadTargetsDefinitions(bundleName);
+			//targetsDefinitions = loadTargetsDefinitions(bundleName);
+			targetsDefinitions = getTargetDefinitions(bundleName);
 			selectedTemplatesTargets = targetsDefinitions.getTemplatesTargets();
 		}
 		
@@ -381,7 +397,8 @@ public class TelosysProject {
 		//--- Get all RESOURCES TARGETS defined for this BUNDLE
 		if ( copyResources ) {
 			if ( targetsDefinitions == null ) {
-				targetsDefinitions = loadTargetsDefinitions(bundleName);
+				//targetsDefinitions = loadTargetsDefinitions(bundleName);
+				targetsDefinitions = getTargetDefinitions(bundleName);
 			}
 			selectedResourcesTargets = targetsDefinitions.getResourcesTargets(); // ALL resources to be copied
 		}
