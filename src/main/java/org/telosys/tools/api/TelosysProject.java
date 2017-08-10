@@ -159,6 +159,17 @@ public class TelosysProject {
 	}
 	
 	/**
+	 * Deletes the given bundle
+	 * @param bundleName
+	 * @return true if found and deleted, false if not found
+	 * @throws TelosysToolsException
+	 */
+	public boolean deleteBundle(String bundleName) throws TelosysToolsException {
+		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
+		return bm.deleteBundle(bundleName);
+	}
+
+	/**
 	 * Returns a list with all the targets definitions for the given bundle name
 	 * @param bundleName
 	 * @return
