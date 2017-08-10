@@ -25,7 +25,13 @@ import org.telosys.tools.generic.model.Model;
 import org.telosys.tools.repository.persistence.PersistenceManager;
 import org.telosys.tools.repository.persistence.PersistenceManagerFactory;
 
-/* package */ class GenericModelLoader {
+/**
+ * Generic model loader, usable with any kind of model
+ * 
+ * @author Laurent GUERIN
+ *
+ */
+public class GenericModelLoader {
 	
 	private final TelosysToolsCfg   _telosysToolsCfg ;
 	

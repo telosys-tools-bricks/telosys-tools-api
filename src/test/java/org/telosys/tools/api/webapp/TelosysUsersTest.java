@@ -1,4 +1,4 @@
-package org.telosys.tools.api;
+package org.telosys.tools.api.webapp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.telosys.tools.api.webapp.TelosysUsers;
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.users.User;
 import org.telosys.tools.users.UserType;
