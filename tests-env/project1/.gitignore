@@ -1,1 +1,4 @@
 /src
+/package_gen.json
+/tsconfig_gen.json
+/.angular-cli_gen.json
