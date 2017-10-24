@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.telosys.tools.commons.ConsoleLogger;
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.TelosysToolsLogger;
@@ -30,6 +29,7 @@ import org.telosys.tools.commons.bundles.TargetsDefinitions;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.commons.cfg.TelosysToolsCfgManager;
 import org.telosys.tools.commons.env.EnvironmentManager;
+import org.telosys.tools.commons.logger.ConsoleLogger;
 import org.telosys.tools.dsl.DslModelUtil;
 import org.telosys.tools.generator.GeneratorException;
 import org.telosys.tools.generator.task.GenerationTask;
