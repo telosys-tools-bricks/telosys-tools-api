@@ -28,6 +28,7 @@ import org.telosys.tools.commons.bundles.TargetDefinition;
 import org.telosys.tools.commons.bundles.TargetsDefinitions;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.commons.cfg.TelosysToolsCfgManager;
+import org.telosys.tools.commons.dbcfg.DbInfo;
 import org.telosys.tools.commons.env.EnvironmentManager;
 import org.telosys.tools.commons.logger.ConsoleLogger;
 import org.telosys.tools.dsl.DslModelUtil;
@@ -615,4 +616,16 @@ public class TelosysProject {
 		}
 	}
 	
+	//-----------------------------------------------------------------------------------------------------
+	// DATABASE MODELS 
+	//-----------------------------------------------------------------------------------------------------
+	public final boolean checkDatabaseConnection(Integer id ) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.testConnection(id);
+	}		
+
+	public final DbInfo getDatabaseInfo(Integer id ) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.getDatabaseInfo(id);
+	}
 }
