@@ -628,4 +628,9 @@ public class TelosysProject {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDatabaseInfo(id);
 	}
+
+	public final void createNewDbModel(Integer id ) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		dbAction.createNewDbModel(id, telosysToolsLogger);
+	}
 }
