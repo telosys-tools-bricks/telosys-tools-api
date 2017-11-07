@@ -17,6 +17,7 @@ package org.telosys.tools.api;
 
 import java.io.File;
 import java.sql.Connection;
+import java.util.List;
 
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.StrUtil;
@@ -63,6 +64,25 @@ public class DbAction {
 	
 	private final void closeConnection(Connection con) throws TelosysToolsException {
 		dbConnectionManager.closeConnection(con);
+	}
+	
+	/**
+	 * Returns the DatabasesConfigurations
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public DatabasesConfigurations getDatabasesConfigurations() throws TelosysToolsException {
+		return dbConfigManager.load() ;
+	}
+	
+	/**
+	 * Returns a list containing all the databases configurations 
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public List<DatabaseConfiguration> getDatabasesConfigurationsList() throws TelosysToolsException {
+		DatabasesConfigurations databasesConfigurations = dbConfigManager.load() ;
+		return databasesConfigurations.getDatabaseConfigurationsList();
 	}
 	
 	/**

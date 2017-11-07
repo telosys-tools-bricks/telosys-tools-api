@@ -28,6 +28,8 @@ import org.telosys.tools.commons.bundles.TargetDefinition;
 import org.telosys.tools.commons.bundles.TargetsDefinitions;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.commons.cfg.TelosysToolsCfgManager;
+import org.telosys.tools.commons.dbcfg.DatabaseConfiguration;
+import org.telosys.tools.commons.dbcfg.DatabasesConfigurations;
 import org.telosys.tools.commons.dbcfg.DbInfo;
 import org.telosys.tools.commons.env.EnvironmentManager;
 import org.telosys.tools.commons.logger.ConsoleLogger;
@@ -619,6 +621,21 @@ public class TelosysProject {
 	//-----------------------------------------------------------------------------------------------------
 	// DATABASE MODELS 
 	//-----------------------------------------------------------------------------------------------------
+	public final DatabasesConfigurations getDatabasesConfigurations() throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.getDatabasesConfigurations();
+	}		
+
+	public final List<DatabaseConfiguration> getDatabasesConfigurationsList() throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.getDatabasesConfigurationsList();
+	}		
+
+	public final DatabaseConfiguration getDatabaseConfiguration(Integer id) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.getDatabaseConfiguration(id);
+	}		
+
 	public final boolean checkDatabaseConnection(Integer id ) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.testConnection(id);
