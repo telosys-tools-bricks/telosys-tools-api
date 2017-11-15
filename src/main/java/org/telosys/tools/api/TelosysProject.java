@@ -30,9 +30,9 @@ import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.commons.cfg.TelosysToolsCfgManager;
 import org.telosys.tools.commons.dbcfg.DatabaseConfiguration;
 import org.telosys.tools.commons.dbcfg.DatabasesConfigurations;
-import org.telosys.tools.commons.dbcfg.DbInfo;
 import org.telosys.tools.commons.env.EnvironmentManager;
 import org.telosys.tools.commons.logger.ConsoleLogger;
+import org.telosys.tools.db.metadata.DbInfo;
 import org.telosys.tools.dsl.DslModelUtil;
 import org.telosys.tools.generator.GeneratorException;
 import org.telosys.tools.generator.task.GenerationTask;
@@ -316,12 +316,6 @@ public class TelosysProject {
 	 */
 	public GenerationTaskResult launchGeneration(Model model, String bundleName ) 
 			throws TelosysToolsException, GeneratorException {
-		
-//		List<String> allEntitiesNames = new LinkedList<String>();
-//		for ( Entity entity : model.getEntities() ) {
-//			allEntitiesNames.add( entity.getClassName() );
-//		}
-
 		return launchGeneration(model, null, bundleName, null, true);
 	}
 	
@@ -336,24 +330,7 @@ public class TelosysProject {
 	 * @throws GeneratorException
 	 */
 	public GenerationTaskResult launchGeneration(Model model, List<String> selectedEntities,
-			String bundleName
-			) throws TelosysToolsException, GeneratorException {
-		
-//		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-//
-//		//--- Get all TEMPLATES and RESOURCES defined for this BUNDLE
-//		TargetsDefinitions targetsDefinitions = loadTargetsDefinitions(bundleName);
-//		List<TargetDefinition> allTemplatesTargets = targetsDefinitions.getTemplatesTargets();
-//		List<TargetDefinition> allResourcesTargets = targetsDefinitions.getResourcesTargets();
-//		
-//		GenerationTask generationTask = new StandardGenerationTask(
-//				model, selectedEntities, 
-//				bundleName, allTemplatesTargets, allResourcesTargets, 
-//				telosysToolsCfg, this.telosysToolsLogger );
-//		
-//		GenerationTaskResult generationTaskResult = generationTask.launch();
-//		return generationTaskResult ;
-//
+			String bundleName) throws TelosysToolsException, GeneratorException {
 		return launchGeneration(model, selectedEntities, bundleName, null, true);
 	}
 	
@@ -570,7 +547,7 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final File createNewDslEntity(File modelFile, String entityName) throws TelosysToolsException {
+	public final File createNewDslEntity(File modelFile, String entityName) {
 		
 		return DslModelUtil.createNewEntity(modelFile, entityName);
 	}
@@ -594,7 +571,7 @@ public class TelosysProject {
 	 * @param modelFile the model file ( e.g. a File instance for 'xxx/TelosysTools/mymodel.model' )
 	 * @throws TelosysToolsException
 	 */
-	public final void deleteDslModel(File modelFile) throws TelosysToolsException {
+	public final void deleteDslModel(File modelFile) {
 		
 		//--- Delete the model file and model folder 
 		DslModelUtil.deleteModel(modelFile);
@@ -636,16 +613,46 @@ public class TelosysProject {
 		return dbAction.getDatabaseConfiguration(id);
 	}		
 
-	public final boolean checkDatabaseConnection(Integer id ) throws TelosysToolsException {
+	/**
+	 * Checks the database connection
+	 * @param id
+	 * @param options
+	 * @return true if connection is OK, false if cannot connect
+	 * @throws TelosysToolsException
+	 */
+	public final boolean checkDatabaseConnection(Integer id, MetaDataOptions options) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
-		return dbAction.testConnection(id);
-	}		
-
+		return dbAction.testConnection(id, options);
+	}
+	
+	/**
+	 * Returns a long string containing all the required meta-data 
+	 * @param id
+	 * @param options
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final String getMetaData(Integer id, MetaDataOptions options) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.getMetaData(id, options);
+	}
+	
+	/**
+	 * Returns the database information reftrieved from meta-data
+	 * @param id
+	 * @return
+	 * @throws TelosysToolsException
+	 */
 	public final DbInfo getDatabaseInfo(Integer id ) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDatabaseInfo(id);
 	}
 
+	/**
+	 * Creates a new 'database model' from the database tables meta-data
+	 * @param id
+	 * @throws TelosysToolsException
+	 */
 	public final void createNewDbModel(Integer id ) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		dbAction.createNewDbModel(id, telosysToolsLogger);

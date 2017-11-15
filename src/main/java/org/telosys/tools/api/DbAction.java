@@ -17,6 +17,7 @@ package org.telosys.tools.api;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.telosys.tools.commons.FileUtil;
@@ -28,7 +29,9 @@ import org.telosys.tools.commons.dbcfg.DatabaseConfiguration;
 import org.telosys.tools.commons.dbcfg.DatabasesConfigurations;
 import org.telosys.tools.commons.dbcfg.DbConfigManager;
 import org.telosys.tools.commons.dbcfg.DbConnectionManager;
-import org.telosys.tools.commons.dbcfg.DbInfo;
+import org.telosys.tools.commons.logger.SilentLogger;
+import org.telosys.tools.db.metadata.DbInfo;
+import org.telosys.tools.db.metadata.MetaDataManager;
 import org.telosys.tools.repository.DbModelGenerator;
 import org.telosys.tools.repository.model.RepositoryModel;
 import org.telosys.tools.repository.persistence.PersistenceManager;
@@ -111,7 +114,6 @@ public class DbAction {
 		if ( StrUtil.nullOrVoid(databaseName) ) {
 			databaseName = "default-dbmodel" ;
 		}
-        //String dir = telosysToolsCfg.getModelsFolder();
         String dir = telosysToolsCfg.getModelsFolderAbsolutePath();
         return FileUtil.buildFilePath(dir, databaseName+".dbrep" );
     }
@@ -122,7 +124,7 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final boolean testConnection(Integer id) throws TelosysToolsException {
+	public final boolean testConnection(Integer id, MetaDataOptions options) throws TelosysToolsException {
 		Connection con = getConnection(id );
 		try {
 			dbConnectionManager.testConnection(con);
@@ -144,14 +146,29 @@ public class DbAction {
 	public final DbInfo getDatabaseInfo(Integer id) throws TelosysToolsException {
 		Connection con = getConnection(id );
 		try {
-			return dbConnectionManager.getDatabaseInfo(con);
-		} catch (Exception e) {
-			return null ;
+			MetaDataManager metaDataManager = new MetaDataManager(new SilentLogger());
+			return metaDataManager.getDatabaseInfo(con);
+		} catch (SQLException e) {
+			throw new TelosysToolsException("Cannot get database information", e);
 		}
 		finally {
 			closeConnection(con);
 		}
 	}
+	
+	public final String getMetaData(Integer id, MetaDataOptions options) throws TelosysToolsException
+    {
+		DatabaseConfiguration dbConfig = getDatabaseConfiguration(id);
+		Connection con = getConnection(id);
+		try {
+			return DbActionMetaData.getMetaData(dbConfig, con, options);
+		} catch (SQLException e) {
+			throw new TelosysToolsException("Cannot get meta-data", e);
+		}
+		finally {
+			closeConnection(con);
+		}
+    }
 
 	/**
 	 * Creates a new DB-Model for the given database ID 
@@ -172,7 +189,6 @@ public class DbAction {
 		
 		RepositoryModel dbModel = null ;
 		//--- 1) Generate the repository in memory
-		//RepositoryGenerator generator = new RepositoryGenerator(null, RepositoryRulesProvider.getRepositoryRules(), logger) ;	
 		DbModelGenerator generator = new DbModelGenerator(dbConnectionManager, RepositoryRulesProvider.getRepositoryRules(), logger) ;			
 		dbModel = generator.generate(databaseConfiguration);
 			
