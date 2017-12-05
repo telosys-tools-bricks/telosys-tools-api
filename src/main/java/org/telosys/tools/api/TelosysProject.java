@@ -660,7 +660,7 @@ public class TelosysProject {
 	}
 	
 	/**
-	 * Updates a new 'database model' from the given database id
+	 * Updates a 'database model' from the given database id
 	 * @param id
 	 * @throws TelosysToolsException
 	 */

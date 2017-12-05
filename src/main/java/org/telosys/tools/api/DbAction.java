@@ -171,6 +171,36 @@ public class DbAction {
 		}
     }
 
+	//--------------------------------------------------------------------------------------------------
+	// DB-MODEL MANAGEMENT
+	//--------------------------------------------------------------------------------------------------
+	/**
+	 * Returns the DatabaseConfiguration for the given id <br>
+	 * throws a TelosysToolsException if there's no database defined for the id.
+	 * @param id
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	private final DatabaseConfiguration getRequiredDatabaseConfiguration(Integer id) throws TelosysToolsException {
+		DatabaseConfiguration databaseConfiguration = getDatabaseConfiguration(id);
+		if ( databaseConfiguration == null ) {
+			throw new TelosysToolsException("No configuration for database #"+id );
+		}
+		return databaseConfiguration; 
+	}
+
+	/**
+	 * Returns the DB-Model file for the given database ID
+	 * @param id
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final File getDbModelFile(Integer id) throws TelosysToolsException {
+		DatabaseConfiguration databaseConfiguration = getRequiredDatabaseConfiguration(id);
+		String dbModelFileName = getDbModelFileName(databaseConfiguration);
+		return new File(dbModelFileName); 
+	}
+
 	/**
 	 * Creates a new DB-Model for the given database ID 
 	 * @param id
@@ -180,18 +210,18 @@ public class DbAction {
 	 */
 	public final void createNewDbModel(Integer id, TelosysToolsLogger logger ) throws TelosysToolsException {
 		
-		DatabaseConfiguration databaseConfiguration = getDatabaseConfiguration(id);
-		if ( databaseConfiguration == null ) {
-			throw new TelosysToolsException("No configuration for database #"+id );
-		}
+		DatabaseConfiguration databaseConfiguration = getRequiredDatabaseConfiguration(id);
 		
 		String dbModelFileName = getDbModelFileName(databaseConfiguration);
-		File dbModelFile = new File(dbModelFileName); 
+		File dbModelFile = new File(dbModelFileName);
+		if ( dbModelFile.exists() ) {
+			throw new TelosysToolsException("Model file '" + dbModelFile.getName() + "' already exists");
+		}
 		
-		RepositoryModel dbModel = null ;
 		//--- 1) Generate the repository in memory
-		DbModelGenerator generator = new DbModelGenerator(dbConnectionManager, logger) ;			
-		dbModel = generator.generate(databaseConfiguration);
+		logger.info("Creating new db-model from database " + databaseConfiguration.getDatabaseId() );
+		DbModelGenerator generator = new DbModelGenerator(dbConnectionManager, logger) ;
+		RepositoryModel dbModel = generator.generate(databaseConfiguration);
 			
 		//--- 2) Save the repository in the file
 		logger.info("Saving model in file " + dbModelFile.getAbsolutePath() );
@@ -200,12 +230,16 @@ public class DbAction {
 		logger.info("Repository saved.");
 	}
 	
+	/**
+	 * Updates a new DB-Model for the given database ID 
+	 * @param id
+	 * @param logger
+	 * @return
+	 * @throws TelosysToolsException
+	 */
 	public final ChangeLog updateDbModel(Integer id, TelosysToolsLogger logger ) throws TelosysToolsException {
 		
-		DatabaseConfiguration databaseConfiguration = getDatabaseConfiguration(id);
-		if ( databaseConfiguration == null ) {
-			throw new TelosysToolsException("No configuration for database #"+id );
-		}
+		DatabaseConfiguration databaseConfiguration = getRequiredDatabaseConfiguration(id);
 		
 		String dbModelFileName = getDbModelFileName(databaseConfiguration);
 		File dbModelFile = new File(dbModelFileName); 
@@ -219,6 +253,7 @@ public class DbAction {
 		UpdateLogWriter updateLogWriter = new UpdateLogWriter( updateLogFile );
 
 		//--- Update the dbModel in memory
+		logger.info("Updating db-model from database " + databaseConfiguration.getDatabaseId() );
 		DbModelUpdator dbModelUpdator = new DbModelUpdator(dbConnectionManager, logger, updateLogWriter) ;			
 		ChangeLog changeLog = dbModelUpdator.updateRepository(databaseConfiguration, repositoryModel);
 			
