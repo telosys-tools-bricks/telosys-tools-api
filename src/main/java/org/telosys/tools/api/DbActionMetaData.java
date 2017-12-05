@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.telosys.tools.commons.dbcfg.DatabaseConfiguration;
-import org.telosys.tools.commons.logger.SilentLogger;
 import org.telosys.tools.db.metadata.ColumnMetaData;
 import org.telosys.tools.db.metadata.DbInfo;
 import org.telosys.tools.db.metadata.ForeignKeyColumnMetaData;
@@ -44,8 +43,7 @@ public class DbActionMetaData {
 		//--- Get the database Meta-Data
 		DatabaseMetaData dbmd = con.getMetaData();		
 
-		// TODO : use a real logger
-		MetaDataManager metaDataManager = new MetaDataManager(new SilentLogger());
+		MetaDataManager metaDataManager = new MetaDataManager();
 		
 		if ( options.isInfo() ) {
 			reportDatabaseInfo(sb, metaDataManager.getDatabaseInfo(dbmd) );

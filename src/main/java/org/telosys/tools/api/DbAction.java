@@ -18,6 +18,8 @@ package org.telosys.tools.api;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.telosys.tools.commons.FileUtil;
@@ -29,14 +31,16 @@ import org.telosys.tools.commons.dbcfg.DatabaseConfiguration;
 import org.telosys.tools.commons.dbcfg.DatabasesConfigurations;
 import org.telosys.tools.commons.dbcfg.DbConfigManager;
 import org.telosys.tools.commons.dbcfg.DbConnectionManager;
-import org.telosys.tools.commons.logger.SilentLogger;
+import org.telosys.tools.commons.dbcfg.DbConnectionStatus;
 import org.telosys.tools.db.metadata.DbInfo;
 import org.telosys.tools.db.metadata.MetaDataManager;
 import org.telosys.tools.repository.DbModelGenerator;
+import org.telosys.tools.repository.DbModelUpdator;
+import org.telosys.tools.repository.UpdateLogWriter;
+import org.telosys.tools.repository.changelog.ChangeLog;
 import org.telosys.tools.repository.model.RepositoryModel;
 import org.telosys.tools.repository.persistence.PersistenceManager;
 import org.telosys.tools.repository.persistence.PersistenceManagerFactory;
-import org.telosys.tools.repository.rules.RepositoryRulesProvider;
 
 public class DbAction {
 	
@@ -56,7 +60,7 @@ public class DbAction {
 		this.dbConnectionManager = new DbConnectionManager(telosysToolsCfg);
 	}
 
-	private final Connection getConnection(Integer id ) throws TelosysToolsException {
+	private final Connection getConnection(Integer id) throws TelosysToolsException {
 		if ( id != null ) {
 			return dbConnectionManager.getConnection(id);
 		}
@@ -74,7 +78,7 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public DatabasesConfigurations getDatabasesConfigurations() throws TelosysToolsException {
+	public final DatabasesConfigurations getDatabasesConfigurations() throws TelosysToolsException {
 		return dbConfigManager.load() ;
 	}
 	
@@ -83,7 +87,7 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public List<DatabaseConfiguration> getDatabasesConfigurationsList() throws TelosysToolsException {
+	public final List<DatabaseConfiguration> getDatabasesConfigurationsList() throws TelosysToolsException {
 		DatabasesConfigurations databasesConfigurations = dbConfigManager.load() ;
 		return databasesConfigurations.getDatabaseConfigurationsList();
 	}
@@ -94,7 +98,7 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public DatabaseConfiguration getDatabaseConfiguration(Integer id) throws TelosysToolsException {
+	public final DatabaseConfiguration getDatabaseConfiguration(Integer id) throws TelosysToolsException {
 		DatabasesConfigurations databasesConfigurations = dbConfigManager.load() ;
 		if ( id != null ) {
 			return databasesConfigurations.getDatabaseConfiguration(id);
@@ -124,13 +128,10 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final boolean testConnection(Integer id, MetaDataOptions options) throws TelosysToolsException {
-		Connection con = getConnection(id );
+	public final DbConnectionStatus testConnection(Integer id) throws TelosysToolsException {
+		Connection con = getConnection(id);
 		try {
-			dbConnectionManager.testConnection(con);
-			return true ;
-		} catch (Exception e) {
-			return false ;
+			return dbConnectionManager.testConnection(con);
 		}
 		finally {
 			closeConnection(con);
@@ -146,7 +147,7 @@ public class DbAction {
 	public final DbInfo getDatabaseInfo(Integer id) throws TelosysToolsException {
 		Connection con = getConnection(id );
 		try {
-			MetaDataManager metaDataManager = new MetaDataManager(new SilentLogger());
+			MetaDataManager metaDataManager = new MetaDataManager();
 			return metaDataManager.getDatabaseInfo(con);
 		} catch (SQLException e) {
 			throw new TelosysToolsException("Cannot get database information", e);
@@ -189,7 +190,7 @@ public class DbAction {
 		
 		RepositoryModel dbModel = null ;
 		//--- 1) Generate the repository in memory
-		DbModelGenerator generator = new DbModelGenerator(dbConnectionManager, RepositoryRulesProvider.getRepositoryRules(), logger) ;			
+		DbModelGenerator generator = new DbModelGenerator(dbConnectionManager, logger) ;			
 		dbModel = generator.generate(databaseConfiguration);
 			
 		//--- 2) Save the repository in the file
@@ -198,5 +199,63 @@ public class DbAction {
 		pm.save(dbModel);
 		logger.info("Repository saved.");
 	}
+	
+	public final ChangeLog updateDbModel(Integer id, TelosysToolsLogger logger ) throws TelosysToolsException {
+		
+		DatabaseConfiguration databaseConfiguration = getDatabaseConfiguration(id);
+		if ( databaseConfiguration == null ) {
+			throw new TelosysToolsException("No configuration for database #"+id );
+		}
+		
+		String dbModelFileName = getDbModelFileName(databaseConfiguration);
+		File dbModelFile = new File(dbModelFileName); 
+		
+		//--- Load the Database Model 
+		PersistenceManager persistenceManager = PersistenceManagerFactory.createPersistenceManager(dbModelFile);
+		RepositoryModel repositoryModel = persistenceManager.load();
+
+		//--- Create the upadte log writer
+		File updateLogFile = getUpdateLogFile( dbModelFile.getAbsolutePath() );
+		UpdateLogWriter updateLogWriter = new UpdateLogWriter( updateLogFile );
+
+		//--- Update the dbModel in memory
+		DbModelUpdator dbModelUpdator = new DbModelUpdator(dbConnectionManager, logger, updateLogWriter) ;			
+		ChangeLog changeLog = dbModelUpdator.updateRepository(databaseConfiguration, repositoryModel);
+			
+		//--- Save the dbModel in the file
+		logger.info("Saving model in file " + dbModelFile.getAbsolutePath() );
+		PersistenceManager pm = PersistenceManagerFactory.createPersistenceManager(dbModelFile, logger);
+		pm.save(repositoryModel);
+		logger.info("Repository saved.");
+		
+		return changeLog ;
+	}
+	
+    /**
+     * Returns the log file name ( built from the repository file name )
+     * @param dbModelFile
+     * @return
+     */
+    private String getUpdateLogFileName(String dbModelFile) {
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd.HHmmss");
+    	Date now = new Date();
+    	String suffix = ".update." + dateFormat.format( now ) + ".log";
+    	if ( dbModelFile.endsWith(".dbrep") ) {
+    		int last = dbModelFile.length() - 6 ; 
+    		return dbModelFile.substring(0,last) + suffix ;
+    	}
+    	else if ( dbModelFile.endsWith(".dbmodel") ) {
+    		int last = dbModelFile.length() - 8 ; 
+    		return dbModelFile.substring(0,last) + suffix ;
+    	}
+    	else {
+    		return dbModelFile + suffix ;
+    	}
+    }
+    
+    private File getUpdateLogFile(String dbModelFile) {
+		String sRepositoryFile = getUpdateLogFileName( dbModelFile ) ;
+		return new File(sRepositoryFile);
+    }
 	
 }

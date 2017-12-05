@@ -30,6 +30,7 @@ import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.commons.cfg.TelosysToolsCfgManager;
 import org.telosys.tools.commons.dbcfg.DatabaseConfiguration;
 import org.telosys.tools.commons.dbcfg.DatabasesConfigurations;
+import org.telosys.tools.commons.dbcfg.DbConnectionStatus;
 import org.telosys.tools.commons.env.EnvironmentManager;
 import org.telosys.tools.commons.logger.ConsoleLogger;
 import org.telosys.tools.db.metadata.DbInfo;
@@ -620,9 +621,9 @@ public class TelosysProject {
 	 * @return true if connection is OK, false if cannot connect
 	 * @throws TelosysToolsException
 	 */
-	public final boolean checkDatabaseConnection(Integer id, MetaDataOptions options) throws TelosysToolsException {
+	public final DbConnectionStatus checkDatabaseConnection(Integer id) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
-		return dbAction.testConnection(id, options);
+		return dbAction.testConnection(id);
 	}
 	
 	/**
@@ -649,12 +650,22 @@ public class TelosysProject {
 	}
 
 	/**
-	 * Creates a new 'database model' from the database tables meta-data
+	 * Creates a new 'database model' from the given database id
 	 * @param id
 	 * @throws TelosysToolsException
 	 */
 	public final void createNewDbModel(Integer id ) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		dbAction.createNewDbModel(id, telosysToolsLogger);
+	}
+	
+	/**
+	 * Updates a new 'database model' from the given database id
+	 * @param id
+	 * @throws TelosysToolsException
+	 */
+	public final void updateDbModel(Integer id ) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		dbAction.updateDbModel(id, telosysToolsLogger);
 	}
 }
