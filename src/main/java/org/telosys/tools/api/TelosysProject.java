@@ -35,7 +35,6 @@ import org.telosys.tools.commons.env.EnvironmentManager;
 import org.telosys.tools.commons.logger.ConsoleLogger;
 import org.telosys.tools.db.metadata.DbInfo;
 import org.telosys.tools.dsl.DslModelUtil;
-import org.telosys.tools.generator.GeneratorException;
 import org.telosys.tools.generator.task.GenerationTask;
 import org.telosys.tools.generator.task.GenerationTaskResult;
 import org.telosys.tools.generator.task.StandardGenerationTask;
@@ -94,9 +93,9 @@ public class TelosysProject {
 	}
 	
 	public void initProject(StringBuffer sb) {
-		EnvironmentManager em = new EnvironmentManager( projectFolderAbsolutePath );
+		EnvironmentManager environmentManager = new EnvironmentManager( projectFolderAbsolutePath );
 		// Init environment files
-		em.initEnvironment(sb);
+		environmentManager.initEnvironment(sb);
 	}
 	
 	//-----------------------------------------------------------------------------------------------------
@@ -157,8 +156,6 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public List<String> getInstalledBundles() throws TelosysToolsException {
-		//TargetsLoader targetsLoader = new TargetsLoader(getTelosysToolsCfg()) ;		
-		//return targetsLoader.loadBundlesList();
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		return bm.getBundlesList();
 	}
@@ -192,11 +189,8 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public TargetsDefinitions getTargetDefinitions(String bundleName) throws TelosysToolsException {
-//		TargetsLoader targetsLoader = new TargetsLoader( getTelosysToolsCfg() );
-//		return targetsLoader.loadTargetsDefinitions(bundleName);
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
-		return bm.getTargetsDefinitions(bundleName);
-		
+		return bm.getTargetsDefinitions(bundleName);	
 	}
 	
 	/**
@@ -208,31 +202,13 @@ public class TelosysProject {
 	public List<String> getTemplates(String bundleName) throws TelosysToolsException {
 		TargetsDefinitions targetDef = getTargetDefinitions(bundleName);
 		List<TargetDefinition> templates = targetDef.getTemplatesTargets();
-		List<String> list = new LinkedList<String>();
+		List<String> list = new LinkedList<>();
 		for ( TargetDefinition t : templates ) {
 			list.add( t.getTemplate() );
 		}
 		return list ;
 	}
 
-//	//-----------------------------------------------------------------------------------------------------
-//	// Database model loading ('dbrep') 
-//	//-----------------------------------------------------------------------------------------------------
-//	/**
-//	 * Loads a 'database model' from the given model file name
-//	 * @param dbModelFileName the short file name in the current project models ( eg 'mymodel.dbrep' ) 
-//	 * @return
-//	 * @throws TelosysToolsException
-//	 */
-//	public Model loadDatabaseModel(final String dbModelFileName) throws TelosysToolsException {
-////		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-////		String dbrepAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), dbModelFileName);
-////		File repositoryFile = new File(dbrepAbsolutePath);
-////		return loadDatabaseModel( repositoryFile ) ;
-//		GenericModelLoader genericModelLoader = new GenericModelLoader(getTelosysToolsCfg());
-//		return genericModelLoader.loadDatabaseModel(dbModelFileName);
-//	}
-	
 	//-----------------------------------------------------------------------------------------------------
 	// Model loading DSL or Database model 
 	//-----------------------------------------------------------------------------------------------------
@@ -272,37 +248,7 @@ public class TelosysProject {
 		GenericModelLoader genericModelLoader = getGenericModelLoader() ;
 		return genericModelLoader.loadModel(modelFile);
 	}
-	
-	
-//	//-----------------------------------------------------------------------------------------------------
-//	// DSL model loading ('modelName/xxx.model') 
-//	//-----------------------------------------------------------------------------------------------------
-//	/**
-//	 * Loads a 'DSL model' from the given model name
-//	 * @param modelName the name of the model to be loaded ( e.g. 'bookstore' or 'employees' ) 
-//	 * @return
-//	 * @throws TelosysToolsException
-//	 */
-//	public Model loadDslModel(final String modelName) throws TelosysToolsException {
-////		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-////		String modelFileAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), modelName+".model");
-////		return loadDslModel( new File(modelFileAbsolutePath) );
-//		GenericModelLoader genericModelLoader = new GenericModelLoader(getTelosysToolsCfg());
-//		return genericModelLoader.loadDslModel(modelName);
-//	}
-	
-//	//-----------------------------------------------------------------------------------------------------
-//	// Targets definitions 
-//	//-----------------------------------------------------------------------------------------------------
-//	public TargetsDefinitions loadTargetsDefinitions(final String bundleName) throws TelosysToolsException, GeneratorException {
-//		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-//		//TargetsLoader targetsLoader = new TargetsLoader( telosysToolsCfg.getTemplatesFolderAbsolutePath() );
-//		TargetsLoader targetsLoader = new TargetsLoader(telosysToolsCfg) ;
-//
-//		TargetsDefinitions targetsDefinitions = targetsLoader.loadTargetsDefinitions(bundleName);
-//		return targetsDefinitions ;
-//	}
-	
+
 	//-----------------------------------------------------------------------------------------------------
 	// Generation 
 	//-----------------------------------------------------------------------------------------------------
@@ -313,10 +259,9 @@ public class TelosysProject {
 	 * @param bundleName
 	 * @return
 	 * @throws TelosysToolsException
-	 * @throws GeneratorException
 	 */
 	public GenerationTaskResult launchGeneration(Model model, String bundleName ) 
-			throws TelosysToolsException, GeneratorException {
+			throws TelosysToolsException {
 		return launchGeneration(model, null, bundleName, null, true);
 	}
 	
@@ -328,10 +273,9 @@ public class TelosysProject {
 	 * @param bundleName
 	 * @return
 	 * @throws TelosysToolsException
-	 * @throws GeneratorException
 	 */
 	public GenerationTaskResult launchGeneration(Model model, List<String> selectedEntities,
-			String bundleName) throws TelosysToolsException, GeneratorException {
+			String bundleName) throws TelosysToolsException {
 		return launchGeneration(model, selectedEntities, bundleName, null, true);
 	}
 	
@@ -344,11 +288,10 @@ public class TelosysProject {
 	 * @param copyResources true to copy all the resources of the bundle 
 	 * @return
 	 * @throws TelosysToolsException
-	 * @throws GeneratorException
 	 */
 	public GenerationTaskResult launchGeneration(Model model, List<String> entitiesNames,
 			String bundleName, List<TargetDefinition> targetsList, boolean copyResources 
-			) throws TelosysToolsException, GeneratorException {
+			) throws TelosysToolsException {
 		
 		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
 
@@ -356,7 +299,7 @@ public class TelosysProject {
 		List<String> selectedEntities = entitiesNames ;
 		if ( selectedEntities == null ) {
 			//--- Not defined => ALL ENTITIES
-			selectedEntities = new LinkedList<String>();
+			selectedEntities = new LinkedList<>();
 			for ( Entity entity : model.getEntities() ) {
 				selectedEntities.add( entity.getClassName() );
 			}
@@ -368,7 +311,6 @@ public class TelosysProject {
 		List<TargetDefinition> selectedTemplatesTargets = targetsList ;
 		if ( selectedTemplatesTargets == null ) {
 			//--- Not defined => ALL TEMPLATES TARGETS 
-			//targetsDefinitions = loadTargetsDefinitions(bundleName);
 			targetsDefinitions = getTargetDefinitions(bundleName);
 			selectedTemplatesTargets = targetsDefinitions.getTemplatesTargets();
 		}
@@ -378,7 +320,6 @@ public class TelosysProject {
 		//--- Get all RESOURCES TARGETS defined for this BUNDLE
 		if ( copyResources ) {
 			if ( targetsDefinitions == null ) {
-				//targetsDefinitions = loadTargetsDefinitions(bundleName);
 				targetsDefinitions = getTargetDefinitions(bundleName);
 			}
 			selectedResourcesTargets = targetsDefinitions.getResourcesTargets(); // ALL resources to be copied
@@ -398,9 +339,7 @@ public class TelosysProject {
 	}
 	
 	private int afterGeneration() throws TelosysToolsException {
-		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-		
-		String fileName = FileUtil.buildFilePath( telosysToolsCfg.getTelosysToolsFolderAbsolutePath(), "/stats/gen.count" );
+		String fileName = FileUtil.buildFilePath( getTelosysToolsCfg().getTelosysToolsFolderAbsolutePath(), "/stats/gen.count" );
 		CounterFileManager counterFileManager = new CounterFileManager(fileName, true);
 		return counterFileManager.incrementCounter() ;
 	}
@@ -415,7 +354,7 @@ public class TelosysProject {
 	 */
 	public final List<File> getModels() throws TelosysToolsException {
 
-		List<File> list = new LinkedList<File>();
+		List<File> list = new LinkedList<>();
 		File modelsFolder = new File( getTelosysToolsCfg().getModelsFolderAbsolutePath() );
 		if ( modelsFolder.exists() && modelsFolder.isDirectory() ) {
 			for ( File file : modelsFolder.listFiles() ) {
@@ -489,11 +428,9 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public final File getDslModelFile(String modelName) throws TelosysToolsException {
-		
 		//--- Build the model file 
 		String modelFileName = DslModelUtil.getModelShortFileName(modelName);
-		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-		return new File( telosysToolsCfg.getDslModelFileAbsolutePath(modelFileName));
+		return new File( getTelosysToolsCfg().getDslModelFileAbsolutePath(modelFileName));
 	}
 
 	/**
@@ -612,7 +549,18 @@ public class TelosysProject {
 	public final DatabaseConfiguration getDatabaseConfiguration(Integer id) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDatabaseConfiguration(id);
-	}		
+	}
+	
+	/**
+	 * Returns the DB-Model file for the given database ID (or null if no DatabaseConfiguration)
+	 * @param id 
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final File getDbModelFile(Integer id) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.getDbModelFile(id);
+	}
 
 	/**
 	 * Checks the database connection

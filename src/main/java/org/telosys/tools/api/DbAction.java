@@ -190,15 +190,27 @@ public class DbAction {
 	}
 
 	/**
-	 * Returns the DB-Model file for the given database ID
+	 * Returns the DB-Model file for the given database ID (or null if no DatabaseConfiguration)
 	 * @param id
 	 * @return
 	 * @throws TelosysToolsException
 	 */
 	public final File getDbModelFile(Integer id) throws TelosysToolsException {
-		DatabaseConfiguration databaseConfiguration = getRequiredDatabaseConfiguration(id);
-		String dbModelFileName = getDbModelFileName(databaseConfiguration);
-		return new File(dbModelFileName); 
+		DatabaseConfiguration databaseConfiguration = getDatabaseConfiguration(id);
+		return getDbModelFile(databaseConfiguration) ;
+	}
+
+	/**
+	 * Returns the DB-Model file for the given database config (or null if no DatabaseConfiguration)
+	 * @param databaseConfiguration
+	 * @return
+	 */
+	public final File getDbModelFile(DatabaseConfiguration databaseConfiguration) {
+		if ( databaseConfiguration != null ) {
+			String dbModelFileName = getDbModelFileName(databaseConfiguration);
+			return new File(dbModelFileName); 
+		}
+		return null ;
 	}
 
 	/**
@@ -212,18 +224,13 @@ public class DbAction {
 		
 		DatabaseConfiguration databaseConfiguration = getRequiredDatabaseConfiguration(id);
 		
-		String dbModelFileName = getDbModelFileName(databaseConfiguration);
-		File dbModelFile = new File(dbModelFileName);
-		if ( dbModelFile.exists() ) {
-			throw new TelosysToolsException("Model file '" + dbModelFile.getName() + "' already exists");
-		}
-		
 		//--- 1) Generate the repository in memory
 		logger.info("Creating new db-model from database " + databaseConfiguration.getDatabaseId() );
 		DbModelGenerator generator = new DbModelGenerator(dbConnectionManager, logger) ;
 		RepositoryModel dbModel = generator.generate(databaseConfiguration);
 			
 		//--- 2) Save the repository in the file
+		File dbModelFile = getDbModelFile(databaseConfiguration);
 		logger.info("Saving model in file " + dbModelFile.getAbsolutePath() );
 		PersistenceManager pm = PersistenceManagerFactory.createPersistenceManager(dbModelFile, logger);
 		pm.save(dbModel);
