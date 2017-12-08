@@ -33,22 +33,10 @@ import org.telosys.tools.repository.persistence.PersistenceManagerFactory;
  */
 public class GenericModelLoader {
 	
-	private final TelosysToolsCfg   _telosysToolsCfg ;
+	private final TelosysToolsCfg  telosysToolsCfg ;
 	
-//    private Hashtable<String,String> _parsingErrors = null ;
-//    private String _parsingErrorMessage = null ;
-//
-//    public Hashtable<String, String> getParsingErrors() {
-//		return _parsingErrors;
-//	}
-//
-//	public String getErrorMessage() {
-//		return _parsingErrorMessage;
-//	}
-//
-
 	public GenericModelLoader(TelosysToolsCfg telosysToolsCfg) {
-		this._telosysToolsCfg = telosysToolsCfg ;
+		this.telosysToolsCfg = telosysToolsCfg ;
 	}
 	
 	//-----------------------------------------------------------------------------------------------------
@@ -64,7 +52,7 @@ public class GenericModelLoader {
 	 * @throws TelosysToolsException
 	 */
 	public Model loadModel(final String modelFileName) throws TelosysToolsException{
-		String modelAbsolutePath = FileUtil.buildFilePath( _telosysToolsCfg.getModelsFolderAbsolutePath(), modelFileName);
+		String modelAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), modelFileName);
 		File file = new File(modelAbsolutePath);
 		return loadModel(file);
 	}
@@ -81,12 +69,10 @@ public class GenericModelLoader {
 	public Model loadModel(final File file) throws TelosysToolsException {	
 		if ( file.exists() ) {
 			if ( file.isFile() ) {
-				//if ( file.getName().endsWith(".dbrep") || file.getName().endsWith(".dbmodel") ) {
 				if ( ApiUtil.isDbModelFile(file) ) {
 					//--- This file is supposed to be a db model file
 					return loadDatabaseModel(file) ;
 				}
-				//else if ( file.getName().endsWith(".model") ) {
 				else if (  ApiUtil.isDslModelFile(file) ) {
 					//--- This file is supposed to be a DSL model file
 					return loadDslModel(file);
@@ -105,20 +91,7 @@ public class GenericModelLoader {
 	//-----------------------------------------------------------------------------------------------------
 	// Database model loading ('dbrep') 
 	//-----------------------------------------------------------------------------------------------------
-//	/**
-//	 * Loads a 'database model' from the given model file name
-//	 * @param dbModelFileName the short file name in the current project models ( eg 'mymodel.dbrep' ) 
-//	 * @return
-//	 * @throws TelosysToolsException
-//	 */
-//	private Model loadDatabaseModel(final String dbModelFileName) throws TelosysToolsException {
-//		String dbrepAbsolutePath = FileUtil.buildFilePath( _telosysToolsCfg.getModelsFolderAbsolutePath(), dbModelFileName);
-//		File repositoryFile = new File(dbrepAbsolutePath);
-//		return loadDatabaseModel( repositoryFile ) ;
-//	}
-	
 	private Model loadDatabaseModel( File repositoryFile ) throws TelosysToolsException {
-		//System.out.println("Load repository from file " + repositoryFile.getAbsolutePath());
 		PersistenceManager persistenceManager = PersistenceManagerFactory.createPersistenceManager(repositoryFile);
 		return persistenceManager.load();
 	}
@@ -126,31 +99,13 @@ public class GenericModelLoader {
 	//-----------------------------------------------------------------------------------------------------
 	// DSL model loading 
 	//-----------------------------------------------------------------------------------------------------
-//	/**
-//	 * Loads a 'DSL model' from the given model name
-//	 * @param modelName the name of the model to be loaded ( e.g. 'bookstore' or 'employees' ) 
-//	 * @return
-//	 * @throws TelosysToolsException
-//	 */
-//	private Model loadDslModel(final String modelName) throws TelosysToolsException {
-//		String modelFileAbsolutePath = FileUtil.buildFilePath( _telosysToolsCfg.getModelsFolderAbsolutePath(), modelName+".model");
-//		return loadDslModel( new File(modelFileAbsolutePath) );
-//	}
-	
 	private Model loadDslModel(final File modelFile) throws TelosysToolsException {
 		DslModelManager modelLoader = new DslModelManager();
 		Model model = modelLoader.loadModel( modelFile );
 		if ( model == null ) {
 			// Cannot load model => Specific Exception with parsing errors
 			throw new TelosysModelException(modelFile, modelLoader.getErrorMessage(), modelLoader.getParsingErrors());
-//			_parsingErrorMessage = modelLoader.getErrorMessage() ;
-//			_parsingErrors = modelLoader.getParsingErrors();
 		}
-//		else {
-//			_parsingErrorMessage = null ;
-//			_parsingErrors = null ;
-//		}
 		return model ;
 	}
-	
 }
