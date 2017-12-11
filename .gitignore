@@ -20,3 +20,5 @@
 /velocity.log
 /target
 /target
+/dependency-reduced-pom.xml
+/pom.xml.bak
