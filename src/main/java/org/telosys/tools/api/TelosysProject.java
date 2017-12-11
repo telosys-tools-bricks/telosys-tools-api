@@ -40,6 +40,7 @@ import org.telosys.tools.generator.task.GenerationTaskResult;
 import org.telosys.tools.generator.task.StandardGenerationTask;
 import org.telosys.tools.generic.model.Entity;
 import org.telosys.tools.generic.model.Model;
+import org.telosys.tools.repository.changelog.ChangeLog;
 import org.telosys.tools.stats.services.CounterFileManager;
 
 public class TelosysProject {
@@ -587,7 +588,19 @@ public class TelosysProject {
 	}
 	
 	/**
-	 * Returns the database information reftrieved from meta-data
+	 * Returns a long string containing all the required meta-data 
+	 * @param databaseConfiguration
+	 * @param options
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final String getMetaData(DatabaseConfiguration databaseConfiguration, MetaDataOptions options) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.getMetaData(databaseConfiguration, options);
+	}
+	
+	/**
+	 * Returns the database information retrieved from meta-data
 	 * @param id
 	 * @return
 	 * @throws TelosysToolsException
@@ -595,6 +608,17 @@ public class TelosysProject {
 	public final DbInfo getDatabaseInfo(Integer id ) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDatabaseInfo(id);
+	}
+
+	/**
+	 * Returns the database information retrieved from meta-data
+	 * @param databaseConfiguration
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final DbInfo getDatabaseInfo(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.getDatabaseInfo(databaseConfiguration);
 	}
 
 	/**
@@ -608,12 +632,32 @@ public class TelosysProject {
 	}
 	
 	/**
+	 * Creates a new 'database model' from the given database configuration
+	 * @param databaseConfiguration
+	 * @throws TelosysToolsException
+	 */
+	public final void createNewDbModel(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		dbAction.createNewDbModel(databaseConfiguration, telosysToolsLogger);
+	}
+	
+	/**
 	 * Updates a 'database model' from the given database id
 	 * @param id
 	 * @throws TelosysToolsException
 	 */
-	public final void updateDbModel(Integer id ) throws TelosysToolsException {
+	public final ChangeLog updateDbModel(Integer id ) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
-		dbAction.updateDbModel(id, telosysToolsLogger);
+		return dbAction.updateDbModel(id, telosysToolsLogger);
+	}
+
+	/**
+	 * Updates a 'database model' from the given database configuration
+	 * @param databaseConfiguration
+	 * @throws TelosysToolsException
+	 */
+	public final ChangeLog updateDbModel(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.updateDbModel(databaseConfiguration, telosysToolsLogger);
 	}
 }

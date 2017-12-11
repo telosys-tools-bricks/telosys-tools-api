@@ -68,6 +68,11 @@ public class DbAction {
 			return dbConnectionManager.getConnection();
 		}
 	}
+
+	private final Connection getConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+		return dbConnectionManager.getConnection(databaseConfiguration);
+	}
+	
 	
 	private final void closeConnection(Connection con) throws TelosysToolsException {
 		dbConnectionManager.closeConnection(con);
@@ -145,7 +150,25 @@ public class DbAction {
 	 * @throws TelosysToolsException
 	 */
 	public final DbInfo getDatabaseInfo(Integer id) throws TelosysToolsException {
-		Connection con = getConnection(id );
+		Connection con = getConnection(id);
+//		try {
+//			MetaDataManager metaDataManager = new MetaDataManager();
+//			return metaDataManager.getDatabaseInfo(con);
+//		} catch (SQLException e) {
+//			throw new TelosysToolsException("Cannot get database information", e);
+//		}
+//		finally {
+//			closeConnection(con);
+//		}
+		return getDbInfoAndClose(con); 
+	}
+	
+	public final DbInfo getDatabaseInfo(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+		Connection con = getConnection(databaseConfiguration);
+		return getDbInfoAndClose(con); 
+	}
+	
+	private final DbInfo getDbInfoAndClose(Connection con) throws TelosysToolsException {
 		try {
 			MetaDataManager metaDataManager = new MetaDataManager();
 			return metaDataManager.getDatabaseInfo(con);
@@ -157,12 +180,29 @@ public class DbAction {
 		}
 	}
 	
-	public final String getMetaData(Integer id, MetaDataOptions options) throws TelosysToolsException
-    {
-		DatabaseConfiguration dbConfig = getDatabaseConfiguration(id);
-		Connection con = getConnection(id);
+	/**
+	 * Returns meta-data for the given database id according with the given options
+	 * @param id
+	 * @param options
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final String getMetaData(Integer id, MetaDataOptions options) throws TelosysToolsException {
+		DatabaseConfiguration databaseConfiguration = getDatabaseConfiguration(id);
+		return getMetaData(databaseConfiguration, options);
+    }
+	
+	/**
+	 * Returns meta-data for the given database configuration according with the given options
+	 * @param databaseConfiguration
+	 * @param options
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final String getMetaData(DatabaseConfiguration databaseConfiguration, MetaDataOptions options) throws TelosysToolsException {
+		Connection con = getConnection(databaseConfiguration);
 		try {
-			return DbActionMetaData.getMetaData(dbConfig, con, options);
+			return DbActionMetaData.getMetaData(databaseConfiguration, con, options);
 		} catch (SQLException e) {
 			throw new TelosysToolsException("Cannot get meta-data", e);
 		}
@@ -221,8 +261,19 @@ public class DbAction {
 	 * @throws TelosysToolsException
 	 */
 	public final void createNewDbModel(Integer id, TelosysToolsLogger logger ) throws TelosysToolsException {
-		
+		//--- Get the database configuration for the given database id
 		DatabaseConfiguration databaseConfiguration = getRequiredDatabaseConfiguration(id);
+		//--- Create the new db model
+		createNewDbModel(databaseConfiguration, logger ); 
+	}
+	
+	/**
+	 * Creates a new DB-Model for the given database configuartion
+	 * @param databaseConfiguration
+	 * @param logger
+	 * @throws TelosysToolsException
+	 */
+	public final void createNewDbModel(DatabaseConfiguration databaseConfiguration, TelosysToolsLogger logger ) throws TelosysToolsException {
 		
 		//--- 1) Generate the repository in memory
 		logger.info("Creating new db-model from database " + databaseConfiguration.getDatabaseId() );
@@ -238,15 +289,27 @@ public class DbAction {
 	}
 	
 	/**
-	 * Updates a new DB-Model for the given database ID 
+	 * Updates a DB-Model for the given database ID 
 	 * @param id
 	 * @param logger
 	 * @return
 	 * @throws TelosysToolsException
 	 */
 	public final ChangeLog updateDbModel(Integer id, TelosysToolsLogger logger ) throws TelosysToolsException {
-		
+		//--- Get the database configuration for the given database id
 		DatabaseConfiguration databaseConfiguration = getRequiredDatabaseConfiguration(id);
+		//--- Update the db-model
+		return updateDbModel(databaseConfiguration, logger );
+	}
+	
+	/**
+	 * Updates a DB-Model for the given database configuration
+	 * @param databaseConfiguration
+	 * @param logger
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final ChangeLog updateDbModel(DatabaseConfiguration databaseConfiguration , TelosysToolsLogger logger ) throws TelosysToolsException {
 		
 		String dbModelFileName = getDbModelFileName(databaseConfiguration);
 		File dbModelFile = new File(dbModelFileName); 
