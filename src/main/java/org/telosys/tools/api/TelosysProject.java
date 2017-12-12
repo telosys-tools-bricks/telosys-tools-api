@@ -564,7 +564,7 @@ public class TelosysProject {
 	}
 
 	/**
-	 * Checks the database connection
+	 * Test the connection for the given database id 
 	 * @param id
 	 * @param options
 	 * @return true if connection is OK, false if cannot connect
@@ -573,6 +573,17 @@ public class TelosysProject {
 	public final DbConnectionStatus checkDatabaseConnection(Integer id) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.testConnection(id);
+	}
+	
+	/**
+	 * Test the connection for the given database configuration 
+	 * @param databaseConfiguration
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final DbConnectionStatus checkDatabaseConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.testConnection(databaseConfiguration);
 	}
 	
 	/**

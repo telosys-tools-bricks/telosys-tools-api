@@ -134,7 +134,20 @@ public class DbAction {
 	 * @throws TelosysToolsException
 	 */
 	public final DbConnectionStatus testConnection(Integer id) throws TelosysToolsException {
-		Connection con = getConnection(id);
+		return testAndClose( getConnection(id) );
+	}
+
+	/**
+	 * Test the connection for the given database configuration 
+	 * @param databaseConfiguration
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final DbConnectionStatus testConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+		return testAndClose( getConnection(databaseConfiguration) );
+	}
+
+	private DbConnectionStatus testAndClose(Connection con) throws TelosysToolsException {
 		try {
 			return dbConnectionManager.testConnection(con);
 		}
