@@ -562,28 +562,52 @@ public class TelosysProject {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDbModelFile(id);
 	}
+	
+	//--------------------------------------------------------------------------------------------
+	// Check database connection and get database information
+	//--------------------------------------------------------------------------------------------
+	/**
+	 * Basic connection test for the given database id
+	 * @param id
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final boolean checkDatabaseConnection(Integer id) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.checkDatabaseConnection(id);
+	}
+	/**
+	 * Basic connection test for the given database id
+	 * @param databaseConfiguration
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final boolean checkDatabaseConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+		DbAction dbAction = new DbAction(this);
+		return dbAction.checkDatabaseConnection(databaseConfiguration);
+	}
 
 	/**
-	 * Test the connection for the given database id 
+	 * Test the connection for the given database id (and get information)
 	 * @param id
 	 * @param options
 	 * @return true if connection is OK, false if cannot connect
 	 * @throws TelosysToolsException
 	 */
-	public final DbConnectionStatus checkDatabaseConnection(Integer id) throws TelosysToolsException {
+	public final DbConnectionStatus checkDatabaseConnectionWithStatus(Integer id) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
-		return dbAction.testConnection(id);
+		return dbAction.checkDatabaseConnectionWithStatus(id);
 	}
 	
 	/**
-	 * Test the connection for the given database configuration 
+	 * Test the connection for the given database configuration (and get information)
 	 * @param databaseConfiguration
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbConnectionStatus checkDatabaseConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+	public final DbConnectionStatus checkDatabaseConnectionWithStatus(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
-		return dbAction.testConnection(databaseConfiguration);
+		return dbAction.checkDatabaseConnectionWithStatus(databaseConfiguration);
 	}
 	
 	/**
@@ -631,7 +655,10 @@ public class TelosysProject {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDatabaseInfo(databaseConfiguration);
 	}
-
+	
+	//--------------------------------------------------------------------------------------------
+	// DB MODEL management
+	//--------------------------------------------------------------------------------------------
 	/**
 	 * Creates a new 'database model' from the given database id
 	 * @param id

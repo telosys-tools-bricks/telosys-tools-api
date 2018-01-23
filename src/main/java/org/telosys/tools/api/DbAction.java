@@ -127,14 +127,46 @@ public class DbAction {
         return FileUtil.buildFilePath(dir, databaseName+".dbrep" );
     }
 	
+	//--------------------------------------------------------------------------------------------
+	// Check database connection
+	//--------------------------------------------------------------------------------------------
+	/**
+	 * Just check if it's possible to get a connection for the given database id
+	 * @param id
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final boolean checkDatabaseConnection(Integer id) throws TelosysToolsException {
+		return checkConnectionAndClose( getConnection(id) );
+	}
+	
+	/**
+	 * Just check if it's possible to get a connection for the given database configuration
+	 * @param databaseConfiguration
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final boolean checkDatabaseConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+		return checkConnectionAndClose( getConnection(databaseConfiguration) );
+	}
+	
+	private boolean checkConnectionAndClose(Connection con) throws TelosysToolsException {
+		boolean result = false ;
+		if ( con != null ) {
+			result = true ;
+			closeConnection(con);
+		}
+		return result ;
+	}
+
 	/**
 	 * Test the connection for the given database ID 
 	 * @param id
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbConnectionStatus testConnection(Integer id) throws TelosysToolsException {
-		return testAndClose( getConnection(id) );
+	public final DbConnectionStatus checkDatabaseConnectionWithStatus(Integer id) throws TelosysToolsException {
+		return getConnectionStatusAndClose( getConnection(id) );
 	}
 
 	/**
@@ -143,13 +175,13 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbConnectionStatus testConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
-		return testAndClose( getConnection(databaseConfiguration) );
+	public final DbConnectionStatus checkDatabaseConnectionWithStatus(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+		return getConnectionStatusAndClose( getConnection(databaseConfiguration) );
 	}
 
-	private DbConnectionStatus testAndClose(Connection con) throws TelosysToolsException {
+	private DbConnectionStatus getConnectionStatusAndClose(Connection con) throws TelosysToolsException {
 		try {
-			return dbConnectionManager.testConnection(con);
+			return dbConnectionManager.getConnectionStatus(con);
 		}
 		finally {
 			closeConnection(con);
