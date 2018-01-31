@@ -227,20 +227,53 @@ public class DbActionMetaData {
     private static final void reportColumns(StringBuilder sb, String tableName, List<ColumnMetaData> columns) {
     	sb.append("Table '" + tableName + "' columns : \n");
 		for ( ColumnMetaData c : columns ) {
-			String s = 
-					"[" +c.getOrdinalPosition() + "]"
-					+ " " + c.getColumnName() + " : " 
-					+ "  " + c.getDbTypeName() 
-					+ "  (jdbc:" + c.getJdbcTypeCode()+")" 
-					+ "  size=" + c.getSize()
-					+ "  " + ( c.isNotNull() ? "NOT NULL" : "" )
-					+ "  charOctetLength=" + c.getCharOctetLength()
-					+ "  decimalDigits=" + c.getDecimalDigits()
-					+ "  numPrecRadix=" + c.getNumPrecRadix()
-					+ "  defaultValue=" + c.getDefaultValue()
-					;
 			
-			sb.append(" . " + s + " \n");
+			String length = Integer.toString( c.getCharOctetLength() );
+			if ( c.getDecimalDigits() != 0 ) {
+				length = length + "." + c.getDecimalDigits();
+			}
+			sb.append(" . ");
+			sb.append("[" + c.getOrdinalPosition() + "]" );
+			sb.append(" " );
+			sb.append(c.getColumnName() );
+			sb.append(" : " );
+			sb.append(c.getDbTypeName() );
+			sb.append(" " );
+			sb.append("(jdbc:" + c.getJdbcTypeCode() + ")" );
+			sb.append(" " );
+			sb.append("size=" + c.getSize() );
+			sb.append(" " );
+			sb.append(c.isNotNull() ? "NOT NULL" : "" );
+			sb.append("\n   " );
+			
+			if ( c.getCharOctetLength() != 0 ) {
+				sb.append("char-length=" + c.getCharOctetLength() );
+				sb.append(" " );
+			}			
+			if ( c.getDecimalDigits() != 0 ) {
+				sb.append("decimal-digits=" + c.getDecimalDigits() );
+				sb.append(" " );
+			}			
+			if ( c.getNumPrecRadix() != 0 ) {
+				sb.append("radix=" + c.getNumPrecRadix() ); // Base 2 or 10
+				sb.append(" " );
+			}
+			sb.append("defaultValue=" + c.getDefaultValue() );
+			
+//			String s = 
+//					"[" +c.getOrdinalPosition() + "]"
+//					+ " " + c.getColumnName() + " : " 
+//					+ "  " + c.getDbTypeName() 
+//					+ "  (jdbc:" + c.getJdbcTypeCode()+")" 
+//					+ "  size=" + c.getSize()
+//					+ "  " + ( c.isNotNull() ? "NOT NULL" : "" )
+//					+ "  charOctetLength=" + c.getCharOctetLength()
+//					+ "  decimalDigits=" + c.getDecimalDigits()
+//					+ "  numPrecRadix=" + c.getNumPrecRadix()
+//					+ "  defaultValue=" + c.getDefaultValue()
+//					;
+			
+			sb.append("\n");
 		}
     	sb.append("\n");
     }
