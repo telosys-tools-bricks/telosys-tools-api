@@ -19,17 +19,20 @@ import java.io.File;
 
 public class ApiUtil {
 	
-	protected final static String  MODEL_SUFFIX   = ".model"  ;
+	protected static final String  MODEL_SUFFIX   = ".model"  ;
 
-	protected final static String  DBREP_SUFFIX   = ".dbrep"  ;
-	protected final static String  DBMODEL_SUFFIX = ".dbmodel"  ;
+	protected static final String  DBREP_SUFFIX   = ".dbrep"  ;
+	protected static final String  DBMODEL_SUFFIX = ".dbmodel"  ;
+
+	private ApiUtil() {
+	}
 
 	/**
 	 * Returns true if the given file name ends with ".model" suffix
 	 * @param file
 	 * @return
 	 */
-	public final static boolean isDslModelFile(File file) {
+	public static final boolean isDslModelFile(File file) {
 		return file.getName().endsWith(MODEL_SUFFIX) ;
 	}
 
@@ -38,7 +41,7 @@ public class ApiUtil {
 	 * @param file
 	 * @return
 	 */
-	public final static boolean isDbModelFile(File file) {
+	public static final boolean isDbModelFile(File file) {
 		return file.getName().endsWith(DBREP_SUFFIX) || file.getName().endsWith(DBMODEL_SUFFIX) ;
 	}
 
@@ -47,7 +50,7 @@ public class ApiUtil {
 	 * @param file
 	 * @return
 	 */
-	public final static boolean isModelFile(File file) {
+	public static final boolean isModelFile(File file) {
 		return isDslModelFile(file) || isDbModelFile(file) ;
 	}
 }
