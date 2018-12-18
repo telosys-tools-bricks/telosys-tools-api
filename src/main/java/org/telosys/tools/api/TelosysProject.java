@@ -23,6 +23,7 @@ import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.TelosysToolsLogger;
 import org.telosys.tools.commons.bundles.BundleStatus;
+import org.telosys.tools.commons.bundles.BundlesFromGitHub;
 import org.telosys.tools.commons.bundles.BundlesManager;
 import org.telosys.tools.commons.bundles.TargetDefinition;
 import org.telosys.tools.commons.bundles.TargetsDefinitions;
@@ -129,7 +130,9 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public List<String> getGitHubBundlesList(String userName) throws TelosysToolsException {
+	//public List<String> getGitHubBundlesList(String userName) throws TelosysToolsException {
+	public BundlesFromGitHub getGitHubBundlesList(String userName) throws TelosysToolsException {
+		
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		try {
 			return bm.getGitHubBundlesList(userName);
