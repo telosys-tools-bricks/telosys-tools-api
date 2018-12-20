@@ -131,7 +131,6 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	//public List<String> getGitHubBundlesList(String userName) throws TelosysToolsException {
 	public BundlesFromGitHub getGitHubBundlesList(String userName) throws TelosysToolsException {
 		
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
@@ -160,10 +159,8 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-//	public List<String> getInstalledBundles() throws TelosysToolsException {
 	public BundlesNames getInstalledBundles() throws TelosysToolsException {
 		BundlesManager bundlesManager = new BundlesManager( getTelosysToolsCfg() );
-		//return bm.getBundlesList();
 		return bundlesManager.getProjectBundlesList();
 	}
 	
