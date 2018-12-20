@@ -25,6 +25,7 @@ import org.telosys.tools.commons.TelosysToolsLogger;
 import org.telosys.tools.commons.bundles.BundleStatus;
 import org.telosys.tools.commons.bundles.BundlesFromGitHub;
 import org.telosys.tools.commons.bundles.BundlesManager;
+import org.telosys.tools.commons.bundles.BundlesNames;
 import org.telosys.tools.commons.bundles.TargetDefinition;
 import org.telosys.tools.commons.bundles.TargetsDefinitions;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
@@ -159,9 +160,11 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public List<String> getInstalledBundles() throws TelosysToolsException {
-		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
-		return bm.getBundlesList();
+//	public List<String> getInstalledBundles() throws TelosysToolsException {
+	public BundlesNames getInstalledBundles() throws TelosysToolsException {
+		BundlesManager bundlesManager = new BundlesManager( getTelosysToolsCfg() );
+		//return bm.getBundlesList();
+		return bundlesManager.getProjectBundlesList();
 	}
 	
 	/**
