@@ -34,6 +34,7 @@ import org.telosys.tools.commons.dbcfg.DatabaseConfiguration;
 import org.telosys.tools.commons.dbcfg.DatabasesConfigurations;
 import org.telosys.tools.commons.dbcfg.DbConnectionStatus;
 import org.telosys.tools.commons.env.EnvironmentManager;
+import org.telosys.tools.commons.github.GitHubRateLimitResponse;
 import org.telosys.tools.commons.logger.ConsoleLogger;
 import org.telosys.tools.db.metadata.DbInfo;
 import org.telosys.tools.dsl.DslModelUtil;
@@ -136,6 +137,21 @@ public class TelosysProject {
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		try {
 			return bm.getGitHubBundlesList(userName);
+		} catch (Exception e) {
+			throw new TelosysToolsException("Cannot get bundles list", e);
+		}
+	}
+	
+	/**
+	 * Returns GitHub API current rate limit 
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public GitHubRateLimitResponse getGitHubRateLimit() throws TelosysToolsException {
+		
+		BundlesManager bundlesManager = new BundlesManager( getTelosysToolsCfg() );
+		try {
+			return bundlesManager.getGitHubRateLimit();
 		} catch (Exception e) {
 			throw new TelosysToolsException("Cannot get bundles list", e);
 		}
