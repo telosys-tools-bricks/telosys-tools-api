@@ -1,5 +1,6 @@
 package org.telosys.tools.api;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -25,12 +26,12 @@ public class TelosysProjectTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		System.out.println("Before test");
+		//System.out.println("Before test");
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		System.out.println("After test");
+		//System.out.println("After test");
 	}
 
 	private TelosysProject initProject() throws Exception {
