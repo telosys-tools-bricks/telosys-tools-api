@@ -3,45 +3,44 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.telosys</groupId>
-        <artifactId>telosys-tools-parent</artifactId>
-		<!-- <version>3.0.0-SNAPSHOT</version> -->
-        <version>3.x.x</version>
-        <relativePath>../telosys-tools-parent/pom.xml</relativePath>
-    </parent>
+	<!-- REFERENCE TO PARENT POM.XML -->
+	<parent>
+		<groupId>org.telosys</groupId>
+		<artifactId>telosys-tools-parent</artifactId>
+		<version>3.x.x</version>   <!-- parent version is always "3.x.x" -->
+		<relativePath>../telosys-tools-parent/pom.xml</relativePath>
+	</parent>
 
 	<name>telosys-tools-api</name>
 	<artifactId>telosys-tools-api</artifactId>
-	<version>${telosys-tools-api.version}</version>	
+	<version>3.2.2</version>   <!-- also update version in TelosysApiVersion.java  -->
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<!-- For COMPILATION -->
 		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
+			<groupId>org.telosys</groupId>
 			<artifactId>telosys-tools-commons</artifactId>
-			<version>${telosys-tools-commons.version}</version>
 		</dependency>
 	 	<dependency>
-			<groupId>${project.parent.groupId}</groupId>
+			<groupId>org.telosys</groupId>
+		  	<artifactId>telosys-tools-database</artifactId>
+	 	</dependency>		
+	 	<dependency>
+			<groupId>org.telosys</groupId>
 		  	<artifactId>telosys-tools-repository</artifactId>
-			<version>${telosys-tools-repository.version}</version>
 	 	</dependency>
 	 	<dependency>
-			<groupId>${project.parent.groupId}</groupId>
+			<groupId>org.telosys</groupId>
 		  	<artifactId>telosys-tools-dsl-parser</artifactId>
-			<version>${telosys-tools-dsl-parser.version}</version>
 	 	</dependency>
 	 	<dependency>
-			<groupId>${project.parent.groupId}</groupId>
+			<groupId>org.telosys</groupId>
 		  	<artifactId>telosys-tools-generic-model</artifactId>
-			<version>${telosys-tools-generic-model.version}</version>
 	 	</dependency>
  	 	<dependency>
-			<groupId>${project.parent.groupId}</groupId>
+			<groupId>org.telosys</groupId>
 		  	<artifactId>telosys-tools-generator</artifactId>
-			<version>${telosys-tools-generator.version}</version>
 	 	</dependency>
 		
 	</dependencies>

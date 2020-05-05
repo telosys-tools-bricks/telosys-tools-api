@@ -1,11 +1,5 @@
 package org.telosys.tools.api;
 
-//import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +8,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
+import org.telosys.tools.dsl.DslModelManager;
 import org.telosys.tools.generic.model.Attribute;
 import org.telosys.tools.generic.model.Entity;
 import org.telosys.tools.generic.model.Model;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class GenericModelLoaderTest {
 	
@@ -31,30 +32,56 @@ public class GenericModelLoaderTest {
 	}
 
 	private TelosysProject initProject() throws Exception {
-
 		String projectFolderFullPath = TestsEnv.createProjectFolder("myproject");
 		TelosysProject telosysProject = new TelosysProject(projectFolderFullPath);
-		
 		System.out.println("Init project...");
 		String s = telosysProject.initProject();
 		System.out.println(s);
-		
 		TestsEnv.copyDbModelFile(projectFolderFullPath, "bookstore.dbrep");
 		TestsEnv.copyDslModelFiles(projectFolderFullPath, "employees");
 		TestsEnv.copyDslModelFiles(projectFolderFullPath, "employees_invalid");
 		TestsEnv.copyTemplatesFiles(projectFolderFullPath, "basic-templates-TT210");
-		
 		return telosysProject ;
 	}
-	
-	@Test
-	public void testModelLoadingDSL() throws Exception {
-		System.out.println("========== Loading .model ");
+	private TelosysToolsCfg getTelosysToolsCfg() throws Exception {
 		TelosysProject telosysProject = initProject() ;
 		System.out.println("getTelosysToolsCfg...");
-		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();
+		return telosysProject.getTelosysToolsCfg();
+	}	
+	private GenericModelLoader getGenericModelLoader() throws Exception {
+		TelosysProject telosysProject = initProject() ;
+		System.out.println("getTelosysToolsCfg...");
+		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();		
+		return new GenericModelLoader(telosysToolsCfg);
+	}
+//	private void printErrorsOLD(String errorMessage, Map<String,String> parsingErrors) {
+//		System.out.println("Error message : " + errorMessage );
+//		System.out.println( parsingErrors.size() + " error(s) : " );
+//		for ( Map.Entry<String,String> entry : parsingErrors.entrySet() ) {
+//			System.out.println( " . '" + entry.getKey() + "' : " + entry.getValue() );
+//		}
+//		System.out.flush();
+//	}
+	private void printErrors(String errorMessage, Map<String,List<String>> errors) {
+		System.out.println("MODEL ERRORS : ");
+		System.out.println(" --> Main message : " + errorMessage);
+		for ( String entityName : errors.keySet() ) {
+			System.out.println(" --> Errors for entity '" + entityName + "' : " );
+			for ( String err : errors.get(entityName) ) {
+            	System.out.println(" . " + err );
+			}
+		}
+	}
+	
+	
+	@Test
+	public void testModelLoading_DSL_valid() throws Exception {
+		System.out.println("========== Loading .model ");
+//		TelosysProject telosysProject = initProject() ;
+//		System.out.println("getTelosysToolsCfg...");
+//		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();
 		
-		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
+		GenericModelLoader genericModelLoader =  getGenericModelLoader();
 		Model model = genericModelLoader.loadModel("employees.model");
 		assertNotNull(model);
 		//assertNull(genericModelLoader.getErrorMessage());
@@ -90,57 +117,62 @@ public class GenericModelLoaderTest {
 //			assertEquals(Integer.valueOf(40), attribute.getMaxLength()) ;
 //		}
 	}
+	
+	@Test
+	public void testDslModelManagerWithInvalidModel() throws Exception {
+		
+		String filePath = getTelosysToolsCfg().getDslModelFileAbsolutePath("employees_invalid.model");
 
-	@Test(expected=TelosysModelException.class)
-	public void testModelLoadingDSL_invalid() throws Exception {
-		System.out.println("========== Loading .model INVALID");
-		TelosysProject telosysProject = initProject() ;
-		System.out.println("getTelosysToolsCfg...");
-		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();
-		
-		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
-		genericModelLoader.loadModel("employees_invalid.model");
-		
-//		Model model = genericModelLoader.loadModel("employees_invalid.model");
-//		assertNull(model);
-//		Hashtable<String,String> parsingErrors = genericModelLoader.getParsingErrors() ;
-//		assertNotNull(genericModelLoader.getErrorMessage());
-//		assertNotNull(parsingErrors);
-//		System.out.println("Error message : " + genericModelLoader.getErrorMessage() );
-//		System.out.println( parsingErrors.size() + " error(s)" );
-//		for ( Map.Entry<String,String> entry : parsingErrors.entrySet() ) {
-//			System.out.println( "'" + entry.getKey() + "' : " + entry.getValue() );
-//		}
+		DslModelManager dslModelManager = new DslModelManager();
+		Model model = dslModelManager.loadModel( filePath );
+		assertNotNull(dslModelManager.getErrorMessage());
+//		assertNotNull(dslModelManager.getParsingErrors());
+		assertNotNull(dslModelManager.getErrorsMap());
+//		printErrors(dslModelManager.getErrorMessage(), dslModelManager.getParsingErrors());
+		printErrors(dslModelManager.getErrorMessage(), dslModelManager.getErrorsMap());
+		assertTrue(dslModelManager.getErrorsMap().size() > 0 );
+		assertNull(model);
 	}
-	public void testModelLoadingDSL_invalid2() throws Exception {
+	
+	@Test
+	public void testModelLoading_DSL_invalid() throws Exception {
 		System.out.println("========== Loading .model INVALID");
-		TelosysProject telosysProject = initProject() ;
-		System.out.println("getTelosysToolsCfg...");
-		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();
-		
-		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
+		GenericModelLoader genericModelLoader =  getGenericModelLoader();
+		Model model = null;
 		try {
-			genericModelLoader.loadModel("employees_invalid.model");
-			fail("Not supposed to reach this part of code.");
-		} catch (TelosysToolsException e) {
-			assertTrue(e instanceof TelosysModelException );
-			TelosysModelException tme = (TelosysModelException) e ;
-			
+			// supposed to throw TelosysModelException
+			model = genericModelLoader.loadModel("employees_invalid.model");
+			fail();
+		} catch (TelosysModelException tme) {
+			printErrors(tme.getMessage(), tme.getParsingErrors());
 			assertNotNull(tme.getMessage());
-			System.out.println("Error message : " + tme.getMessage() );
-
-			Map<String,String> parsingErrors = tme.getParsingErrors();
-			assertNotNull(parsingErrors);
-			System.out.println( parsingErrors.size() + " error(s)" );
-			for ( Map.Entry<String,String> entry : parsingErrors.entrySet() ) {
-				System.out.println( "'" + entry.getKey() + "' : " + entry.getValue() );
-			}
-			//e.printStackTrace();
+			assertNotNull(tme.getParsingErrors());
 		}
+		assertNull(model);	
 	}
 
 	@Test
-	public void testModelLoadingDBREP() throws Exception {
+	public void testModelLoading_DSL_invalid2() throws Exception {
+		System.out.println("========== Loading .model INVALID");
+		GenericModelLoader genericModelLoader =  getGenericModelLoader();
+		Model model = null;
+		try {
+			model = genericModelLoader.loadModel("employees_invalid.model");
+			fail("Not supposed to reach this part of code.");
+		} catch (TelosysToolsException e) {
+			// with standard TelosysToolsException + cast
+			assertTrue(e instanceof TelosysModelException );
+			TelosysModelException tme = (TelosysModelException) e ;
+			
+			printErrors(tme.getMessage(), tme.getParsingErrors());
+			assertNotNull(tme.getMessage());
+			assertNotNull(tme.getParsingErrors());
+		}
+		assertNull(model);	
+	}
+
+	@Test
+	public void testModelLoading_DBREP_valid() throws Exception {
 		System.out.println("========== Loading .dbrep ");
 		
 		TelosysProject telosysProject = initProject() ;

@@ -1,6 +1,6 @@
-Employee {
-	id : int {@Bad}; // invalid "@Bad"
-	firstName : string ;
+Employee cccc { // Entity error here
+	id : int {@Bad}; 
+	firstName : stringxxx ;
 	birthDate : date ;
 	country : Country {@Max(3)};
 }

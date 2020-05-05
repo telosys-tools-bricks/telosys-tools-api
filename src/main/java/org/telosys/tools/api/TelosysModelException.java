@@ -16,6 +16,7 @@
 package org.telosys.tools.api;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import org.telosys.tools.commons.TelosysToolsException;
@@ -30,7 +31,8 @@ public class TelosysModelException extends TelosysToolsException // Exception
 	
 	private final File modelFile ;
 	
-    private final Map<String,String> parsingErrors ;
+//    private final Map<String,String> parsingErrors ;
+    private final Map<String,List<String>> parsingErrors ; // v 3.2.2
 
     public TelosysModelException(File modelFile, String message) {
         super(message);
@@ -38,18 +40,12 @@ public class TelosysModelException extends TelosysToolsException // Exception
         this.parsingErrors = null ;
     }
 
-    public TelosysModelException(File modelFile, String message, Map<String,String> parsingErrors) {
+//    public TelosysModelException(File modelFile, String message, Map<String,String> parsingErrors) {
+    public TelosysModelException(File modelFile, String message, Map<String,List<String>> parsingErrors) { // v 3.2.2
         super(message);
         this.modelFile = modelFile ;
         this.parsingErrors = parsingErrors ;
     }
-
-
-//    public TelosysModelException(String modelFileName, String message, Throwable cause) {
-//        super(message, cause);
-//        this.modelFileName = modelFileName ;
-//        this.parsingErrors = null ;
-//    }
     
     public File getModelFile() {
     	return modelFile ;
@@ -58,7 +54,8 @@ public class TelosysModelException extends TelosysToolsException // Exception
     public boolean hasParsingErrors() {
     	return parsingErrors != null ;
     }
-    public Map<String, String> getParsingErrors() {
+//    public Map<String, String> getParsingErrors() {
+    public Map<String, List<String>> getParsingErrors() { // v 3.2.2
     	return parsingErrors ;
     }
 }

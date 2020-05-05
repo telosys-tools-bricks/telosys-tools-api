@@ -100,11 +100,11 @@ public class GenericModelLoader {
 	// DSL model loading 
 	//-----------------------------------------------------------------------------------------------------
 	private Model loadDslModel(final File modelFile) throws TelosysToolsException {
-		DslModelManager modelLoader = new DslModelManager();
-		Model model = modelLoader.loadModel( modelFile );
+		DslModelManager modelManager = new DslModelManager();
+		Model model = modelManager.loadModel( modelFile );
 		if ( model == null ) {
 			// Cannot load model => Specific Exception with parsing errors
-			throw new TelosysModelException(modelFile, modelLoader.getErrorMessage(), modelLoader.getParsingErrors());
+			throw new TelosysModelException(modelFile, modelManager.getErrorMessage(), modelManager.getErrorsMap());
 		}
 		return model ;
 	}
