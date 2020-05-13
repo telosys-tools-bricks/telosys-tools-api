@@ -55,8 +55,10 @@ public class ModelContentFromDSLModelTest {
 		System.out.println("getTelosysToolsCfg...");
 		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();
 		
-		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
-		Model model = genericModelLoader.loadModel("employees.model");
+//		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
+//		Model model = genericModelLoader.loadModel("employees.model");
+		Model model = TestUtils.loadModelWithGenericModelLoader("employees.model", telosysToolsCfg);
+
 		assertNotNull(model);
 //		assertNull(genericModelLoader.getErrorMessage());
 //		assertNull(genericModelLoader.getParsingErrors());
@@ -87,8 +89,10 @@ public class ModelContentFromDSLModelTest {
 		System.out.println("getTelosysToolsCfg...");
 		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();
 		
-		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
-		Model model = genericModelLoader.loadModel("cars-and-drivers.model");
+//		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
+//		Model model = genericModelLoader.loadModel("cars-and-drivers.model");
+		Model model = TestUtils.loadModelWithGenericModelLoader("cars-and-drivers.model", telosysToolsCfg);
+		
 		System.out.println("Loading result :");
 //		System.out.println(" - Error message = " + genericModelLoader.getErrorMessage() );
 		assertNotNull(model);

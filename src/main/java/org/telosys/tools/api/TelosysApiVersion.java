@@ -23,7 +23,7 @@ package org.telosys.tools.api;
  */
 public class TelosysApiVersion {
 
-	public static final String VERSION = "3.2.2" ;
+	public static final String VERSION = "3.2.3" ;
 	
 	private TelosysApiVersion() {
 	}

@@ -50,8 +50,9 @@ public class ModelContentFromDBModelTest {
 		System.out.println("getTelosysToolsCfg...");
 		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();
 		
-		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
-		Model model = genericModelLoader.loadModel("bookstore.dbrep");
+//		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
+//		Model model = genericModelLoader.loadModel("bookstore.dbrep");
+		Model model = TestUtils.loadModelWithGenericModelLoader("bookstore.dbrep", telosysToolsCfg);
 		assertNotNull(model);
 //		assertNull(genericModelLoader.getErrorMessage());
 //		assertNull(genericModelLoader.getParsingErrors());

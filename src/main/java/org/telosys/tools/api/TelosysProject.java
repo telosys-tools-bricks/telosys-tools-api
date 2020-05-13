@@ -232,14 +232,14 @@ public class TelosysProject {
 	//-----------------------------------------------------------------------------------------------------
 	// Model loading DSL or Database model 
 	//-----------------------------------------------------------------------------------------------------
-	/**
-	 * Returns a new instance of GenericModelLoader
-	 * @return
-	 * @throws TelosysToolsException
-	 */
-	public GenericModelLoader getGenericModelLoader() throws TelosysToolsException {
-		return new GenericModelLoader(getTelosysToolsCfg());
-	}
+//	/**
+//	 * Returns a new instance of GenericModelLoader
+//	 * @return
+//	 * @throws TelosysToolsException
+//	 */
+//	public GenericModelLoader getGenericModelLoader() throws TelosysToolsException {
+//		return new GenericModelLoader(getTelosysToolsCfg());
+//	}
 
 	/**
 	 * Loads a 'model' from the given model file name <br>
@@ -251,8 +251,11 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public Model loadModel(final String modelFileName) throws TelosysToolsException {
-		GenericModelLoader genericModelLoader = getGenericModelLoader() ;
-		return genericModelLoader.loadModel(modelFileName);
+//		GenericModelLoader genericModelLoader = getGenericModelLoader() ;
+//		return genericModelLoader.loadModel(modelFileName);
+		String modelAbsolutePath = FileUtil.buildFilePath( getTelosysToolsCfg().getModelsFolderAbsolutePath(), modelFileName);
+		File modelFile = new File(modelAbsolutePath);
+		return loadModel( modelFile);
 	}
 	
 	/**
@@ -265,7 +268,8 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public Model loadModel(final File modelFile) throws TelosysToolsException {
-		GenericModelLoader genericModelLoader = getGenericModelLoader() ;
+//		GenericModelLoader genericModelLoader = getGenericModelLoader() ;
+		GenericModelLoader genericModelLoader = new GenericModelLoader() ;
 		return genericModelLoader.loadModel(modelFile);
 	}
 

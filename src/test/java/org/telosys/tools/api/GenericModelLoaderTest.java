@@ -48,12 +48,12 @@ public class GenericModelLoaderTest {
 		System.out.println("getTelosysToolsCfg...");
 		return telosysProject.getTelosysToolsCfg();
 	}	
-	private GenericModelLoader getGenericModelLoader() throws Exception {
-		TelosysProject telosysProject = initProject() ;
-		System.out.println("getTelosysToolsCfg...");
-		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();		
-		return new GenericModelLoader(telosysToolsCfg);
-	}
+//	private GenericModelLoader getGenericModelLoader() throws Exception {
+//		TelosysProject telosysProject = initProject() ;
+//		System.out.println("getTelosysToolsCfg...");
+//		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();		
+//		return new GenericModelLoader(telosysToolsCfg);
+//	}
 //	private void printErrorsOLD(String errorMessage, Map<String,String> parsingErrors) {
 //		System.out.println("Error message : " + errorMessage );
 //		System.out.println( parsingErrors.size() + " error(s) : " );
@@ -81,8 +81,11 @@ public class GenericModelLoaderTest {
 //		System.out.println("getTelosysToolsCfg...");
 //		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();
 		
-		GenericModelLoader genericModelLoader =  getGenericModelLoader();
-		Model model = genericModelLoader.loadModel("employees.model");
+//		GenericModelLoader genericModelLoader =  getGenericModelLoader();
+//		Model model = genericModelLoader.loadModel("employees.model");
+		Model model = TestUtils.loadModelWithGenericModelLoader("employees.model", getTelosysToolsCfg());
+		
+		
 		assertNotNull(model);
 		//assertNull(genericModelLoader.getErrorMessage());
 		//assertNull(genericModelLoader.getParsingErrors());
@@ -137,11 +140,12 @@ public class GenericModelLoaderTest {
 	@Test
 	public void testModelLoading_DSL_invalid() throws Exception {
 		System.out.println("========== Loading .model INVALID");
-		GenericModelLoader genericModelLoader =  getGenericModelLoader();
+//		GenericModelLoader genericModelLoader =  getGenericModelLoader();
 		Model model = null;
 		try {
 			// supposed to throw TelosysModelException
-			model = genericModelLoader.loadModel("employees_invalid.model");
+			//model = genericModelLoader.loadModel("employees_invalid.model");
+			model = TestUtils.loadModelWithGenericModelLoader("employees_invalid.model", getTelosysToolsCfg());
 			fail();
 		} catch (TelosysModelException tme) {
 			printErrors(tme.getMessage(), tme.getParsingErrors());
@@ -154,10 +158,11 @@ public class GenericModelLoaderTest {
 	@Test
 	public void testModelLoading_DSL_invalid2() throws Exception {
 		System.out.println("========== Loading .model INVALID");
-		GenericModelLoader genericModelLoader =  getGenericModelLoader();
+//		GenericModelLoader genericModelLoader =  getGenericModelLoader();
 		Model model = null;
 		try {
-			model = genericModelLoader.loadModel("employees_invalid.model");
+//			model = genericModelLoader.loadModel("employees_invalid.model");
+			model = TestUtils.loadModelWithGenericModelLoader("employees_invalid.model", getTelosysToolsCfg());
 			fail("Not supposed to reach this part of code.");
 		} catch (TelosysToolsException e) {
 			// with standard TelosysToolsException + cast
@@ -179,8 +184,11 @@ public class GenericModelLoaderTest {
 		System.out.println("getTelosysToolsCfg...");
 		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();
 		
-		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
-		Model model = genericModelLoader.loadModel("bookstore.dbrep");
+//		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
+//		Model model = genericModelLoader.loadModel("bookstore.dbrep");
+		
+		Model model = TestUtils.loadModelWithGenericModelLoader("bookstore.dbrep", telosysToolsCfg);
+		
 		assertNotNull(model);
 		//assertNull(genericModelLoader.getErrorMessage());
 		//assertNull(genericModelLoader.getParsingErrors());

@@ -33,29 +33,29 @@ import org.telosys.tools.repository.persistence.PersistenceManagerFactory;
  */
 public class GenericModelLoader {
 	
-	private final TelosysToolsCfg  telosysToolsCfg ;
+//	private final TelosysToolsCfg  telosysToolsCfg ;
 	
-	public GenericModelLoader(TelosysToolsCfg telosysToolsCfg) {
-		this.telosysToolsCfg = telosysToolsCfg ;
-	}
+//	public GenericModelLoader(TelosysToolsCfg telosysToolsCfg) {
+//		this.telosysToolsCfg = telosysToolsCfg ;
+//	}
 	
 	//-----------------------------------------------------------------------------------------------------
 	// Model loading DSL or Database model 
 	//-----------------------------------------------------------------------------------------------------
-	/**
-	 * Loads a 'model' from the given model file name <br>
-	 * The model name can be a 'database model' file name or a 'DSL model' file name <br>
-	 * e.g. : 'books.dbrep' or 'books.model'  <br>
-	 * 
-	 * @param modelFileName the model file name in the current project models 
-	 * @return
-	 * @throws TelosysToolsException
-	 */
-	public Model loadModel(final String modelFileName) throws TelosysToolsException{
-		String modelAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), modelFileName);
-		File file = new File(modelAbsolutePath);
-		return loadModel(file);
-	}
+//	/**
+//	 * Loads a 'model' from the given model file name <br>
+//	 * The model name can be a 'database model' file name or a 'DSL model' file name <br>
+//	 * e.g. : 'books.dbrep' or 'books.model'  <br>
+//	 * 
+//	 * @param modelFileName the model file name in the current project models 
+//	 * @return
+//	 * @throws TelosysToolsException
+//	 */
+//	public Model loadModel(final String modelFileName) throws TelosysToolsException{
+//		String modelAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), modelFileName);
+//		File file = new File(modelAbsolutePath);
+//		return loadModel(file);
+//	}
 	
 	/**
 	 * Loads a 'model' from the given model file <br>
