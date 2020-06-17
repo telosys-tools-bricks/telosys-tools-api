@@ -154,7 +154,7 @@ public class TelosysProjectTest {
 		
 		List<ErrorReport> errors = generationTaskResult.getErrors();
 		for ( ErrorReport error : errors ) {
-			System.out.println( " . " + error.getErrorType() + " : " + error.getMessage() );
+			System.out.println( " . " + error.getErrorMessage() );
 		}
 		return generationTaskResult ;
 	}

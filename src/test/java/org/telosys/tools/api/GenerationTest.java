@@ -74,8 +74,7 @@ public class GenerationTest {
 			for ( ErrorReport error : errors ) {
 				n++;
 				System.out.println("ERROR #" + n);
-				System.out.println(" . error type    : " + error.getErrorType() );
-				System.out.println(" . error message : " + error.getMessage() );
+				System.out.println(" . error message : " + error.getErrorMessage() );
 				Throwable ex = error.getException() ;
 				System.out.println(" . exception : " + ex.getMessage() );
 				Throwable cause = ex;
