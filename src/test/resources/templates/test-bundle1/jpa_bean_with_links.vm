@@ -186,8 +186,8 @@ formattedFieldName(12) = "$link.formattedFieldName(12)"
 fieldType              = "$link.fieldType"  
 formattedFieldType(0)  = "$link.formattedFieldType(0)" 
 formattedFieldType(20) = "$link.formattedFieldType(20)" 
-fieldSimpleType        = "$link.fieldSimpleType" 
-fieldFullType          = "$link.fieldFullType"
+## REMOVE in v 3.3.0  :  fieldSimpleType        = "$link.fieldSimpleType" 
+## REMOVE in v 3.3.0  :  fieldFullType          = "$link.fieldFullType"
 
 //--- Target entity 
 targetEntity.name      = "$link.targetEntity.name"

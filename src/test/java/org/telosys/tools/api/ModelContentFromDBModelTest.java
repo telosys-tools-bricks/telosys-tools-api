@@ -73,7 +73,7 @@ public class ModelContentFromDBModelTest {
 			System.out.println(" . " + link );
 			assertNotNull(link.getId());
 			assertNotNull(link.getFieldName());
-			assertNotNull(link.getFieldType());
+			// REMOVED in v 3.3.0 : assertNotNull(link.getFieldType());
 			if ( link.getSourceTableName().equals("BOOK") && link.getTargetTableName().equals("PUBLISHER") ) {
 				assertFalse(link.isSelected()); //Link not selected ( used="false" in XML file )
 			}

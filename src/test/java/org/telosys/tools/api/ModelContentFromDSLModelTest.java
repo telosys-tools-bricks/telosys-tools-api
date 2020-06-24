@@ -77,7 +77,7 @@ public class ModelContentFromDSLModelTest {
 		for ( Link link : links ) {
 			assertNotNull(link.getId());
 			assertNotNull(link.getFieldName());
-			assertNotNull(link.getFieldType());
+			// REMOVED in v 3.3.0 : assertNotNull(link.getFieldType());
 			assertEquals(Cardinality.MANY_TO_ONE, link.getCardinality() );
 		}
 	}
@@ -115,8 +115,8 @@ public class ModelContentFromDSLModelTest {
 			assertNotNull(link.getId());
 			System.out.println("getFieldName() : " + link.getFieldName() );
 			assertNotNull(link.getFieldName());
-			System.out.println("getFieldType() : " + link.getFieldType() );
-			assertNotNull(link.getFieldType());
+			// REMOVED in v 3.3.0 : System.out.println("getFieldType() : " + link.getFieldType() );
+			// REMOVED in v 3.3.0 : assertNotNull(link.getFieldType());
 			System.out.println("getCardinality() : " + link.getCardinality() );
 			assertEquals(Cardinality.MANY_TO_ONE, link.getCardinality() );
 		}
