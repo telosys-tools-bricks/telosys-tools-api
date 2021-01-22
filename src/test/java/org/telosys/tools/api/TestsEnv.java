@@ -36,7 +36,7 @@ public class TestsEnv {
 	}
 
 	public static String createProjectFolder(String folderName ) {
-		File file = createVoidFolder( folderName ); 
+		File file = createVoidFolder( folderName + "-" + System.getProperty("mavenSurefireForkNumber") );
 		return file.getAbsolutePath();
 	}
 
