@@ -6,11 +6,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
+import java.io.File;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.generic.model.Attribute;
 import org.telosys.tools.generic.model.Cardinality;
@@ -20,19 +23,33 @@ import org.telosys.tools.generic.model.Model;
 
 public class ModelContentFromDSLModelTest {
 	
+	// JUnit RULE with JUnit TemporaryFolder
+	// the TemporaryFolder is different fro each test and deleted after each test
+	@Rule 
+	public TemporaryFolder tmpFolder = new TemporaryFolder(); 
+
+	private String createProjectFolder() throws Exception {
+		File createdFolder = tmpFolder.newFolder("myproject");
+		System.out.println("createProjectFolder : " + createdFolder.getAbsolutePath() );
+		assertTrue(createdFolder.exists());
+		assertTrue(createdFolder.isDirectory());
+		return createdFolder.getAbsolutePath();
+	}
+		
 	@Before
 	public void setUp() throws Exception {
-		System.out.println("Before test");
+		// System.out.println("Before test");
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		System.out.println("After test");
+		// System.out.println("After test");
 	}
 
 	private TelosysProject initProject() throws Exception {
 
-		String projectFolderFullPath = TestsEnv.createProjectFolder("myproject");
+		//String projectFolderFullPath = TestsEnv.createProjectFolder("myproject");
+		String projectFolderFullPath = createProjectFolder();
 		TelosysProject telosysProject = new TelosysProject(projectFolderFullPath);
 		
 		System.out.println("Init project...");

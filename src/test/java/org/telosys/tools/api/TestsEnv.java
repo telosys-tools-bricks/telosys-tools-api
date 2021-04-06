@@ -2,17 +2,17 @@ package org.telosys.tools.api;
 
 import java.io.File;
 
-import org.telosys.tools.commons.DirUtil;
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.env.TelosysToolsEnv;
 
 public class TestsEnv {
 	
-	public final static String REPO_FILENAME = "DERBY-Tests-Jan-2014-10.dbrep" ; 
-	public final static String BUNDLE_NAME   = "basic-templates-TT210" ; 
+//	public final static String REPO_FILENAME = "DERBY-Tests-Jan-2014-10.dbrep" ; 
+//	public final static String BUNDLE_NAME   = "basic-templates-TT210" ; 
 
 	public  final static String SRC_TEST_RESOURCES = "src/test/resources/" ;
 	
+	/***
 	private final static String TARGET_TESTS_TMP_DIR = "target/tests-tmp/" ;
 
 	private static File createVoidFolder(String folderName ) {
@@ -39,20 +39,7 @@ public class TestsEnv {
 		File file = createVoidFolder( folderName ); 
 		return file.getAbsolutePath();
 	}
-
-//	public static String initProjectFolder(String folderName ) {
-//		File file = getTmpExistingFolder( folderName ); 
-//		return file.getAbsolutePath();
-//		
-//		//--- Initialize project with 'dbrep' files copied from "src/test/resources" 
-//		System.out.println("initializing 'dbrep' file : " + REPO_FILENAME );
-//		initDbRepFile(telosysProject, REPO_FILENAME);
-//		
-//		//--- Initialize project with templates copied from "src/test/resources" 
-//		System.out.println("initializing templates for bundle : " + bundleName );
-//		initBundle(telosysProject, bundleName);
-//		
-//	}
+***/
 	
 	public static void copyDbModelFile(String projectFolderAbsolutePath, String dbrepFileName) throws Exception {
 		System.out.println("initializing 'DB model' in project from file '" + dbrepFileName +"'" );

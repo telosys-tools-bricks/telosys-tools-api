@@ -1,19 +1,14 @@
 package org.telosys.tools.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.telosys.tools.commons.bundles.TargetDefinition;
 import org.telosys.tools.commons.bundles.TargetsDefinitions;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
@@ -22,7 +17,26 @@ import org.telosys.tools.generator.task.ErrorReport;
 import org.telosys.tools.generator.task.GenerationTaskResult;
 import org.telosys.tools.generic.model.Model;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 public class TelosysProjectTest {
+	
+	// JUnit RULE with JUnit TemporaryFolder
+	// the TemporaryFolder is different fro each test and deleted after each test
+	@Rule 
+	public TemporaryFolder tmpFolder = new TemporaryFolder(); 
+
+	private String createProjectFolder() throws Exception {
+		File createdFolder = tmpFolder.newFolder("myproject");
+		System.out.println("createProjectFolder : " + createdFolder.getAbsolutePath() );
+		assertTrue(createdFolder.exists());
+		assertTrue(createdFolder.isDirectory());
+		return createdFolder.getAbsolutePath();
+	}
 	
 	@Before
 	public void setUp() throws Exception {
@@ -36,7 +50,8 @@ public class TelosysProjectTest {
 
 	private TelosysProject initProject() throws Exception {
 
-		String projectFolderFullPath = TestsEnv.createProjectFolder("myproject");
+		//String projectFolderFullPath = TestsEnv.createProjectFolder("myproject");
+		String projectFolderFullPath = createProjectFolder();
 		TelosysProject telosysProject = new TelosysProject(projectFolderFullPath);
 		
 		System.out.println("Init project...");
