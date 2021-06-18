@@ -48,6 +48,8 @@ import org.telosys.tools.stats.services.CounterFileManager;
 
 public class TelosysProject {
 
+	private static final boolean STATS_FLAG = false;
+	
 	private final String projectFolderAbsolutePath ;
 	private final TelosysToolsLogger telosysToolsLogger ;
 	private TelosysToolsCfg telosysToolsCfg = null ;
@@ -348,10 +350,14 @@ public class TelosysProject {
 		return generationTaskResult ;
 	}
 	
-	private int afterGeneration() throws TelosysToolsException {
-		String fileName = FileUtil.buildFilePath( getTelosysToolsCfg().getTelosysToolsFolderAbsolutePath(), "/stats/gen.count" );
-		CounterFileManager counterFileManager = new CounterFileManager(fileName, true);
-		return counterFileManager.incrementCounter() ;
+	private void afterGeneration() throws TelosysToolsException {
+		if ( STATS_FLAG ) {
+			String fileName = FileUtil.buildFilePath( 
+					getTelosysToolsCfg().getTelosysToolsFolderAbsolutePath(), 
+					"/stats/gen.count" );
+			CounterFileManager counterFileManager = new CounterFileManager(fileName, true);
+			counterFileManager.incrementCounter() ;
+		} 
 	}
 
 	//-----------------------------------------------------------------------------------------------------
