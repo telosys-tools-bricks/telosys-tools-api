@@ -87,7 +87,7 @@ public class TelosysProject {
 	// Project initialization
 	//-----------------------------------------------------------------------------------------------------
 	public String initProject() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("Project initialization \n");
 		sb.append("Project folder : '" + projectFolderAbsolutePath + "' \n");
 		sb.append("\n");
@@ -96,7 +96,7 @@ public class TelosysProject {
 		return sb.toString();		
 	}
 	
-	public void initProject(StringBuffer sb) {
+	public void initProject(StringBuilder sb) {
 		EnvironmentManager environmentManager = new EnvironmentManager( projectFolderAbsolutePath );
 		// Init environment files
 		environmentManager.initEnvironment(sb);
@@ -232,15 +232,6 @@ public class TelosysProject {
 	//-----------------------------------------------------------------------------------------------------
 	// Model loading DSL or Database model 
 	//-----------------------------------------------------------------------------------------------------
-//	/**
-//	 * Returns a new instance of GenericModelLoader
-//	 * @return
-//	 * @throws TelosysToolsException
-//	 */
-//	public GenericModelLoader getGenericModelLoader() throws TelosysToolsException {
-//		return new GenericModelLoader(getTelosysToolsCfg());
-//	}
-
 	/**
 	 * Loads a 'model' from the given model file name <br>
 	 * The model name can be a 'database model' file name or a 'DSL model' file name <br>
@@ -251,8 +242,6 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public Model loadModel(final String modelFileName) throws TelosysToolsException {
-//		GenericModelLoader genericModelLoader = getGenericModelLoader() ;
-//		return genericModelLoader.loadModel(modelFileName);
 		String modelAbsolutePath = FileUtil.buildFilePath( getTelosysToolsCfg().getModelsFolderAbsolutePath(), modelFileName);
 		File modelFile = new File(modelAbsolutePath);
 		return loadModel( modelFile);
@@ -268,7 +257,6 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public Model loadModel(final File modelFile) throws TelosysToolsException {
-//		GenericModelLoader genericModelLoader = getGenericModelLoader() ;
 		GenericModelLoader genericModelLoader = new GenericModelLoader() ;
 		return genericModelLoader.loadModel(modelFile);
 	}
@@ -317,8 +305,6 @@ public class TelosysProject {
 			String bundleName, List<TargetDefinition> targetsList, boolean copyResources 
 			) throws TelosysToolsException {
 		
-		TelosysToolsCfg telosysToolsCfg = getTelosysToolsCfg();
-
 		//----- ENTITIES TO BE USED FOR CODE GENERATION
 		List<String> selectedEntities = entitiesNames ;
 		if ( selectedEntities == null ) {
@@ -353,7 +339,7 @@ public class TelosysProject {
 		GenerationTask generationTask = new StandardGenerationTask(
 				model, selectedEntities, 
 				bundleName, selectedTemplatesTargets, selectedResourcesTargets, 
-				telosysToolsCfg, this.telosysToolsLogger );
+				getTelosysToolsCfg(), this.telosysToolsLogger );
 		
 		GenerationTaskResult generationTaskResult = generationTask.launch();
 		
@@ -382,10 +368,8 @@ public class TelosysProject {
 		File modelsFolder = new File( getTelosysToolsCfg().getModelsFolderAbsolutePath() );
 		if ( modelsFolder.exists() && modelsFolder.isDirectory() ) {
 			for ( File file : modelsFolder.listFiles() ) {
-				if ( file.isFile() ) {
-					if ( ApiUtil.isModelFile(file) ) {
-						list.add(file);
-					}
+				if ( file.isFile() && ApiUtil.isModelFile(file) ) {
+					list.add(file);
 				}
 			}
 		}
