@@ -25,17 +25,15 @@ import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.PropertiesManager;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
-import org.telosys.tools.generator.GeneratorException;
 import org.telosys.tools.generator.task.GenerationTaskResult;
 import org.telosys.tools.generic.model.Model;
 
 public class TelosysLauncher {
 	
-	private final static String LAUNCHERS = "launchers" ; // "launchers" folder in "TelosysTools"
-	private final static String MODEL  = "model" ; // property name
-	private final static String BUNDLE = "bundle" ; // property name
+	private static final String LAUNCHERS = "launchers" ; // "launchers" folder in "TelosysTools"
+	private static final String MODEL  = "model" ; // property name
+	private static final String BUNDLE = "bundle" ; // property name
 	
-	private final String projectDir ;
 	private final String launcherName ;
 	private final String launchersDir ;
 	
@@ -54,7 +52,6 @@ public class TelosysLauncher {
 	 */
 	public TelosysLauncher(String projectDir, String launcherName) {
 		super();
-		this.projectDir = projectDir;
 		this.launcherName = launcherName;
 		this.telosysProject = new TelosysProject(projectDir);
 		
@@ -65,7 +62,7 @@ public class TelosysLauncher {
 			throw new RuntimeException("Cannot load Telosys configuration", e);
 		}
 		
-		this.launchersDir = buildLaunchersDir(this.projectDir);
+		this.launchersDir = buildLaunchersDir();
 		
 		// Try to load the launcher properties
 		Properties properties = loadLauncherProperties(this.launchersDir);
@@ -101,17 +98,17 @@ public class TelosysLauncher {
 		return entities;
 	}
 
-	private final String buildLaunchersDir(String projectDir) {
+	private final String buildLaunchersDir() {
 		// Build a path like "{project-directory}/TelosysTools/launchers"
-		String launchersDir = FileUtil.buildFilePath(telosysToolsCfg.getTelosysToolsFolderAbsolutePath(), LAUNCHERS );
-		File dir = new File(launchersDir) ;
+		String dirPath = FileUtil.buildFilePath(telosysToolsCfg.getTelosysToolsFolderAbsolutePath(), LAUNCHERS );
+		File dir = new File(dirPath) ;
 		if ( ! dir.exists() ) {
 			throw new RuntimeException("'" + dir + "' doesn't exist");
 		}
 		if ( ! dir.isDirectory() ) {
 			throw new RuntimeException("'" + dir + "' is not a directory");
 		}
-		return launchersDir ;
+		return dirPath ;
 	}
 	
 	private final Properties loadLauncherProperties(String launchersDir) {
@@ -150,16 +147,15 @@ public class TelosysLauncher {
 		File file = new File(fileName);
 		if ( ! file.exists() ) {
 			// No ".entities" file => use all entities
-			return new LinkedList<String>();
+			return new LinkedList<>();
 		}
 		else {
 			EntitiesFileReader reader = new EntitiesFileReader(fileName);
-			List<String> entities = reader.loadLines();
-			return entities;
+			return reader.loadLines();
 		}
 	}
 	
-	public GenerationTaskResult launchGeneration() throws TelosysToolsException, GeneratorException {
+	public GenerationTaskResult launchGeneration() throws TelosysToolsException {
 				
 		// Try to load the model
 		Model model = telosysProject.loadModel(modelName);

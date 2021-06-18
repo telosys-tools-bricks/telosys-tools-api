@@ -22,12 +22,14 @@ import org.telosys.tools.users.crypto.PasswordEncoder;
 
 public class TelosysUsers {
 
+	private TelosysUsers() {
+	}
+	
 	/**
 	 * Initializes the users file name. <br>
 	 * Supposed to be called before any other method
 	 */
 	public static final void setUsersFileName(String fileName) {
-		//UsersFileName.setSpecificFileName(fileName);
 		UsersManager.setUsersFileName(fileName);
 	}
 	

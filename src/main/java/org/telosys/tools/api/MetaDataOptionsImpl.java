@@ -15,8 +15,6 @@
  */
 package org.telosys.tools.api;
 
-import org.telosys.tools.api.MetaDataOptions;
-
 /**
  * Standard implementation for MetaDataOptions interface
  * 

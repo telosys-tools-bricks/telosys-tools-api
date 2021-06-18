@@ -228,10 +228,6 @@ public class DbActionMetaData {
     	sb.append("Table '" + tableName + "' columns : \n");
 		for ( ColumnMetaData c : columns ) {
 			
-			String length = Integer.toString( c.getCharOctetLength() );
-			if ( c.getDecimalDigits() != 0 ) {
-				length = length + "." + c.getDecimalDigits();
-			}
 			sb.append(" . ");
 			sb.append("[" + c.getOrdinalPosition() + "]" );
 			sb.append(" " );
@@ -259,20 +255,6 @@ public class DbActionMetaData {
 				sb.append(" " );
 			}
 			sb.append("defaultValue=" + c.getDefaultValue() );
-			
-//			String s = 
-//					"[" +c.getOrdinalPosition() + "]"
-//					+ " " + c.getColumnName() + " : " 
-//					+ "  " + c.getDbTypeName() 
-//					+ "  (jdbc:" + c.getJdbcTypeCode()+")" 
-//					+ "  size=" + c.getSize()
-//					+ "  " + ( c.isNotNull() ? "NOT NULL" : "" )
-//					+ "  charOctetLength=" + c.getCharOctetLength()
-//					+ "  decimalDigits=" + c.getDecimalDigits()
-//					+ "  numPrecRadix=" + c.getNumPrecRadix()
-//					+ "  defaultValue=" + c.getDefaultValue()
-//					;
-			
 			sb.append("\n");
 		}
     	sb.append("\n");

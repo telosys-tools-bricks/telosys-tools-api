@@ -25,14 +25,13 @@ import org.telosys.tools.commons.TelosysToolsException;
  * @author Laurent GUERIN
  * 
  */
-public class TelosysModelException extends TelosysToolsException // Exception 
-{
+public class TelosysModelException extends TelosysToolsException {
+	
 	private static final long serialVersionUID = 1L;
 	
 	private final File modelFile ;
 	
-//    private final Map<String,String> parsingErrors ;
-    private final Map<String,List<String>> parsingErrors ; // v 3.2.2
+    private final Map<String,List<String>> parsingErrors ;
 
     public TelosysModelException(File modelFile, String message) {
         super(message);
@@ -40,8 +39,7 @@ public class TelosysModelException extends TelosysToolsException // Exception
         this.parsingErrors = null ;
     }
 
-//    public TelosysModelException(File modelFile, String message, Map<String,String> parsingErrors) {
-    public TelosysModelException(File modelFile, String message, Map<String,List<String>> parsingErrors) { // v 3.2.2
+    public TelosysModelException(File modelFile, String message, Map<String,List<String>> parsingErrors) {
         super(message);
         this.modelFile = modelFile ;
         this.parsingErrors = parsingErrors ;
@@ -54,8 +52,7 @@ public class TelosysModelException extends TelosysToolsException // Exception
     public boolean hasParsingErrors() {
     	return parsingErrors != null ;
     }
-//    public Map<String, String> getParsingErrors() {
-    public Map<String, List<String>> getParsingErrors() { // v 3.2.2
+    public Map<String, List<String>> getParsingErrors() {
     	return parsingErrors ;
     }
 }

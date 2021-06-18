@@ -27,6 +27,9 @@ public class TelosysAPI {
 	
 	private static String usersFileName = null ;
 	
+	private TelosysAPI() {
+	}
+	
 	/**
 	 * Set the global root directory (absolute path) <br>
 	 * e.g. '/foo/bar' <br>

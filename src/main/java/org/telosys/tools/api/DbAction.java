@@ -196,15 +196,6 @@ public class DbAction {
 	 */
 	public final DbInfo getDatabaseInfo(Integer id) throws TelosysToolsException {
 		Connection con = getConnection(id);
-//		try {
-//			MetaDataManager metaDataManager = new MetaDataManager();
-//			return metaDataManager.getDatabaseInfo(con);
-//		} catch (SQLException e) {
-//			throw new TelosysToolsException("Cannot get database information", e);
-//		}
-//		finally {
-//			closeConnection(con);
-//		}
 		return getDbInfoAndClose(con); 
 	}
 	
