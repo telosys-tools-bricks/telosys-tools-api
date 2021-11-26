@@ -165,7 +165,12 @@ attribute.databaseSize = $attribute.databaseSize
 attribute.databaseComment = "$attribute.databaseComment"
 attribute.databaseDefaultValue = "$attribute.databaseDefaultValue"
 attribute.databaseType = "$attribute.databaseType"
-attribute.databaseTypeWithSize = "$attribute.databaseTypeWithSize"
+## New in ver 3.4.0
+## attribute.databaseTypeWithSize = "$attribute.databaseTypeWithSize"
+attribute.sqlColumnName        = "$attribute.sqlColumnName"
+attribute.sqlColumnType        = "$attribute.sqlColumnType"
+attribute.sqlColumnConstraints = "$attribute.sqlColumnConstraints"
+   
 //--------
 #end 
 
