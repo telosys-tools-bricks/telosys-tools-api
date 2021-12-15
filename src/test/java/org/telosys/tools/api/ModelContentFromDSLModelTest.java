@@ -1,11 +1,5 @@
 package org.telosys.tools.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-
 import java.io.File;
 import java.util.List;
 
@@ -16,10 +10,16 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.generic.model.Attribute;
-import org.telosys.tools.generic.model.Cardinality;
 import org.telosys.tools.generic.model.Entity;
 import org.telosys.tools.generic.model.Link;
 import org.telosys.tools.generic.model.Model;
+import org.telosys.tools.generic.model.enums.Cardinality;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ModelContentFromDSLModelTest {
 	
