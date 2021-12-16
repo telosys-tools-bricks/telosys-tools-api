@@ -407,7 +407,7 @@ public class TelosysProject {
 		else {
 			// No suffix in the name => try to add all the suffixes 
 			for ( File file : models ) {
-				if ( file.getName().equals(modelName + ApiUtil.MODEL_SUFFIX) ) {
+				if ( file.getName().equals(modelName + ApiUtil.DSL_MODEL_FILE_SUFFIX) ) {
 					modelFile = file ;
 					n++;				
 				}

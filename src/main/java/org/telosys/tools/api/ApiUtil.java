@@ -17,9 +17,12 @@ package org.telosys.tools.api;
 
 import java.io.File;
 
+import org.telosys.tools.commons.StrUtil;
+
 public class ApiUtil {
 	
-	protected static final String  MODEL_SUFFIX   = ".model"  ;
+	protected static final String  DSL_MODEL_FILE_SUFFIX   = ".model" ;
+	protected static final String  DSL_MODEL_FOLDER_SUFFIX = "_model" ;
 
 	protected static final String  DBREP_SUFFIX   = ".dbrep"  ;
 	protected static final String  DBMODEL_SUFFIX = ".dbmodel"  ;
@@ -33,7 +36,7 @@ public class ApiUtil {
 	 * @return
 	 */
 	public static final boolean isDslModelFile(File file) {
-		return file.getName().endsWith(MODEL_SUFFIX) ;
+		return file.getName().endsWith(DSL_MODEL_FILE_SUFFIX) ;
 	}
 
 	/**
@@ -52,5 +55,30 @@ public class ApiUtil {
 	 */
 	public static final boolean isModelFile(File file) {
 		return isDslModelFile(file) || isDbModelFile(file) ;
+	}
+	
+	/**
+	 * Get the DSL model folder for the given DSL model file
+	 * @param modelFile
+	 * @param checkExistence if true check existence of the folder
+	 * @return the folder File or null if no folder
+	 */
+	public static final File getDslModelFolder(File modelFile, boolean checkExistence) {
+		String modelFilePath = modelFile.getAbsolutePath();
+		if ( modelFilePath.endsWith(DSL_MODEL_FILE_SUFFIX) ) {
+			String s = StrUtil.removeEnd(modelFilePath, DSL_MODEL_FILE_SUFFIX); 
+			String modelFileFolder = s + DSL_MODEL_FOLDER_SUFFIX ;
+			File modelFolder = new File(modelFileFolder);
+			if ( checkExistence ) {
+				if ( modelFolder.exists() && modelFolder.isDirectory() ) {
+					return modelFolder ;
+				}
+			}
+			else {
+				// Keep it as is 
+				return modelFolder ;
+			}
+		}
+		return null ;
 	}
 }
