@@ -33,12 +33,18 @@ public class TelosysModelException extends TelosysToolsException {
 	
     private final Map<String,List<String>> parsingErrors ;
 
-    public TelosysModelException(File modelFile, String message) {
-        super(message);
-        this.modelFile = modelFile ;
-        this.parsingErrors = null ;
-    }
+//    public TelosysModelException(File modelFile, String message) {
+//        super(message);
+//        this.modelFile = modelFile ;
+//        this.parsingErrors = null ;
+//    }
 
+    /**
+     * Constructor
+     * @param modelFile
+     * @param message
+     * @param parsingErrors
+     */
     public TelosysModelException(File modelFile, String message, Map<String,List<String>> parsingErrors) {
         super(message);
         this.modelFile = modelFile ;
