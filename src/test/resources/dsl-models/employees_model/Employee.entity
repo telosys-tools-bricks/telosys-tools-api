@@ -1,5 +1,5 @@
 Employee {
-	id : int {@Id, @NotNull}; // the id
+	id : int {@Id  @NotNull}; // the id
 	firstName : string { @SizeMax(40) } ;
 	birthDate : date { @Past } ;
 	country : Country { @Embedded } ;

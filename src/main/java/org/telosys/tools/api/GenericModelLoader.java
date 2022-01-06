@@ -40,7 +40,7 @@ public class GenericModelLoader {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public Model loadModel(final File file) throws TelosysToolsException {	
+	public Model loadModel(final File file) throws TelosysModelException { // TelosysToolsException {	
 		if ( file.exists() ) {
 			if ( file.isFile() ) {
 				if ( ApiUtil.isDbModelFile(file) ) {
@@ -52,33 +52,43 @@ public class GenericModelLoader {
 					return loadDslModel(file);
 				}
 				else {
-					throw new TelosysToolsException("Invalid file extension '" + file.getName() + "' ");
+//					throw new TelosysToolsException("Invalid file extension '" + file.getName() + "' ");
+					throw new TelosysModelException(file, "Invalid file extension '" + file.getName() + "' ");
 				}
 			}
 			else {
-				throw new TelosysToolsException("Not a file '" + file.getName() + "' ");				
+//				throw new TelosysToolsException("Not a file '" + file.getName() + "' ");				
+				throw new TelosysModelException(file, "Not a file '" + file.getName() + "' ");				
 			}
 		}
-		throw new TelosysToolsException("File '" + file.getAbsolutePath() + "' not found");
+//		throw new TelosysToolsException("File '" + file.getAbsolutePath() + "' not found");
+		throw new TelosysModelException(file, "File '" + file.getAbsolutePath() + "' not found");
 	}
 	
 	//-----------------------------------------------------------------------------------------------------
 	// Database model loading ('dbrep') 
 	//-----------------------------------------------------------------------------------------------------
-	private Model loadDatabaseModel( File repositoryFile ) throws TelosysToolsException {
+	private Model loadDatabaseModel( File repositoryFile ) throws TelosysModelException { // TelosysToolsException {
 		PersistenceManager persistenceManager = PersistenceManagerFactory.createPersistenceManager(repositoryFile);
-		return persistenceManager.load();
+		try {
+			return persistenceManager.load();
+		} catch (TelosysToolsException e) {
+			throw new TelosysModelException(repositoryFile, e.getMessage());
+		}
 	}
 
 	//-----------------------------------------------------------------------------------------------------
 	// DSL model loading 
 	//-----------------------------------------------------------------------------------------------------
-	private Model loadDslModel(final File modelFile) throws TelosysToolsException {
+	private Model loadDslModel(final File modelFile) throws TelosysModelException { // TelosysToolsException {
 		DslModelManager modelManager = new DslModelManager();
 		Model model = modelManager.loadModel( modelFile );
 		if ( model == null ) {
 			// Cannot load model => Specific Exception with parsing errors
-			throw new TelosysModelException(modelFile, modelManager.getErrorMessage(), modelManager.getErrorsMap());
+//			throw new TelosysModelException(modelFile, modelManager.getErrorMessage(), modelManager.getErrorsMap());
+			
+			// v 3.4.0
+			throw new TelosysModelException(modelFile, modelManager.getErrorMessage(), modelManager.getErrors());
 		}
 		return model ;
 	}

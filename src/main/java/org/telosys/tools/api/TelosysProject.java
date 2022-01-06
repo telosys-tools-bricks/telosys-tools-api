@@ -107,18 +107,18 @@ public class TelosysProject {
 	//-----------------------------------------------------------------------------------------------------
 	// Project configuration 
 	//-----------------------------------------------------------------------------------------------------
-	public TelosysToolsCfg loadTelosysToolsCfg() throws TelosysToolsException {
+	public TelosysToolsCfg loadTelosysToolsCfg() {
 		TelosysToolsCfgManager cfgManager = new TelosysToolsCfgManager( projectFolderAbsolutePath );
 		this.telosysToolsCfg = cfgManager.loadTelosysToolsCfg() ;
 		return this.telosysToolsCfg;
 	}
 	
-	public void saveTelosysToolsCfg(TelosysToolsCfg telosysToolsCfg) throws TelosysToolsException {
+	public void saveTelosysToolsCfg(TelosysToolsCfg telosysToolsCfg) {
 		TelosysToolsCfgManager cfgManager = new TelosysToolsCfgManager( projectFolderAbsolutePath );
 		cfgManager.saveTelosysToolsCfg(telosysToolsCfg);
 	}
 	
-	public TelosysToolsCfg getTelosysToolsCfg() throws TelosysToolsException {
+	public TelosysToolsCfg getTelosysToolsCfg() {
 		if ( this.telosysToolsCfg == null ) {
 			loadTelosysToolsCfg();
 		}
@@ -243,7 +243,7 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public Model loadModel(final String modelFileName) throws TelosysToolsException {
+	public Model loadModel(final String modelFileName) throws TelosysModelException { // TelosysToolsException {
 		String modelAbsolutePath = FileUtil.buildFilePath( getTelosysToolsCfg().getModelsFolderAbsolutePath(), modelFileName);
 		File modelFile = new File(modelAbsolutePath);
 		return loadModel( modelFile);
@@ -258,7 +258,7 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public Model loadModel(final File modelFile) throws TelosysToolsException {
+	public Model loadModel(final File modelFile) throws TelosysModelException { // TelosysToolsException {
 		GenericModelLoader genericModelLoader = new GenericModelLoader() ;
 		return genericModelLoader.loadModel(modelFile);
 	}

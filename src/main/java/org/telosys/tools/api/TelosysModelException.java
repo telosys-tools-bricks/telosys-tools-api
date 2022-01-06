@@ -16,39 +16,39 @@
 package org.telosys.tools.api;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
 
-import org.telosys.tools.commons.TelosysToolsException;
+import org.telosys.tools.dsl.DslModelErrors;
 
 /**
  * @author Laurent GUERIN
  * 
  */
-public class TelosysModelException extends TelosysToolsException {
+public class TelosysModelException extends Exception { // TelosysToolsException {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private final File modelFile ;
 	
-    private final Map<String,List<String>> parsingErrors ;
-
-//    public TelosysModelException(File modelFile, String message) {
-//        super(message);
-//        this.modelFile = modelFile ;
-//        this.parsingErrors = null ;
-//    }
+//    private final Map<String,List<String>> parsingErrors ;
+    private final transient DslModelErrors dslModelErrors ;
 
     /**
      * Constructor
      * @param modelFile
      * @param message
-     * @param parsingErrors
+     * @param dslModelErrors
      */
-    public TelosysModelException(File modelFile, String message, Map<String,List<String>> parsingErrors) {
+//    public TelosysModelException(File modelFile, String message, Map<String,List<String>> parsingErrors) {
+    public TelosysModelException(File modelFile, String message, DslModelErrors dslModelErrors) {
         super(message);
         this.modelFile = modelFile ;
-        this.parsingErrors = parsingErrors ;
+        this.dslModelErrors = dslModelErrors ;
+    }
+
+    public TelosysModelException(File modelFile, String message) {
+        super(message);
+        this.modelFile = modelFile ;
+        this.dslModelErrors = new DslModelErrors();
     }
     
     public File getModelFile() {
@@ -56,9 +56,12 @@ public class TelosysModelException extends TelosysToolsException {
     }
     
     public boolean hasParsingErrors() {
-    	return parsingErrors != null ;
+    	return dslModelErrors != null && dslModelErrors.getNumberOfErrors() > 0 ;
     }
-    public Map<String, List<String>> getParsingErrors() {
-    	return parsingErrors ;
+//    public Map<String, List<String>> getParsingErrors() {
+//    	return parsingErrors ;
+//    }
+    public DslModelErrors getDslModelErrors() {
+    	return dslModelErrors ;
     }
 }

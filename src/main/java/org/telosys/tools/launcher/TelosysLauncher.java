@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import org.telosys.tools.api.TelosysModelException;
 import org.telosys.tools.api.TelosysProject;
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.PropertiesManager;
@@ -56,11 +57,12 @@ public class TelosysLauncher {
 		this.telosysProject = new TelosysProject(projectDir);
 		
 		// Try to load the Telosys project configuration
-		try {
-			this.telosysToolsCfg = telosysProject.loadTelosysToolsCfg();
-		} catch (TelosysToolsException e) {
-			throw new RuntimeException("Cannot load Telosys configuration", e);
-		}
+//		try {
+//			this.telosysToolsCfg = telosysProject.loadTelosysToolsCfg();
+//		} catch (TelosysToolsException e) {
+//			throw new RuntimeException("Cannot load Telosys configuration", e);
+//		}
+		this.telosysToolsCfg = telosysProject.loadTelosysToolsCfg();
 		
 		this.launchersDir = buildLaunchersDir();
 		
@@ -155,7 +157,7 @@ public class TelosysLauncher {
 		}
 	}
 	
-	public GenerationTaskResult launchGeneration() throws TelosysToolsException {
+	public GenerationTaskResult launchGeneration() throws TelosysToolsException, TelosysModelException {
 				
 		// Try to load the model
 		Model model = telosysProject.loadModel(modelName);
