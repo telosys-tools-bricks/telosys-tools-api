@@ -1,3 +1,6 @@
+
+#Foo(abc)
+
 Employee {
 	id : int {@Id  @NotNull}; // the id
 	firstName : string { @SizeMax(40) } ;
