@@ -13,25 +13,41 @@ public class TestUtils {
 
 	private TestUtils(){}
 	
+//	/**
+//	 * @param pathInModels  file/folder path in "TelosysTools/models"
+//	 * @param telosysToolsCfg
+//	 * @return
+//	 * @throws TelosysToolsException
+//	 */
+//	public static Model loadModelWithGenericModelLoader(String pathInModels, TelosysToolsCfg telosysToolsCfg) throws TelosysModelException { // TelosysToolsException {
+//		
+//		String modelAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), pathInModels);
+//		File modelFile = new File(modelAbsolutePath);
+//
+//		GenericModelLoader loader = new GenericModelLoader();
+//		try {
+//			return loader.loadModel(modelFile);
+//		} catch (TelosysModelException e) {
+//			printErrors(e.getMessage(), e.getDslModelErrors());
+//			throw e;
+//		}
+//	}
+	
 	/**
-	 * @param modelFileName just the short file name ( eg "foo.model" or "foo.dbrep" )
-	 * @param telosysToolsCfg
+	 * @param telosysProject
+	 * @param modelName
 	 * @return
-	 * @throws TelosysToolsException
+	 * @throws TelosysModelException
 	 */
-	public static Model loadModelWithGenericModelLoader(String modelFileName, TelosysToolsCfg telosysToolsCfg) throws TelosysModelException { // TelosysToolsException {
-		
-		String modelAbsolutePath = FileUtil.buildFilePath( telosysToolsCfg.getModelsFolderAbsolutePath(), modelFileName);
-		File modelFile = new File(modelAbsolutePath);
-
-		GenericModelLoader loader = new GenericModelLoader();
+	public static Model loadModel(TelosysProject telosysProject, String modelName) throws TelosysModelException {
 		try {
-			return loader.loadModel(modelFile);
+			return telosysProject.loadModel(modelName);
 		} catch (TelosysModelException e) {
 			printErrors(e.getMessage(), e.getDslModelErrors());
 			throw e;
 		}
 	}
+	
 	
 	public static void printErrors(String errorMessage, DslModelErrors errors) {
 		println("MODEL ERRORS : ");

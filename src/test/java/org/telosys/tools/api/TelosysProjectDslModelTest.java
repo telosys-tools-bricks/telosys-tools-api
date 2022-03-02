@@ -47,11 +47,10 @@ public class TelosysProjectDslModelTest {
 		return telosysProject ;
 	}
 	
-	private Model loadModel(String modelFileName) throws Exception {
-		TelosysProject telosysProject = initProject() ;
-		
+	private Model loadModel(String filePath) throws Exception {
+		TelosysProject telosysProject = initProject();
 		print("Loading model...");
-		Model model = telosysProject.loadModel(modelFileName);
+		Model model = telosysProject.loadModel(filePath);
 		print("Model loaded.");
 		print("Name = " + model.getName() + " ( " + model.getEntities().size() + " ) entities");
 		return model;
@@ -59,7 +58,8 @@ public class TelosysProjectDslModelTest {
 	
 	@Test
 	public void testEmployeesModelLoading() throws Exception {
-		Model model = loadModel("employees.model");
+//		Model model = loadModel("employees.model");
+		Model model = loadModel("employees");
 		Entity entity = model.getEntityByClassName("Employee");
 		assertEquals(3, entity.getAttributes().size() );
 		assertEquals(1, entity.getLinks().size() );

@@ -1,5 +1,7 @@
 // Entity Car
 
+@DbTable(CAR)
+
 Car {
   id : int { @Id  @NotNull } ; // the car id
   type : CarType ;

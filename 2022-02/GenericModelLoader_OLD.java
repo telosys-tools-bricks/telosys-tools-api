@@ -29,40 +29,43 @@ import org.telosys.tools.repository.persistence.PersistenceManagerFactory;
  * @author Laurent GUERIN
  *
  */
-public class GenericModelLoader {
+public class GenericModelLoader_OLD {
+
+	private static final String  DBREP_SUFFIX = ".dbrep"  ;
 	
 	/**
-	 * Loads a 'model' from the given model file <br>
-	 * The model name can be a 'database model' file name or a 'DSL model' file name <br>
-	 * e.g. : 'books.dbrep' or 'books.model'  <br>
+	 * Loads a 'model' from the given model folder or file <br>
+	 * The model name can be a 'database model' file or a 'DSL model' folder<br>
+	 * e.g. : 'books.dbrep' or 'books'  <br>
 	 * 
-	 * @param file the model file in the current project models 
+	 * @param file the model file or folder in the current project models 
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public Model loadModel(final File file) throws TelosysModelException { // TelosysToolsException {	
+	public Model loadModel(final File file) throws TelosysModelException {
 		if ( file.exists() ) {
 			if ( file.isFile() ) {
-				if ( ApiUtil.isDbModelFile(file) ) {
+//				if ( ApiUtil.isDbModelFile(file) ) {
+				if ( file.getName().endsWith(DBREP_SUFFIX) ) {
 					//--- This file is supposed to be a db model file
 					return loadDatabaseModel(file) ;
 				}
-				else if (  ApiUtil.isDslModelFile(file) ) {
-					//--- This file is supposed to be a DSL model file
-					return loadDslModel(file);
-				}
+//				else if (  ApiUtil.isDslModelFile(file) ) {
+//					//--- This file is supposed to be a DSL model file
+//					return loadDslModel(file);
+//				}
 				else {
-//					throw new TelosysToolsException("Invalid file extension '" + file.getName() + "' ");
-					throw new TelosysModelException(file, "Invalid file extension '" + file.getName() + "' ");
+					throw new TelosysModelException(file, "Not a model file '" + file.getName() + "' ");
 				}
+			}
+			else if ( file.isDirectory() ) { // v 3.4.0
+				return loadDslModel(file);
 			}
 			else {
-//				throw new TelosysToolsException("Not a file '" + file.getName() + "' ");				
-				throw new TelosysModelException(file, "Not a file '" + file.getName() + "' ");				
+				throw new TelosysModelException(file, "Not a file or directory '" + file.getName() + "' ");				
 			}
 		}
-//		throw new TelosysToolsException("File '" + file.getAbsolutePath() + "' not found");
-		throw new TelosysModelException(file, "File '" + file.getAbsolutePath() + "' not found");
+		throw new TelosysModelException(file, "Cannot found '" + file.getAbsolutePath() + "'");
 	}
 	
 	//-----------------------------------------------------------------------------------------------------
@@ -80,15 +83,24 @@ public class GenericModelLoader {
 	//-----------------------------------------------------------------------------------------------------
 	// DSL model loading 
 	//-----------------------------------------------------------------------------------------------------
-	private Model loadDslModel(final File modelFile) throws TelosysModelException { // TelosysToolsException {
+//	private Model loadDslModel(final File modelFile) throws TelosysModelException { // TelosysToolsException {
+//		DslModelManager modelManager = new DslModelManager();
+//		Model model = modelManager.loadModel( modelFile );
+//		if ( model == null ) {
+//			// Cannot load model => Specific Exception with parsing errors
+////			throw new TelosysModelException(modelFile, modelManager.getErrorMessage(), modelManager.getErrorsMap());
+//			
+//			// v 3.4.0
+//			throw new TelosysModelException(modelFile, modelManager.getErrorMessage(), modelManager.getErrors());
+//		}
+//		return model ;
+//	}
+	private Model loadDslModel(File modelFolder) throws TelosysModelException {
 		DslModelManager modelManager = new DslModelManager();
-		Model model = modelManager.loadModel( modelFile );
+		Model model = modelManager.loadModel(modelFolder);
 		if ( model == null ) {
 			// Cannot load model => Specific Exception with parsing errors
-//			throw new TelosysModelException(modelFile, modelManager.getErrorMessage(), modelManager.getErrorsMap());
-			
-			// v 3.4.0
-			throw new TelosysModelException(modelFile, modelManager.getErrorMessage(), modelManager.getErrors());
+			throw new TelosysModelException(modelFolder, modelManager.getErrorMessage(), modelManager.getErrors());
 		}
 		return model ;
 	}

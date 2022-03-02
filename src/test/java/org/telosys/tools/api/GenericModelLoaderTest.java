@@ -8,9 +8,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
-import org.telosys.tools.dsl.DslModelError;
 import org.telosys.tools.dsl.DslModelErrors;
 import org.telosys.tools.dsl.DslModelManager;
 import org.telosys.tools.generic.model.Attribute;
@@ -24,6 +22,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class GenericModelLoaderTest {
+	
+	private static final String EMPLOYEES_MODEL         = "employees" ;
+	private static final String EMPLOYEES_INVALID_MODEL = "employees-invalid" ;
 	
 	// JUnit RULE with JUnit TemporaryFolder
 	// the TemporaryFolder is different fro each test and deleted after each test
@@ -56,9 +57,11 @@ public class GenericModelLoaderTest {
 		println("Init project...");
 		String s = telosysProject.initProject();
 		println(s);
-		TestsEnv.copyDbModelFile(projectFolderFullPath, "bookstore.dbrep");
-		TestsEnv.copyDslModelFiles(projectFolderFullPath, "employees");
-		TestsEnv.copyDslModelFiles(projectFolderFullPath, "employees_invalid");
+		//TestsEnv.copyDbModelFile(projectFolderFullPath, "bookstore.dbrep");
+//		TestsEnv.copyDslModelFiles(projectFolderFullPath, "employees");
+		TestsEnv.copyDslModelFiles(projectFolderFullPath, EMPLOYEES_MODEL);
+//		TestsEnv.copyDslModelFiles(projectFolderFullPath, "employees_invalid");
+		TestsEnv.copyDslModelFiles(projectFolderFullPath, EMPLOYEES_INVALID_MODEL);
 		TestsEnv.copyTemplatesFiles(projectFolderFullPath, "basic-templates-TT210");
 		return telosysProject ;
 	}
@@ -86,7 +89,10 @@ public class GenericModelLoaderTest {
 	@Test
 	public void testModelLoading_DSL_valid() throws Exception {
 		println("========== Loading .model ");
-		Model model = TestUtils.loadModelWithGenericModelLoader("employees.model", getTelosysToolsCfg());
+//		Model model = TestUtils.loadModelWithGenericModelLoader("employees.model", getTelosysToolsCfg());
+//		Model model = TestUtils.loadModelWithGenericModelLoader(EMPLOYEES_MODEL, getTelosysToolsCfg());
+		TelosysProject telosysProject = initProject();
+		Model model = TestUtils.loadModel(telosysProject, EMPLOYEES_MODEL);
 		
 		assertNotNull(model);
 		println("Model loaded : " + model.getEntities().size() + " entities");
@@ -123,16 +129,14 @@ public class GenericModelLoaderTest {
 	@Test
 	public void testDslModelManagerWithInvalidModel() throws Exception {
 		
-		String filePath = getTelosysToolsCfg().getDslModelFileAbsolutePath("employees_invalid.model");
+		//String filePath = getTelosysToolsCfg().getDslModelFileAbsolutePath("employees_invalid.model");
+		String filePath = getTelosysToolsCfg().getModelFolderAbsolutePath(EMPLOYEES_INVALID_MODEL);
 
 		DslModelManager dslModelManager = new DslModelManager();
 		Model model = dslModelManager.loadModel( filePath );
 		assertNotNull(dslModelManager.getErrorMessage());
-//		assertNotNull(dslModelManager.getErrorsMap());
 		assertNotNull(dslModelManager.getErrors());
-//		printErrors(dslModelManager.getErrorMessage(), dslModelManager.getErrorsMap());
 		printErrors(dslModelManager.getErrorMessage(), dslModelManager.getErrors());
-//		assertTrue(dslModelManager.getErrorsMap().size() > 0 );
 		assertTrue(dslModelManager.getErrors().getNumberOfErrors() > 0 );
 		assertNull(model);
 	}
@@ -145,7 +149,10 @@ public class GenericModelLoaderTest {
 		try {
 			// supposed to throw TelosysModelException
 			//model = genericModelLoader.loadModel("employees_invalid.model");
-			model = TestUtils.loadModelWithGenericModelLoader("employees_invalid.model", getTelosysToolsCfg());
+//			model = TestUtils.loadModelWithGenericModelLoader("employees_invalid.model", getTelosysToolsCfg());
+//			model = TestUtils.loadModelWithGenericModelLoader(EMPLOYEES_INVALID_MODEL, getTelosysToolsCfg());
+			TelosysProject telosysProject = initProject();
+			model = TestUtils.loadModel(telosysProject, EMPLOYEES_INVALID_MODEL);
 			fail();
 		} catch (TelosysModelException tme) {
 //			printErrors(tme.getMessage(), tme.getParsingErrors());
@@ -157,41 +164,18 @@ public class GenericModelLoaderTest {
 		assertNull(model);	
 	}
 
-	@Test
-	public void testModelLoading_DSL_invalid2() throws Exception {
-		println("========== Loading .model INVALID");
-//		GenericModelLoader genericModelLoader =  getGenericModelLoader();
-		Model model = null;
-		try {
-//			model = genericModelLoader.loadModel("employees_invalid.model");
-			model = TestUtils.loadModelWithGenericModelLoader("employees_invalid.model", getTelosysToolsCfg());
-			fail("Not supposed to reach this part of code.");
-		} catch (TelosysModelException tme) {
-//			// with standard TelosysToolsException + cast
-//			assertTrue(e instanceof TelosysModelException );
-//			TelosysModelException tme = (TelosysModelException) e ;
-			
-//			printErrors(tme.getMessage(), tme.getParsingErrors());
-			printErrors(tme.getMessage(), tme.getDslModelErrors());
-			assertNotNull(tme.getMessage());
-//			assertNotNull(tme.getParsingErrors());
-			assertNotNull(tme.getDslModelErrors());
-		}
-		assertNull(model);	
-	}
-
-	@Test
-	public void testModelLoading_DBREP_valid() throws Exception {
-		println("========== Loading .dbrep ");
-		
-		TelosysProject telosysProject = initProject() ;
-		println("getTelosysToolsCfg...");
-		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();
-		
-		Model model = TestUtils.loadModelWithGenericModelLoader("bookstore.dbrep", telosysToolsCfg);
-		
-		assertNotNull(model);
-		println("Model loaded : " + model.getEntities().size() + " entities");
-	}
+//	@Test
+//	public void testModelLoading_DBREP_valid() throws Exception {
+//		println("========== Loading .dbrep ");
+//		
+//		TelosysProject telosysProject = initProject() ;
+//		println("getTelosysToolsCfg...");
+//		TelosysToolsCfg telosysToolsCfg = telosysProject.getTelosysToolsCfg();
+//		
+//		Model model = TestUtils.loadModelWithGenericModelLoader("bookstore.dbrep", telosysToolsCfg);
+//		
+//		assertNotNull(model);
+//		println("Model loaded : " + model.getEntities().size() + " entities");
+//	}
 
 }

@@ -26,11 +26,12 @@
 			<groupId>org.telosys</groupId>
 		  	<artifactId>telosys-tools-database</artifactId>
 	 	</dependency>		
-	 	<dependency>
+<!-- 	 	<dependency>
 			<groupId>org.telosys</groupId>
 		  	<artifactId>telosys-tools-repository</artifactId>
 	 	</dependency>
-	 	<dependency>
+ -->
+ 	 	<dependency>
 			<groupId>org.telosys</groupId>
 		  	<artifactId>telosys-tools-dsl-parser</artifactId>
 	 	</dependency>

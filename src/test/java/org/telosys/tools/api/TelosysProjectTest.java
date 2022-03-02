@@ -17,6 +17,7 @@ import org.telosys.tools.generator.task.ErrorReport;
 import org.telosys.tools.generator.task.GenerationTaskResult;
 import org.telosys.tools.generic.model.Model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -76,17 +77,16 @@ public class TelosysProjectTest {
 		System.out.println("Full path : " + telosysToolsCfg.getCfgFileAbsolutePath());
 	}
 
-	@Test
-	public void testDbModelLoading() throws Exception {
-		
-		TelosysProject telosysProject = initProject() ;
-		
-		System.out.println("Loading dbmodel...");
-//		Model model = telosysProject.loadDatabaseModel("bookstore.dbrep");
-		Model model = telosysProject.loadModel("bookstore.dbrep");
-		System.out.println("Model loaded.");
-		System.out.println(model.getEntities().size() + " entities");
-	}
+//	@Test
+//	public void testDbModelLoading() throws Exception {
+//		
+//		TelosysProject telosysProject = initProject() ;
+//		
+//		System.out.println("Loading dbmodel...");
+//		Model model = telosysProject.loadModel("bookstore.dbrep");
+//		System.out.println("Model loaded.");
+//		System.out.println(model.getEntities().size() + " entities");
+//	}
 
 	@Test
 	public void testModelLoading() throws Exception {
@@ -96,28 +96,25 @@ public class TelosysProjectTest {
 		System.out.println("Loading model...");
 //		Model model = telosysProject.loadDslModel("employees-model");
 //		Model model = telosysProject.loadDslModel("employees");
-		Model model = telosysProject.loadModel("employees.model");
+		Model model = telosysProject.loadModel("employees");
 		System.out.println("Model loaded.");
 		System.out.println("Name = " + model.getName() + " ( " + model.getEntities().size() + " ) entities");
 		
 	}
 
-	@Test
-	public void testDatabaseModelLoadingAndGeneration() throws Exception {
-		TelosysProject telosysProject = initProject() ;
-		
-		//testModelLoadingAndGeneration("employees-model", "basic-templates-TT210" );
-		testModelLoadingAndGeneration(telosysProject, 
-				"bookstore.dbrep", null,
-				"basic-templates-TT210", null, false );
-	}
+//	@Test
+//	public void testDatabaseModelLoadingAndGeneration() throws Exception {
+//		TelosysProject telosysProject = initProject() ;
+//		testModelLoadingAndGeneration(telosysProject, 
+//				"bookstore.dbrep", null,
+//				"basic-templates-TT210", null, false );
+//	}
 	
 	@Test
 	public void testDslModelLoadingAndGeneration() throws Exception {
 		TelosysProject telosysProject = initProject() ;
 		
-		List<TargetDefinition> selectedTargets = new LinkedList<TargetDefinition>();
-//		TargetsDefinitions targetsDefinitions = telosysProject.loadTargetsDefinitions("basic-templates-TT210") ;
+		List<TargetDefinition> selectedTargets = new LinkedList<>();
 		TargetsDefinitions targetsDefinitions = telosysProject.getTargetDefinitions("basic-templates-TT210") ;
 		for ( TargetDefinition td : targetsDefinitions.getTemplatesTargets() ) {
 			if ( "python_bean.vm".equals( td.getTemplate() ) ) {
@@ -125,11 +122,13 @@ public class TelosysProjectTest {
 			}
 		}
 		testModelLoadingAndGeneration(telosysProject, 
-				"employees.model", null,
+//				"employees.model", null,
+				"employees", null,
 				"basic-templates-TT210", selectedTargets, false );
 
 		testModelLoadingAndGeneration(telosysProject, 
-				"employees.model", null,
+//				"employees.model", null,
+				"employees", null,
 				"basic-templates-TT210", null, false ); // All templates
 	}
 	
@@ -179,14 +178,14 @@ public class TelosysProjectTest {
 		
 		TelosysProject telosysProject = initProject() ;
 		
-		System.out.println("getTelosysToolsCfg...");
-		System.out.println("Create new dsl model 'foo' ...");
-		File modelFile = telosysProject.createNewDslModel("foo");
-		System.out.println("Model file created : " + modelFile.getAbsolutePath() );
-		assertTrue(modelFile.exists());
-		File modelFolder = DslModelUtil.getModelFolder(modelFile);
-		System.out.println("Model folder created : " + modelFolder.getAbsolutePath() );
+//		System.out.println("getTelosysToolsCfg...");
+//		System.out.println("Create new dsl model 'foo' ...");
+		File modelFolder = telosysProject.createNewDslModel("foo");
+//		System.out.println("Model folder created : " + modelFolder.getAbsolutePath() );
 		assertTrue(modelFolder.exists());
+		assertTrue(modelFolder.isDirectory());
+		File modelInfoFile = DslModelUtil.getModelFileFromModelFolder(modelFolder);
+		assertTrue(modelInfoFile.exists());
 	}
 
 	@Test
@@ -194,35 +193,41 @@ public class TelosysProjectTest {
 		
 		TelosysProject telosysProject = initProject() ;
 		File modelFile ; 
-		
-		modelFile = telosysProject.getModelFile("employees");
-		assertNotNull(modelFile);
-		modelFile = telosysProject.getModelFile("employees.model");
-		assertNotNull(modelFile);
 
-		modelFile = telosysProject.getModelFile("bookstore.dbrep");
+		modelFile = telosysProject.getModelInfoFile("employees");
 		assertNotNull(modelFile);
-		modelFile = telosysProject.getModelFile("bookstore");
-		assertNotNull(modelFile);
+		assertTrue(modelFile.isFile());
+//		assertEquals("model.properties", modelFile.getName());
+		assertEquals("model.yaml", modelFile.getName());
 		
-		modelFile = telosysProject.getModelFile("foo.dbrep");
-		assertNull(modelFile);
-		modelFile = telosysProject.getModelFile("foo");
-		assertNull(modelFile);
-		
-		telosysProject.createNewDslModel("bookstore"); // Same name as "bookstore.dbrep"
-		modelFile = telosysProject.getModelFile("bookstore.dbrep");
-		assertNotNull(modelFile);
-		modelFile = telosysProject.getModelFile("bookstore.model");
-		assertNotNull(modelFile);
-		
-		try {
-			modelFile = telosysProject.getModelFile("bookstore");
-			fail("Exception expected in this case");
-		} catch (Exception e) {
-			// OK
-			System.out.println("Expected exception thrown : " + e.getMessage());
-		}
+//		modelFile = telosysProject.getModelFile("employees");
+//		assertNotNull(modelFile);
+//		modelFile = telosysProject.getModelFile("employees.model");
+//		assertNotNull(modelFile);
+//
+//		modelFile = telosysProject.getModelFile("bookstore.dbrep");
+//		assertNotNull(modelFile);
+//		modelFile = telosysProject.getModelFile("bookstore");
+//		assertNotNull(modelFile);
+//		
+//		modelFile = telosysProject.getModelFile("foo.dbrep");
+//		assertNull(modelFile);
+//		modelFile = telosysProject.getModelFile("foo");
+//		assertNull(modelFile);
+//		
+//		telosysProject.createNewDslModel("bookstore"); // Same name as "bookstore.dbrep"
+//		modelFile = telosysProject.getModelFile("bookstore.dbrep");
+//		assertNotNull(modelFile);
+//		modelFile = telosysProject.getModelFile("bookstore.model");
+//		assertNotNull(modelFile);
+//		
+//		try {
+//			modelFile = telosysProject.getModelFile("bookstore");
+//			fail("Exception expected in this case");
+//		} catch (Exception e) {
+//			// OK
+//			System.out.println("Expected exception thrown : " + e.getMessage());
+//		}
 		
 	}
 	
@@ -231,16 +236,18 @@ public class TelosysProjectTest {
 		TelosysProject telosysProject = initProject() ;
 		
 		telosysProject.createNewDslModel("newmodel1"); 
-		File modelFile = telosysProject.getModelFile("newmodel1.model");
-		assertNotNull(modelFile);
+//		File modelFile = telosysProject.getModelFile("newmodel1.model");
+//		assertNotNull(modelFile);
 		
 		System.out.println("Creating entity 'Car'");
-		telosysProject.createNewDslEntity(modelFile, "Car");
-		File entityFile = telosysProject.buildDslEntityFile("newmodel1", "Car");
+//		telosysProject.createNewDslEntity(modelFile, "Car");
+//		File entityFile = telosysProject.buildDslEntityFile("newmodel1", "Car");
+		File entityFile = telosysProject.createNewDslEntity("newmodel1", "Car");
 		assertNotNull(entityFile);
 		assertTrue(entityFile.exists() ); // Must exists
 		
-		entityFile = telosysProject.buildDslEntityFile("newmodel1", "Driver");
+//		entityFile = telosysProject.buildDslEntityFile("newmodel1", "Driver");
+		entityFile = telosysProject.getDslEntityFile("newmodel1", "Driver");
 		assertNotNull(entityFile);
 		assertFalse(entityFile.exists() ); // Must not exists
 		
@@ -255,11 +262,13 @@ public class TelosysProjectTest {
 		
 		System.out.println("Creating entity 'Car'");
 		telosysProject.createNewDslEntity(modelName, "Car");
-		File entityFile = telosysProject.buildDslEntityFile(modelName, "Car");
+//		File entityFile = telosysProject.buildDslEntityFile(modelName, "Car");
+		File entityFile = telosysProject.getDslEntityFile(modelName, "Car");
 		assertNotNull(entityFile); // Must exists
 		assertTrue(entityFile.exists() );
 		
-		entityFile = telosysProject.buildDslEntityFile(modelName, "Driver");
+//		entityFile = telosysProject.buildDslEntityFile(modelName, "Driver");
+		entityFile = telosysProject.getDslEntityFile(modelName, "Driver");
 		assertNotNull(entityFile);
 		assertFalse(entityFile.exists() ); // Must not exists
 		

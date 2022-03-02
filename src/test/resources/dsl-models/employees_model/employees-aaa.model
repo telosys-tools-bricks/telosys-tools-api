@@ -1,3 +1,0 @@
-name = Employees model for tests
-version = 1.0
-description = A model with two entities (Employee references Country)

@@ -1,6 +1,7 @@
 package org.telosys.tools.api;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.After;
@@ -28,7 +29,7 @@ public class ModelContentFromDSLModelTest {
 	@Rule 
 	public TemporaryFolder tmpFolder = new TemporaryFolder(); 
 
-	private String createProjectFolder() throws Exception {
+	private String createProjectFolder() throws IOException {
 		File createdFolder = tmpFolder.newFolder("myproject");
 		System.out.println("createProjectFolder : " + createdFolder.getAbsolutePath() );
 		assertTrue(createdFolder.exists());
@@ -74,7 +75,9 @@ public class ModelContentFromDSLModelTest {
 		
 //		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
 //		Model model = genericModelLoader.loadModel("employees.model");
-		Model model = TestUtils.loadModelWithGenericModelLoader("employees.model", telosysToolsCfg);
+//		Model model = TestUtils.loadModelWithGenericModelLoader("employees.model", telosysToolsCfg);
+//		Model model = TestUtils.loadModelWithGenericModelLoader("employees", telosysToolsCfg);
+		Model model = TestUtils.loadModel(telosysProject, "employees");
 
 		assertNotNull(model);
 //		assertNull(genericModelLoader.getErrorMessage());
@@ -86,15 +89,14 @@ public class ModelContentFromDSLModelTest {
 		Entity e = model.getEntityByClassName("Employee");
 		assertNotNull(e);
 		assertEquals("Employee", e.getClassName());
-		assertEquals("Employee", e.getDatabaseTable());
+		assertEquals("", e.getDatabaseTable()); // no @DbTable(..)
 
 		List<Link> links = e.getLinks() ;
 		assertNotNull(links);
 		assertEquals(1, links.size() );
 		for ( Link link : links ) {
-			assertNotNull(link.getId());
+//			assertNotNull(link.getId());
 			assertNotNull(link.getFieldName());
-			// REMOVED in v 3.3.0 : assertNotNull(link.getFieldType());
 			assertEquals(Cardinality.MANY_TO_ONE, link.getCardinality() );
 		}
 	}
@@ -108,7 +110,9 @@ public class ModelContentFromDSLModelTest {
 		
 //		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
 //		Model model = genericModelLoader.loadModel("cars-and-drivers.model");
-		Model model = TestUtils.loadModelWithGenericModelLoader("cars-and-drivers.model", telosysToolsCfg);
+//		Model model = TestUtils.loadModelWithGenericModelLoader("cars-and-drivers.model", telosysToolsCfg);
+//		Model model = TestUtils.loadModelWithGenericModelLoader("cars-and-drivers", telosysToolsCfg);
+		Model model = TestUtils.loadModel(telosysProject, "cars-and-drivers");
 		
 		System.out.println("Loading result :");
 //		System.out.println(" - Error message = " + genericModelLoader.getErrorMessage() );
@@ -122,18 +126,16 @@ public class ModelContentFromDSLModelTest {
 		Entity carEntity = model.getEntityByClassName("Car");
 		assertNotNull(carEntity);
 		assertEquals("Car", carEntity.getClassName());
-		assertEquals("Car", carEntity.getDatabaseTable());
+		assertEquals("CAR", carEntity.getDatabaseTable());
 
 		List<Link> links = carEntity.getLinks() ;
 		assertNotNull(links);
 		assertEquals(2, links.size() );
 		for ( Link link : links ) {
-			System.out.println("Link Id : " + link.getId() );
-			assertNotNull(link.getId());
+//			System.out.println("Link Id : " + link.getId() );
+//			assertNotNull(link.getId());
 			System.out.println("getFieldName() : " + link.getFieldName() );
 			assertNotNull(link.getFieldName());
-			// REMOVED in v 3.3.0 : System.out.println("getFieldType() : " + link.getFieldType() );
-			// REMOVED in v 3.3.0 : assertNotNull(link.getFieldType());
 			System.out.println("getCardinality() : " + link.getCardinality() );
 			assertEquals(Cardinality.MANY_TO_ONE, link.getCardinality() );
 		}

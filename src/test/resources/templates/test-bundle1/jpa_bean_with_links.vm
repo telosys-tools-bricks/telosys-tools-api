@@ -182,7 +182,6 @@ attribute.sqlColumnConstraints = "$attribute.sqlColumnConstraints"
 
 #foreach( $link in $entityLinks )
 ## $jpa.linkAnnotations(4, $link, $allMappedFields)
-id                     = "$link.id"
 cardinality            = "$link.cardinality"
 
 //--- Field
@@ -198,7 +197,6 @@ formattedFieldType(20) = "$link.formattedFieldType(20)"
 targetEntity.name      = "$link.targetEntity.name"
 targetEntityFullType   = "$link.targetEntityFullType"
 targetEntitySimpleType = "$link.targetEntitySimpleType"
-targetTableName        = "$link.targetTableName"
 
 //--- Setter and getter
 setter  = $link.setter
@@ -210,14 +208,17 @@ fetch                  = "$link.fetch"
 
 hasAttributeInPrimaryKey : $link.hasAttributeInPrimaryKey()
 
-hasJoinTable  : $link.hasJoinTable()
-#if ( $link.hasJoinTable() )
-joinTable : $link.joinTable
-joinTableName = "$link.joinTableName"
+hasJoinEntity  : $link.hasJoinEntity()
+#if ( $link.hasJoinEntity() )
+## joinTable : $link.joinTable
+## replaced by joinEntityName in v 3.4.0
+## joinTableName = "$link.joinTableName"
+joinEntityName = "$link.joinEntityName"
 #end
 
-hasJoinColumns   : $link.hasJoinColumns()
-joinColumns size : $link.joinColumns.size() 
+## removed in v 3.4.0
+## hasJoinColumns   : $link.hasJoinColumns()
+## joinColumns size : $link.joinColumns.size() 
 
 
 isCardinalityManyToMany : $link.isCardinalityManyToMany()

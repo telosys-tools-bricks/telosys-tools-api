@@ -25,7 +25,6 @@ import java.util.List;
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.StrUtil;
 import org.telosys.tools.commons.TelosysToolsException;
-import org.telosys.tools.commons.TelosysToolsLogger;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.commons.dbcfg.DatabaseConfiguration;
 import org.telosys.tools.commons.dbcfg.DatabasesConfigurations;
@@ -34,13 +33,6 @@ import org.telosys.tools.commons.dbcfg.DbConnectionManager;
 import org.telosys.tools.commons.dbcfg.DbConnectionStatus;
 import org.telosys.tools.db.metadata.DbInfo;
 import org.telosys.tools.db.metadata.MetaDataManager;
-import org.telosys.tools.repository.DbModelGenerator;
-import org.telosys.tools.repository.DbModelUpdator;
-import org.telosys.tools.repository.UpdateLogWriter;
-import org.telosys.tools.repository.changelog.ChangeLog;
-import org.telosys.tools.repository.model.RepositoryModel;
-import org.telosys.tools.repository.persistence.PersistenceManager;
-import org.telosys.tools.repository.persistence.PersistenceManagerFactory;
 
 public class DbAction {
 	
@@ -289,88 +281,88 @@ public class DbAction {
 		return null ;
 	}
 
-	/**
-	 * Creates a new DB-Model for the given database ID 
-	 * @param id
-	 * @param logger
-	 * @return
-	 * @throws TelosysToolsException
-	 */
-	public final void createNewDbModel(Integer id, TelosysToolsLogger logger ) throws TelosysToolsException {
-		//--- Get the database configuration for the given database id
-		DatabaseConfiguration databaseConfiguration = getRequiredDatabaseConfiguration(id);
-		//--- Create the new db model
-		createNewDbModel(databaseConfiguration, logger ); 
-	}
+//	/**
+//	 * Creates a new DB-Model for the given database ID 
+//	 * @param id
+//	 * @param logger
+//	 * @return
+//	 * @throws TelosysToolsException
+//	 */
+//	public final void createNewDbModel(Integer id, TelosysToolsLogger logger ) throws TelosysToolsException {
+//		//--- Get the database configuration for the given database id
+//		DatabaseConfiguration databaseConfiguration = getRequiredDatabaseConfiguration(id);
+//		//--- Create the new db model
+//		createNewDbModel(databaseConfiguration, logger ); 
+//	}
 	
-	/**
-	 * Creates a new DB-Model for the given database configuartion
-	 * @param databaseConfiguration
-	 * @param logger
-	 * @throws TelosysToolsException
-	 */
-	public final void createNewDbModel(DatabaseConfiguration databaseConfiguration, TelosysToolsLogger logger ) throws TelosysToolsException {
-		
-		//--- 1) Generate the repository in memory
-		logger.info("Creating new db-model from database " + databaseConfiguration.getDatabaseId() );
-		DbModelGenerator generator = new DbModelGenerator(dbConnectionManager, logger) ;
-		RepositoryModel dbModel = generator.generate(databaseConfiguration);
-			
-		//--- 2) Save the repository in the file
-		File dbModelFile = getDbModelFile(databaseConfiguration);
-		logger.info("Saving model in file " + dbModelFile.getAbsolutePath() );
-		PersistenceManager pm = PersistenceManagerFactory.createPersistenceManager(dbModelFile, logger);
-		pm.save(dbModel);
-		logger.info("Repository saved.");
-	}
+//	/**
+//	 * Creates a new DB-Model for the given database configuartion
+//	 * @param databaseConfiguration
+//	 * @param logger
+//	 * @throws TelosysToolsException
+//	 */
+//	public final void createNewDbModel(DatabaseConfiguration databaseConfiguration, TelosysToolsLogger logger ) throws TelosysToolsException {
+//		
+//		//--- 1) Generate the repository in memory
+//		logger.info("Creating new db-model from database " + databaseConfiguration.getDatabaseId() );
+//		DbModelGenerator generator = new DbModelGenerator(dbConnectionManager, logger) ;
+//		RepositoryModel dbModel = generator.generate(databaseConfiguration);
+//			
+//		//--- 2) Save the repository in the file
+//		File dbModelFile = getDbModelFile(databaseConfiguration);
+//		logger.info("Saving model in file " + dbModelFile.getAbsolutePath() );
+//		PersistenceManager pm = PersistenceManagerFactory.createPersistenceManager(dbModelFile, logger);
+//		pm.save(dbModel);
+//		logger.info("Repository saved.");
+//	}
 	
-	/**
-	 * Updates a DB-Model for the given database ID 
-	 * @param id
-	 * @param logger
-	 * @return
-	 * @throws TelosysToolsException
-	 */
-	public final ChangeLog updateDbModel(Integer id, TelosysToolsLogger logger ) throws TelosysToolsException {
-		//--- Get the database configuration for the given database id
-		DatabaseConfiguration databaseConfiguration = getRequiredDatabaseConfiguration(id);
-		//--- Update the db-model
-		return updateDbModel(databaseConfiguration, logger );
-	}
+//	/**
+//	 * Updates a DB-Model for the given database ID 
+//	 * @param id
+//	 * @param logger
+//	 * @return
+//	 * @throws TelosysToolsException
+//	 */
+//	public final ChangeLog updateDbModel(Integer id, TelosysToolsLogger logger ) throws TelosysToolsException {
+//		//--- Get the database configuration for the given database id
+//		DatabaseConfiguration databaseConfiguration = getRequiredDatabaseConfiguration(id);
+//		//--- Update the db-model
+//		return updateDbModel(databaseConfiguration, logger );
+//	}
 	
-	/**
-	 * Updates a DB-Model for the given database configuration
-	 * @param databaseConfiguration
-	 * @param logger
-	 * @return
-	 * @throws TelosysToolsException
-	 */
-	public final ChangeLog updateDbModel(DatabaseConfiguration databaseConfiguration , TelosysToolsLogger logger ) throws TelosysToolsException {
-		
-		String dbModelFileName = getDbModelFileName(databaseConfiguration);
-		File dbModelFile = new File(dbModelFileName); 
-		
-		//--- Load the Database Model 
-		PersistenceManager persistenceManager = PersistenceManagerFactory.createPersistenceManager(dbModelFile);
-		RepositoryModel repositoryModel = persistenceManager.load();
-
-		//--- Create the upadte log writer
-		File updateLogFile = getUpdateLogFile( dbModelFile.getAbsolutePath() );
-		UpdateLogWriter updateLogWriter = new UpdateLogWriter( updateLogFile );
-
-		//--- Update the dbModel in memory
-		logger.info("Updating db-model from database " + databaseConfiguration.getDatabaseId() );
-		DbModelUpdator dbModelUpdator = new DbModelUpdator(dbConnectionManager, logger, updateLogWriter) ;			
-		ChangeLog changeLog = dbModelUpdator.updateRepository(databaseConfiguration, repositoryModel);
-			
-		//--- Save the dbModel in the file
-		logger.info("Saving model in file " + dbModelFile.getAbsolutePath() );
-		PersistenceManager pm = PersistenceManagerFactory.createPersistenceManager(dbModelFile, logger);
-		pm.save(repositoryModel);
-		logger.info("Repository saved.");
-		
-		return changeLog ;
-	}
+//	/**
+//	 * Updates a DB-Model for the given database configuration
+//	 * @param databaseConfiguration
+//	 * @param logger
+//	 * @return
+//	 * @throws TelosysToolsException
+//	 */
+//	public final ChangeLog updateDbModel(DatabaseConfiguration databaseConfiguration , TelosysToolsLogger logger ) throws TelosysToolsException {
+//		
+//		String dbModelFileName = getDbModelFileName(databaseConfiguration);
+//		File dbModelFile = new File(dbModelFileName); 
+//		
+//		//--- Load the Database Model 
+//		PersistenceManager persistenceManager = PersistenceManagerFactory.createPersistenceManager(dbModelFile);
+//		RepositoryModel repositoryModel = persistenceManager.load();
+//
+//		//--- Create the upadte log writer
+//		File updateLogFile = getUpdateLogFile( dbModelFile.getAbsolutePath() );
+//		UpdateLogWriter updateLogWriter = new UpdateLogWriter( updateLogFile );
+//
+//		//--- Update the dbModel in memory
+//		logger.info("Updating db-model from database " + databaseConfiguration.getDatabaseId() );
+//		DbModelUpdator dbModelUpdator = new DbModelUpdator(dbConnectionManager, logger, updateLogWriter) ;			
+//		ChangeLog changeLog = dbModelUpdator.updateRepository(databaseConfiguration, repositoryModel);
+//			
+//		//--- Save the dbModel in the file
+//		logger.info("Saving model in file " + dbModelFile.getAbsolutePath() );
+//		PersistenceManager pm = PersistenceManagerFactory.createPersistenceManager(dbModelFile, logger);
+//		pm.save(repositoryModel);
+//		logger.info("Repository saved.");
+//		
+//		return changeLog ;
+//	}
 	
     /**
      * Returns the log file name ( built from the repository file name )

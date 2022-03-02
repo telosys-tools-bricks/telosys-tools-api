@@ -78,7 +78,10 @@ public class GenerationTest {
 		System.out.println(" --- Load Model ..." );
 //		GenericModelLoader genericModelLoader =  new GenericModelLoader(telosysToolsCfg);
 //		Model model = genericModelLoader.loadModel("cars-and-drivers.model");
-		Model model = TestUtils.loadModelWithGenericModelLoader("cars-and-drivers.model", telosysToolsCfg);
+//		Model model = TestUtils.loadModelWithGenericModelLoader("cars-and-drivers.model", telosysToolsCfg);
+//		Model model = TestUtils.loadModelWithGenericModelLoader("cars-and-drivers", telosysToolsCfg);
+		Model model = TestUtils.loadModel(telosysProject, "cars-and-drivers");
+
 		assertNotNull(model);
 		//assertNull(genericModelLoader.getErrorMessage());
 		System.out.println("Model loaded. Model name = " + model.getName() );
