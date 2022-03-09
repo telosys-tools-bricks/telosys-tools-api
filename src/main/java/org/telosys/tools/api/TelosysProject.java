@@ -39,6 +39,7 @@ import org.telosys.tools.commons.logger.ConsoleLogger;
 import org.telosys.tools.db.metadata.DbInfo;
 import org.telosys.tools.dsl.DslModelManager;
 import org.telosys.tools.dsl.DslModelUtil;
+import org.telosys.tools.dsl.model.dbmodel.DbToModelManager;
 import org.telosys.tools.generator.task.GenerationTask;
 import org.telosys.tools.generator.task.GenerationTaskResult;
 import org.telosys.tools.generator.task.StandardGenerationTask;
@@ -165,9 +166,8 @@ public class TelosysProject {
 	 * @param userName the GitHub user name (e.g. "telosys-tools")
 	 * @param bundleName the bundle name, in other words the GitHub repository name 
 	 * @return
-	 * @throws TelosysToolsException
 	 */
-	public BundleStatus downloadAndInstallBundle(String userName, String bundleName) throws TelosysToolsException {
+	public BundleStatus downloadAndInstallBundle(String userName, String bundleName) {
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		return bm.downloadAndInstallBundle(userName, bundleName);
 	}
@@ -188,7 +188,7 @@ public class TelosysProject {
 	 * @param bundleName
 	 * @return
 	 */
-	public File getBundleConfigFile(String bundleName) throws TelosysToolsException {
+	public File getBundleConfigFile(String bundleName) {
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		return bm.getBundleConfigFile(bundleName);
 	}
@@ -232,19 +232,8 @@ public class TelosysProject {
 	}
 
 	//-----------------------------------------------------------------------------------------------------
-	// Model loading DSL or Database model 
+	// Model loading 
 	//-----------------------------------------------------------------------------------------------------
-//	/**
-//	 * Loads a model from the given file path (model folder or dbrep file)
-//	 * @param filePath folder or file path in the 'models' folder
-//	 * @return
-//	 * @throws TelosysModelException
-//	 */
-//	public Model loadModel(String filePath) throws TelosysModelException {
-//		String modelAbsolutePath = FileUtil.buildFilePath(getTelosysToolsCfg().getModelsFolderAbsolutePath(), filePath);
-//		File modelFile = new File(modelAbsolutePath);
-//		return loadModel( modelFile);
-//	}
 	/**
 	 * Loads the given model name
 	 * @param modelName
@@ -256,17 +245,6 @@ public class TelosysProject {
 		return loadModel(new File(modelAbsolutePath));
 	}
 	
-//	/**
-//	 * Loads a model from the given file (model folder or dbrep file)<br>
-//	 * @param file
-//	 * @return
-//	 * @throws TelosysModelException
-//	 */
-//	public Model loadModel(File file) throws TelosysModelException {
-//		GenericModelLoader genericModelLoader = new GenericModelLoader() ;
-//		return genericModelLoader.loadModel(file);
-//	}
-
 	/**
 	 * Loads the model located in the given model folder
 	 * @param modelFolder
@@ -370,7 +348,7 @@ public class TelosysProject {
 		return generationTaskResult ;
 	}
 	
-	private void afterGeneration() throws TelosysToolsException {
+	private void afterGeneration() {
 		if ( STATS_FLAG ) {
 			String fileName = FileUtil.buildFilePath( 
 					getTelosysToolsCfg().getTelosysToolsFolderAbsolutePath(), 
@@ -403,74 +381,12 @@ public class TelosysProject {
 	}
 	
 	/**
-	 * Returns all the models files ( ".dbmodel", ".dbrep" or ".model" files ) for the current project
+	 * Returns all the model folders for the current project
 	 * @return
-	 * @throws TelosysToolsException
 	 */
-	public final List<File> getModels() { // throws TelosysToolsException {
-//		List<File> list = new LinkedList<>();
-//		File modelsFolder = new File( getTelosysToolsCfg().getModelsFolderAbsolutePath() );
-//		if ( modelsFolder.exists() && modelsFolder.isDirectory() ) {
-//			for ( File file : modelsFolder.listFiles() ) {
-//				if ( file.isFile() && ApiUtil.isModelFile(file) ) {
-//					list.add(file);
-//				}
-//			}
-//		}
-//		else {
-//			throw new TelosysToolsException("Invalid models folder");
-//		}
-//		return list ;
+	public final List<File> getModels() {
 		return DslModelUtil.getModelsInFolder(getModelsFolder());
 	}
-	
-// removed in v 3.4.0	
-//	/**
-//	 * Returns the model file for the given model name
-//	 * @param modelName the model name with or without suffix (eg 'foo', 'foo.model', 'foo.dbrep', 'foo.dbmodel' )  
-//	 * @return the model's File if found or null if not found  
-//	 * @throws TelosysToolsException if the given model name is ambiguous ( eg 'foo' with 2 models 'foo.model' and 'foo.dbrep' )
-//	 */
-//	public final File getModelFile(String modelName) throws TelosysToolsException {
-//		List<File> models = getModels();
-//		File modelFile = null ;
-//		int n = 0 ;
-//		if ( modelName.contains(".") ) {
-//			// Suffix is in the name ( foo.model, foo.dbrep, foo.dbmodel )
-//			for ( File file : models ) {
-//				if ( file.getName().equals(modelName) ) {
-//					modelFile = file ;
-//					n++;				
-//				}
-//			}
-//		}
-//		else {
-//			// No suffix in the name => try to add all the suffixes 
-//			for ( File file : models ) {
-//				if ( file.getName().equals(modelName + ApiUtil.DSL_MODEL_FILE_SUFFIX) ) {
-//					modelFile = file ;
-//					n++;				
-//				}
-//				if ( file.getName().equals(modelName + ApiUtil.DBMODEL_SUFFIX) ) {
-//					modelFile = file ;
-//					n++;				
-//				}
-//				if ( file.getName().equals(modelName + ApiUtil.DBREP_SUFFIX) ) {
-//					modelFile = file ;
-//					n++;				
-//				}
-//			}
-//		}
-//		if ( n == 0 ) {
-//			return null ; // Not found
-//		}
-//		else if ( n == 1 ) {
-//			return modelFile ; // Found 1 matching file
-//		}
-//		else {
-//			throw new TelosysToolsException("Ambiguous model name '" + modelName + "' (" + n + " files found)");
-//		}		
-//	}
 	
 	public final File getModelInfoFile(String modelName) { // v 3.4.0
 		return DslModelUtil.getModelFileFromModelFolder(getModelFolder(modelName));
@@ -513,31 +429,28 @@ public class TelosysProject {
 
 	/**
 	 * Creates a new DSL model in the project <br>
-	 * Creates the '.model' file (initialized with default values) and the '_model' folder <br>
-	 * 
-	 * @param modelName the short model name without extension ( e.g. 'mymodel' )
-	 * @return the '.model' file created 
-	 * @throws TelosysToolsException
-	 */
-	/**
-	 * Creates a new DSL model in the project <br>
 	 * Creates the 'model-name' folder and the 'model info' file <br>
 	 * @param modelName
 	 * @return the model folder created
 	 */
 	public final File createNewDslModel(String modelName) {
-		
-////		//--- Build the model file 		
-////		File modelFile = getDslModelFile(modelName) ;
-//		// Current project 'models' folder 
-//		String modelFolderAbsolutePath = getTelosysToolsCfg().getModelFolderAbsolutePath(modelName);
-//		File modelFolder = new File(modelFolderAbsolutePath);
 		// Create the model in the 'models' folder 
 		File modelFolder = getModelFolder(modelName);
 		DslModelUtil.createNewModel(modelFolder);
 		return modelFolder;
 	}
-
+	
+    /**
+     * Creates a new DSL model from the given database 
+     * @param modelName
+     * @param databaseId
+     * @throws TelosysToolsException
+     */
+    public void createNewDslModelFromDatabase(String modelName, String databaseId) throws TelosysToolsException {
+		DbToModelManager manager = new DbToModelManager(getTelosysToolsCfg(), telosysToolsLogger);
+		manager.createModelFromDatabase(databaseId, modelName);    	
+    }
+    
 	/**
 	 * Returns the entity file for the given entity name in the given model 
 	 * @param modelName
@@ -568,28 +481,11 @@ public class TelosysProject {
 		return DslModelUtil.createNewEntity(getModelFolder(modelName), entityName);
 	}
 	
-// removed in v 3.4.0
-//	/**
-//	 * Creates a new DSL entity in the given model
-//	 * @param modelFile
-//	 * @param entityName
-//	 * @return
-//	 * @throws TelosysToolsException
-//	 */
-//	public final File createNewDslEntity(File modelFile, String entityName) {
-//		
-//		return DslModelUtil.createNewEntity(modelFile, entityName);
-//	}
-	
 	/**
 	 * Deletes the given DSL model  
 	 * @param modelName the model name ( eg 'mymodel' )
 	 */
 	public final void deleteDslModel(String modelName) {		
-//		//--- Build the model file 		
-//		File modelFile = getDslModelFile(modelName) ;
-//		//--- Delete the model file and model folder 
-//		DslModelUtil.deleteModel(modelFile);
 		deleteDslModel(getModelFolder(modelName));
 	}
 	
@@ -619,14 +515,6 @@ public class TelosysProject {
 	 * @return true if deletes, false if not found
 	 */
 	public final boolean deleteDslEntity(String modelName, String entityName) {		
-//		//File entityFile = buildDslEntityFile(modelName, entityName);
-//		File entityFile = DslModelUtil.getEntityFile(getModelFolder(modelName), entityName);
-//		if ( entityFile.exists() ) {
-//			return entityFile.delete() ;
-//		}
-//		else {
-//			return false ;
-//		}
 		return DslModelUtil.deleteEntity(getModelFolder(modelName), entityName);
 	}
 	
@@ -647,17 +535,6 @@ public class TelosysProject {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDatabaseDefinition(id);
 	}
-	
-//	/**
-//	 * Returns the DB-Model file for the given database ID (or null if no DatabaseConfiguration)
-//	 * @param id 
-//	 * @return
-//	 * @throws TelosysToolsException
-//	 */
-//	public final File getDbModelFile(Integer id) throws TelosysToolsException {
-//		DbAction dbAction = new DbAction(this);
-//		return dbAction.getDbModelFile(id);
-//	}
 	
 	//--------------------------------------------------------------------------------------------
 	// Check database connection and get database information
