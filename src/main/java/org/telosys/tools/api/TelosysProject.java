@@ -30,9 +30,9 @@ import org.telosys.tools.commons.bundles.TargetDefinition;
 import org.telosys.tools.commons.bundles.TargetsDefinitions;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
 import org.telosys.tools.commons.cfg.TelosysToolsCfgManager;
-import org.telosys.tools.commons.dbcfg.DatabaseConfiguration;
-import org.telosys.tools.commons.dbcfg.DatabasesConfigurations;
 import org.telosys.tools.commons.dbcfg.DbConnectionStatus;
+import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinition;
+import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinitions;
 import org.telosys.tools.commons.env.EnvironmentManager;
 import org.telosys.tools.commons.github.GitHubRateLimitResponse;
 import org.telosys.tools.commons.logger.ConsoleLogger;
@@ -633,31 +633,31 @@ public class TelosysProject {
 	//-----------------------------------------------------------------------------------------------------
 	// DATABASE MODELS 
 	//-----------------------------------------------------------------------------------------------------
-	public final DatabasesConfigurations getDatabasesConfigurations() throws TelosysToolsException {
+	public final DatabaseDefinitions getDatabaseDefinitions() throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
-		return dbAction.getDatabasesConfigurations();
+		return dbAction.getDatabaseDefinitions();
 	}		
 
-	public final List<DatabaseConfiguration> getDatabasesConfigurationsList() throws TelosysToolsException {
+	public final List<DatabaseDefinition> getDatabaseDefinitionsList() throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
-		return dbAction.getDatabasesConfigurationsList();
+		return dbAction.getDatabaseDefinitionsList();
 	}		
 
-	public final DatabaseConfiguration getDatabaseConfiguration(Integer id) throws TelosysToolsException {
+	public final DatabaseDefinition getDatabaseDefinition(String id) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
-		return dbAction.getDatabaseConfiguration(id);
+		return dbAction.getDatabaseDefinition(id);
 	}
 	
-	/**
-	 * Returns the DB-Model file for the given database ID (or null if no DatabaseConfiguration)
-	 * @param id 
-	 * @return
-	 * @throws TelosysToolsException
-	 */
-	public final File getDbModelFile(Integer id) throws TelosysToolsException {
-		DbAction dbAction = new DbAction(this);
-		return dbAction.getDbModelFile(id);
-	}
+//	/**
+//	 * Returns the DB-Model file for the given database ID (or null if no DatabaseConfiguration)
+//	 * @param id 
+//	 * @return
+//	 * @throws TelosysToolsException
+//	 */
+//	public final File getDbModelFile(Integer id) throws TelosysToolsException {
+//		DbAction dbAction = new DbAction(this);
+//		return dbAction.getDbModelFile(id);
+//	}
 	
 	//--------------------------------------------------------------------------------------------
 	// Check database connection and get database information
@@ -668,7 +668,7 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final boolean checkDatabaseConnection(Integer id) throws TelosysToolsException {
+	public final boolean checkDatabaseConnection(String id) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.checkDatabaseConnection(id);
 	}
@@ -678,7 +678,7 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final boolean checkDatabaseConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+	public final boolean checkDatabaseConnection(DatabaseDefinition databaseConfiguration) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.checkDatabaseConnection(databaseConfiguration);
 	}
@@ -686,11 +686,10 @@ public class TelosysProject {
 	/**
 	 * Test the connection for the given database id (and get information)
 	 * @param id
-	 * @param options
-	 * @return true if connection is OK, false if cannot connect
+	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbConnectionStatus checkDatabaseConnectionWithStatus(Integer id) throws TelosysToolsException {
+	public final DbConnectionStatus checkDatabaseConnectionWithStatus(String id) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.checkDatabaseConnectionWithStatus(id);
 	}
@@ -701,7 +700,7 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbConnectionStatus checkDatabaseConnectionWithStatus(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+	public final DbConnectionStatus checkDatabaseConnectionWithStatus(DatabaseDefinition databaseConfiguration) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.checkDatabaseConnectionWithStatus(databaseConfiguration);
 	}
@@ -713,7 +712,7 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final String getMetaData(Integer id, MetaDataOptions options) throws TelosysToolsException {
+	public final String getMetaData(String id, MetaDataOptions options) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getMetaData(id, options);
 	}
@@ -725,7 +724,7 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final String getMetaData(DatabaseConfiguration databaseConfiguration, MetaDataOptions options) throws TelosysToolsException {
+	public final String getMetaData(DatabaseDefinition databaseConfiguration, MetaDataOptions options) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getMetaData(databaseConfiguration, options);
 	}
@@ -736,7 +735,7 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbInfo getDatabaseInfo(Integer id ) throws TelosysToolsException {
+	public final DbInfo getDatabaseInfo(String id ) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDatabaseInfo(id);
 	}
@@ -747,7 +746,7 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbInfo getDatabaseInfo(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+	public final DbInfo getDatabaseInfo(DatabaseDefinition databaseConfiguration) throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDatabaseInfo(databaseConfiguration);
 	}

@@ -20,7 +20,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.telosys.tools.commons.dbcfg.DatabaseConfiguration;
+import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinition;
 import org.telosys.tools.db.metadata.ColumnMetaData;
 import org.telosys.tools.db.metadata.DbInfo;
 import org.telosys.tools.db.metadata.ForeignKeyColumnMetaData;
@@ -37,7 +37,8 @@ public class DbActionMetaData {
 	private DbActionMetaData() {
 	}
 	
-	public static final String getMetaData(DatabaseConfiguration dbConfig, Connection con, MetaDataOptions options) throws SQLException
+//	public static final String getMetaData(DatabaseConfiguration dbConfig, Connection con, MetaDataOptions options) throws SQLException
+	public static final String getMetaData(DatabaseDefinition dbConfig, Connection con, MetaDataOptions options) throws SQLException
     {
     	StringBuilder sb = new StringBuilder();
 		//--- Get the database Meta-Data
@@ -49,44 +50,56 @@ public class DbActionMetaData {
 			reportDatabaseInfo(sb, metaDataManager.getDatabaseInfo(dbmd) );
 		}
 		if ( options.isCatalogs() ) {
-			getMetaDataCatalogs(sb, metaDataManager, dbmd);
+			//getMetaDataCatalogs(sb, metaDataManager, dbmd);
+			reportCatalogs(sb, metaDataManager.getCatalogs(dbmd));
 		}
 		if ( options.isSchemas() ) {
-			getMetaDataSchemas(sb, metaDataManager, dbmd);
+			//getMetaDataSchemas(sb, metaDataManager, dbmd);
+			reportSchemas(sb, metaDataManager.getSchemas(dbmd));
 		}
 		
 		if ( options.isTables() || options.isColumns() || options.isPrimaryKeys() || options.isForeignKeys() ) {
+//			List<TableMetaData> tables = metaDataManager.getTables(dbmd,
+//					dbConfig.getMetadataCatalog(),
+//					dbConfig.getMetadataSchema(),
+//					dbConfig.getMetadataTableNamePattern(),
+//					dbConfig.getMetadataTableTypesArray(),
+//					dbConfig.getMetadataTableNameInclude(),
+//					dbConfig.getMetadataTableNameExclude());
 			List<TableMetaData> tables = metaDataManager.getTables(dbmd,
-					dbConfig.getMetadataCatalog(),
-					dbConfig.getMetadataSchema(),
-					dbConfig.getMetadataTableNamePattern(),
-					dbConfig.getMetadataTableTypesArray(),
-					dbConfig.getMetadataTableNameInclude(),
-					dbConfig.getMetadataTableNameExclude());
+					dbConfig.getCatalog(),
+					dbConfig.getSchema(),
+					dbConfig.getTableNamePattern(),
+					dbConfig.getTableTypesArray(),
+					dbConfig.getTableNameInclude(),
+					dbConfig.getTableNameExclude());
 	
 			if ( options.isTables() ) {
 				reportTables(sb, tables);
 			}
 			if ( options.isColumns() ) {
-				getMetaDataColumns(sb, metaDataManager, dbmd, tables, dbConfig.getMetadataCatalog(), dbConfig.getMetadataSchema());
+//				getMetaDataColumns(sb, metaDataManager, dbmd, tables, dbConfig.getMetadataCatalog(), dbConfig.getMetadataSchema());
+				reportColumns(sb, metaDataManager, dbmd, tables, dbConfig.getCatalog(), dbConfig.getSchema());
 			}
 			if ( options.isPrimaryKeys() ) {
-				getMetaDataPrimaryKeys(sb, metaDataManager, dbmd, tables, dbConfig.getMetadataCatalog(), dbConfig.getMetadataSchema());
+//				getMetaDataPrimaryKeys(sb, metaDataManager, dbmd, tables, dbConfig.getMetadataCatalog(), dbConfig.getMetadataSchema());
+				reportPrimaryKeys(sb, metaDataManager, dbmd, tables, dbConfig.getCatalog(), dbConfig.getSchema());
 			}
 			if ( options.isForeignKeys() ) {
-				getMetaDataForeignKeys(sb, metaDataManager, dbmd, tables, dbConfig.getMetadataCatalog(), dbConfig.getMetadataSchema());
+//				getMetaDataForeignKeys(sb, metaDataManager, dbmd, tables, dbConfig.getMetadataCatalog(), dbConfig.getMetadataSchema());
+				reportForeignKeys(sb, metaDataManager, dbmd, tables, dbConfig.getCatalog(), dbConfig.getSchema());
 			}
 		}
 		return sb.toString();
     }
 	
-    private static final void getMetaDataCatalogs(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd ) throws SQLException {
-    	reportCatalogs(sb, metaDataManager.getCatalogs(dbmd));
-    }
+//    private static final void getMetaDataCatalogs(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd ) throws SQLException {
+//    	reportCatalogs(sb, metaDataManager.getCatalogs(dbmd));
+//    }
 
-    private static final void getMetaDataSchemas(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd ) throws SQLException {
-    	reportSchemas(sb, metaDataManager.getSchemas(dbmd));
-    }
+//    private static final void getMetaDataSchemas(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd ) throws SQLException {
+//    	reportSchemas(sb, metaDataManager.getSchemas(dbmd));
+//    }
 
     /**
      * Prints the columns
@@ -98,7 +111,7 @@ public class DbActionMetaData {
      * @param schema
      * @throws SQLException
      */
-    private static final void getMetaDataColumns(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
+    private static final void reportColumns(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
     		List<TableMetaData> tables, String catalog, String schema) throws SQLException {
     	
     	if ( tables.isEmpty() ) {    		
@@ -124,7 +137,7 @@ public class DbActionMetaData {
      * @param schema
      * @throws SQLException
      */
-    private static final void getMetaDataPrimaryKeys(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
+    private static final void reportPrimaryKeys(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
     		List<TableMetaData> tables, String catalog, String schema) throws SQLException {
 
     	if ( tables.isEmpty()  ) {
@@ -150,7 +163,7 @@ public class DbActionMetaData {
      * @param schema
      * @throws SQLException
      */
-    private static final void getMetaDataForeignKeys(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
+    private static final void reportForeignKeys(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
     		List<TableMetaData> tables, String catalog, String schema) throws SQLException {
 
     	if ( tables.isEmpty()  ) {

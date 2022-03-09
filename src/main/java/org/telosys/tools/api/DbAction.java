@@ -22,23 +22,23 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.telosys.tools.commons.FileUtil;
-import org.telosys.tools.commons.StrUtil;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.cfg.TelosysToolsCfg;
-import org.telosys.tools.commons.dbcfg.DatabaseConfiguration;
-import org.telosys.tools.commons.dbcfg.DatabasesConfigurations;
-import org.telosys.tools.commons.dbcfg.DbConfigManager;
-import org.telosys.tools.commons.dbcfg.DbConnectionManager;
 import org.telosys.tools.commons.dbcfg.DbConnectionStatus;
+import org.telosys.tools.commons.dbcfg.yaml.DatabaseConnectionProvider;
+import org.telosys.tools.commons.dbcfg.yaml.DatabaseConnectionTool;
+import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinition;
+import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinitions;
+import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinitionsLoader;
 import org.telosys.tools.db.metadata.DbInfo;
 import org.telosys.tools.db.metadata.MetaDataManager;
 
 public class DbAction {
 	
 	private final TelosysToolsCfg     telosysToolsCfg ;
-	private final DbConfigManager     dbConfigManager ;
-	private final DbConnectionManager dbConnectionManager ;
+	//private final DbConfigManager     dbConfigManager ;
+//	private final DbConnectionManager dbConnectionManager ;
+	private final DatabaseConnectionProvider  databaseConnectionProvider ; // v 3.4.0
 	
 	/**
 	 * Constructor
@@ -48,26 +48,32 @@ public class DbAction {
 	public DbAction(TelosysProject telosysProject) throws TelosysToolsException {
 		super();
 		this.telosysToolsCfg = telosysProject.getTelosysToolsCfg() ;
-		this.dbConfigManager = new DbConfigManager(telosysToolsCfg);
-		this.dbConnectionManager = new DbConnectionManager(telosysToolsCfg);
+//		this.dbConfigManager = new DbConfigManager(telosysToolsCfg);
+//		this.dbConnectionManager = new DbConnectionManager(telosysToolsCfg);
+		this.databaseConnectionProvider = new DatabaseConnectionProvider(telosysToolsCfg); // v 3.4.0
 	}
 
-	private final Connection getConnection(Integer id) throws TelosysToolsException {
-		if ( id != null ) {
-			return dbConnectionManager.getConnection(id);
-		}
-		else {
-			return dbConnectionManager.getConnection();
-		}
+//	private final Connection getConnection(Integer id) throws TelosysToolsException {
+	private final Connection getConnection(String databaseId) throws TelosysToolsException {
+//		if ( id != null ) {
+//			return dbConnectionManager.getConnection(id);
+//		}
+//		else {
+//			return dbConnectionManager.getConnection();
+//		}
+		return databaseConnectionProvider.getConnection(databaseId); // v 3.4.0
 	}
 
-	private final Connection getConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
-		return dbConnectionManager.getConnection(databaseConfiguration);
+//	private final Connection getConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+//		return dbConnectionManager.getConnection(databaseConfiguration);
+//	}
+	private final Connection getConnection(DatabaseDefinition databaseDefinition) throws TelosysToolsException {
+		return databaseConnectionProvider.getConnection(databaseDefinition); // v 3.4.0
 	}
-	
 	
 	private final void closeConnection(Connection con) throws TelosysToolsException {
-		dbConnectionManager.closeConnection(con);
+//		dbConnectionManager.closeConnection(con);
+		DatabaseConnectionTool.closeConnection(con); // v 3.4.0
 	}
 	
 	/**
@@ -75,49 +81,59 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DatabasesConfigurations getDatabasesConfigurations() throws TelosysToolsException {
-		return dbConfigManager.load() ;
+//	public final DatabasesConfigurations getDatabasesConfigurations() throws TelosysToolsException {
+//		return dbConfigManager.load() ;
+//	}
+	public final DatabaseDefinitions getDatabaseDefinitions() {  // v 3.4.0
+		DatabaseDefinitionsLoader loader = new DatabaseDefinitionsLoader();
+		return loader.load(this.telosysToolsCfg);
 	}
-	
+
 	/**
 	 * Returns a list containing all the databases configurations 
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final List<DatabaseConfiguration> getDatabasesConfigurationsList() throws TelosysToolsException {
-		DatabasesConfigurations databasesConfigurations = dbConfigManager.load() ;
-		return databasesConfigurations.getDatabaseConfigurationsList();
+//	public final List<DatabaseConfiguration> getDatabasesConfigurationsList() throws TelosysToolsException {
+//		DatabasesConfigurations databasesConfigurations = dbConfigManager.load() ;
+//		return databasesConfigurations.getDatabaseConfigurationsList();
+//	}
+	public final List<DatabaseDefinition> getDatabaseDefinitionsList() { // v 3.4.0
+		return getDatabaseDefinitions().getDatabases();
 	}
 	
 	/**
 	 * Returns the DatabaseConfiguration for the given database ID (or null if none)
-	 * @param id the database id (or null to get the default database)
+	 * @param databaseId the database id (or null to get the default database)
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DatabaseConfiguration getDatabaseConfiguration(Integer id) throws TelosysToolsException {
-		DatabasesConfigurations databasesConfigurations = dbConfigManager.load() ;
-		if ( id != null ) {
-			return databasesConfigurations.getDatabaseConfiguration(id);
-		}
-		else {
-			return databasesConfigurations.getDatabaseConfiguration();
-		}
+//	public final DatabaseConfiguration getDatabaseConfiguration(Integer id) throws TelosysToolsException {
+//		DatabasesConfigurations databasesConfigurations = dbConfigManager.load() ;
+//		if ( id != null ) {
+//			return databasesConfigurations.getDatabaseConfiguration(id);
+//		}
+//		else {
+//			return databasesConfigurations.getDatabaseConfiguration();
+//		}
+//	}
+	public final DatabaseDefinition getDatabaseDefinition(String databaseId) throws TelosysToolsException {
+		return getDatabaseDefinitions().getDatabaseDefinition(databaseId);
 	}
 	
-	/**
-	 * Returns the db model file name (absolute path) for the given database configuration
-	 * @param databaseConfiguration
-	 * @return
-	 */
-	public final String getDbModelFileName(DatabaseConfiguration databaseConfiguration) {
-		String databaseName = databaseConfiguration.getDatabaseName();
-		if ( StrUtil.nullOrVoid(databaseName) ) {
-			databaseName = "default-dbmodel" ;
-		}
-        String dir = telosysToolsCfg.getModelsFolderAbsolutePath();
-        return FileUtil.buildFilePath(dir, databaseName+".dbrep" );
-    }
+//	/**
+//	 * Returns the db model file name (absolute path) for the given database configuration
+//	 * @param databaseConfiguration
+//	 * @return
+//	 */
+//	public final String getDbModelFileName(DatabaseConfiguration databaseConfiguration) {
+//		String databaseName = databaseConfiguration.getDatabaseName();
+//		if ( StrUtil.nullOrVoid(databaseName) ) {
+//			databaseName = "default-dbmodel" ;
+//		}
+//        String dir = telosysToolsCfg.getModelsFolderAbsolutePath();
+//        return FileUtil.buildFilePath(dir, databaseName+".dbrep" );
+//    }
 	
 	//--------------------------------------------------------------------------------------------
 	// Check database connection
@@ -128,8 +144,11 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final boolean checkDatabaseConnection(Integer id) throws TelosysToolsException {
-		return checkConnectionAndClose( getConnection(id) );
+//	public final boolean checkDatabaseConnection(Integer id) throws TelosysToolsException {
+//		return checkConnectionAndClose( getConnection(id) );
+//	}
+	public final boolean checkDatabaseConnection(String databaseId) throws TelosysToolsException {
+		return checkConnectionAndClose( getConnection(databaseId) );
 	}
 	
 	/**
@@ -138,8 +157,11 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final boolean checkDatabaseConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
-		return checkConnectionAndClose( getConnection(databaseConfiguration) );
+//	public final boolean checkDatabaseConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+//		return checkConnectionAndClose( getConnection(databaseConfiguration) );
+//	}
+	public final boolean checkDatabaseConnection(DatabaseDefinition databaseDefinition) throws TelosysToolsException {
+		return checkConnectionAndClose( getConnection(databaseDefinition) );
 	}
 	
 	private boolean checkConnectionAndClose(Connection con) throws TelosysToolsException {
@@ -153,12 +175,15 @@ public class DbAction {
 
 	/**
 	 * Test the connection for the given database ID 
-	 * @param id
+	 * @param databaseId
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbConnectionStatus checkDatabaseConnectionWithStatus(Integer id) throws TelosysToolsException {
-		return getConnectionStatusAndClose( getConnection(id) );
+//	public final DbConnectionStatus checkDatabaseConnectionWithStatus(Integer id) throws TelosysToolsException {
+//		return getConnectionStatusAndClose( getConnection(id) );
+//	}
+	public final DbConnectionStatus checkDatabaseConnectionWithStatus(String databaseId) throws TelosysToolsException {
+		return getConnectionStatusAndClose( getConnection(databaseId) );
 	}
 
 	/**
@@ -167,33 +192,43 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbConnectionStatus checkDatabaseConnectionWithStatus(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
-		return getConnectionStatusAndClose( getConnection(databaseConfiguration) );
+//	public final DbConnectionStatus checkDatabaseConnectionWithStatus(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+//		return getConnectionStatusAndClose( getConnection(databaseConfiguration) );
+//	}
+	public final DbConnectionStatus checkDatabaseConnectionWithStatus(DatabaseDefinition databaseDefinition) throws TelosysToolsException {
+		return getConnectionStatusAndClose( getConnection(databaseDefinition) );
 	}
 
 	private DbConnectionStatus getConnectionStatusAndClose(Connection con) throws TelosysToolsException {
-		try {
-			return dbConnectionManager.getConnectionStatus(con);
-		}
-		finally {
-			closeConnection(con);
-		}
+//		try {
+//			return dbConnectionManager.getConnectionStatus(con);
+//		}
+//		finally {
+//			closeConnection(con);
+//		}
+		return DatabaseConnectionTool.getConnectionStatus(con); // v 3.4.0
 	}
 
 	/**
 	 * Returns database information for the given database ID 
-	 * @param id
+	 * @param databaseId
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbInfo getDatabaseInfo(Integer id) throws TelosysToolsException {
-		Connection con = getConnection(id);
-		return getDbInfoAndClose(con); 
+//	public final DbInfo getDatabaseInfo(Integer id) throws TelosysToolsException {
+//		Connection con = getConnection(id);
+//		return getDbInfoAndClose(con); 
+//	}
+	public final DbInfo getDatabaseInfo(String databaseId) throws TelosysToolsException {
+		return getDbInfoAndClose(getConnection(databaseId)); 
 	}
 	
-	public final DbInfo getDatabaseInfo(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
-		Connection con = getConnection(databaseConfiguration);
-		return getDbInfoAndClose(con); 
+//	public final DbInfo getDatabaseInfo(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
+//		Connection con = getConnection(databaseConfiguration);
+//		return getDbInfoAndClose(con); 
+//	}
+	public final DbInfo getDatabaseInfo(DatabaseDefinition databaseDefinition) throws TelosysToolsException {
+		return getDbInfoAndClose(getConnection(databaseDefinition)); 
 	}
 	
 	private final DbInfo getDbInfoAndClose(Connection con) throws TelosysToolsException {
@@ -215,9 +250,10 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final String getMetaData(Integer id, MetaDataOptions options) throws TelosysToolsException {
-		DatabaseConfiguration databaseConfiguration = getDatabaseConfiguration(id);
-		return getMetaData(databaseConfiguration, options);
+//	public final String getMetaData(Integer id, MetaDataOptions options) throws TelosysToolsException {
+	public final String getMetaData(String databaseId, MetaDataOptions options) throws TelosysToolsException {
+//		DatabaseConfiguration databaseConfiguration = getDatabaseConfiguration(id);
+		return getMetaData(getDatabaseDefinition(databaseId), options);
     }
 	
 	/**
@@ -227,10 +263,13 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final String getMetaData(DatabaseConfiguration databaseConfiguration, MetaDataOptions options) throws TelosysToolsException {
-		Connection con = getConnection(databaseConfiguration);
+//	public final String getMetaData(DatabaseConfiguration databaseConfiguration, MetaDataOptions options) throws TelosysToolsException {
+	public final String getMetaData(DatabaseDefinition databaseDefinition, MetaDataOptions options) throws TelosysToolsException {
+//		Connection con = getConnection(databaseConfiguration);
+		Connection con = getConnection(databaseDefinition);
 		try {
-			return DbActionMetaData.getMetaData(databaseConfiguration, con, options);
+//			return DbActionMetaData.getMetaData(databaseConfiguration, con, options);
+			return DbActionMetaData.getMetaData(databaseDefinition, con, options);
 		} catch (SQLException e) {
 			throw new TelosysToolsException("Cannot get meta-data", e);
 		}
@@ -249,37 +288,44 @@ public class DbAction {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	private final DatabaseConfiguration getRequiredDatabaseConfiguration(Integer id) throws TelosysToolsException {
-		DatabaseConfiguration databaseConfiguration = getDatabaseConfiguration(id);
+//	private final DatabaseConfiguration getRequiredDatabaseConfiguration(Integer id) throws TelosysToolsException {
+	private final DatabaseDefinition getRequiredDatabaseDefinition(String id) throws TelosysToolsException {
+//		DatabaseConfiguration databaseConfiguration = getDatabaseConfiguration(id);
+		DatabaseDefinition databaseConfiguration = getDatabaseDefinition(id);
 		if ( databaseConfiguration == null ) {
 			throw new TelosysToolsException("No configuration for database #"+id );
 		}
 		return databaseConfiguration; 
 	}
 
-	/**
-	 * Returns the DB-Model file for the given database ID (or null if no DatabaseConfiguration)
-	 * @param id
-	 * @return
-	 * @throws TelosysToolsException
-	 */
-	public final File getDbModelFile(Integer id) throws TelosysToolsException {
-		DatabaseConfiguration databaseConfiguration = getDatabaseConfiguration(id);
-		return getDbModelFile(databaseConfiguration) ;
-	}
+//	/**
+//	 * Returns the DB-Model file for the given database ID (or null if no DatabaseConfiguration)
+//	 * @param id
+//	 * @return
+//	 * @throws TelosysToolsException
+//	 */
+////	public final File getDbModelFile(Integer id) throws TelosysToolsException {
+//	public final File getDbModelFile(String databaseId) throws TelosysToolsException {
+////		DatabaseConfiguration databaseConfiguration = getDatabaseConfiguration(id);
+////		return getDbModelFile(databaseConfiguration) ;
+//		return getDbModelFile(getDatabaseDefinition(databaseId)) ;
+//	}
 
-	/**
-	 * Returns the DB-Model file for the given database config (or null if no DatabaseConfiguration)
-	 * @param databaseConfiguration
-	 * @return
-	 */
-	public final File getDbModelFile(DatabaseConfiguration databaseConfiguration) {
-		if ( databaseConfiguration != null ) {
-			String dbModelFileName = getDbModelFileName(databaseConfiguration);
-			return new File(dbModelFileName); 
-		}
-		return null ;
-	}
+//	/**
+//	 * Returns the DB-Model file for the given database config (or null if no DatabaseConfiguration)
+//	 * @param databaseConfiguration
+//	 * @return
+//	 */
+////	public final File getDbModelFile(DatabaseConfiguration databaseConfiguration) {
+//		public final File getDbModelFile(DatabaseDefinition databaseDefinition) {
+////		if ( databaseConfiguration != null ) {
+////			String dbModelFileName = getDbModelFileName(databaseConfiguration);
+//		if ( databaseDefinition != null ) {
+//			String dbModelFileName = getDbModelFileName(databaseDefinition);
+//			return new File(dbModelFileName); 
+//		}
+//		return null ;
+//	}
 
 //	/**
 //	 * Creates a new DB-Model for the given database ID 
