@@ -45,12 +45,9 @@ import org.telosys.tools.generator.task.GenerationTaskResult;
 import org.telosys.tools.generator.task.StandardGenerationTask;
 import org.telosys.tools.generic.model.Entity;
 import org.telosys.tools.generic.model.Model;
-import org.telosys.tools.stats.services.CounterFileManager;
 
 public class TelosysProject {
 
-	private static final boolean STATS_FLAG = false;
-	
 	private final String projectFolderAbsolutePath ;
 	private final TelosysToolsLogger telosysToolsLogger ;
 	private TelosysToolsCfg telosysToolsCfg = null ;
@@ -341,23 +338,9 @@ public class TelosysProject {
 				bundleName, selectedTemplatesTargets, selectedResourcesTargets, 
 				getTelosysToolsCfg(), this.telosysToolsLogger );
 		
-		GenerationTaskResult generationTaskResult = generationTask.launch();
-		
-		afterGeneration();
-		
-		return generationTaskResult ;
+		return  generationTask.launch();
 	}
 	
-	private void afterGeneration() {
-		if ( STATS_FLAG ) {
-			String fileName = FileUtil.buildFilePath( 
-					getTelosysToolsCfg().getTelosysToolsFolderAbsolutePath(), 
-					"/stats/gen.count" );
-			CounterFileManager counterFileManager = new CounterFileManager(fileName, true);
-			counterFileManager.incrementCounter() ;
-		} 
-	}
-
 	//-----------------------------------------------------------------------------------------------------
 	// MODELS 
 	//-----------------------------------------------------------------------------------------------------
