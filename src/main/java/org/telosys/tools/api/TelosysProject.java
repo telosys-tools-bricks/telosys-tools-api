@@ -75,6 +75,12 @@ public class TelosysProject {
 		this.telosysToolsCfg = null ;
 	}
 
+	private void checkArgumentNotNull(Object arg, String argName) {
+		if (arg == null) {
+			throw new IllegalArgumentException("Argument " + argName + " is null");
+		}
+	}
+	
 	/**
 	 * Returns the current project folder 
 	 * @return
@@ -441,6 +447,8 @@ public class TelosysProject {
 	 * @return
 	 */
 	public final File getDslEntityFile(String modelName, String entityName) {
+		checkArgumentNotNull(modelName, "modelName");
+		checkArgumentNotNull(entityName, "entityName");
 		return DslModelUtil.getEntityFile(getModelFolder(modelName), entityName);
 	}
 	
@@ -450,6 +458,7 @@ public class TelosysProject {
 	 * @return
 	 */
 	public final File getDslModelFile(String modelName) {
+		checkArgumentNotNull(modelName, "modelName");
 		return DslModelUtil.getModelFileFromModelFolder(getModelFolder(modelName));
 	}
 	
@@ -461,6 +470,8 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public final File createNewDslEntity(String modelName, String entityName) {
+		checkArgumentNotNull(modelName, "modelName");
+		checkArgumentNotNull(entityName, "entityName");
 		return DslModelUtil.createNewEntity(getModelFolder(modelName), entityName);
 	}
 	
@@ -469,6 +480,7 @@ public class TelosysProject {
 	 * @param modelName the model name ( eg 'mymodel' )
 	 */
 	public final void deleteDslModel(String modelName) {		
+		checkArgumentNotNull(modelName, "modelName");
 		deleteDslModel(getModelFolder(modelName));
 	}
 	
@@ -477,6 +489,7 @@ public class TelosysProject {
 	 * @param modelFolder 
 	 */
 	public final void deleteDslModel(File modelFolder) {		
+		checkArgumentNotNull(modelFolder, "modelFolder");
 		//--- Delete the model file and model folder 
 		DslModelUtil.deleteModel(modelFolder);
 	}
@@ -487,6 +500,7 @@ public class TelosysProject {
 	 * @return
 	 */
 	public final boolean dslModelFolderExists(String modelName) {
+		checkArgumentNotNull(modelName, "modelName");
 		File file = getModelFolder(modelName);
 		return file.exists() && file.isDirectory();
 	}
@@ -498,11 +512,13 @@ public class TelosysProject {
 	 * @return true if deletes, false if not found
 	 */
 	public final boolean deleteDslEntity(String modelName, String entityName) {		
+		checkArgumentNotNull(modelName, "modelName");
+		checkArgumentNotNull(entityName, "entityName");
 		return DslModelUtil.deleteEntity(getModelFolder(modelName), entityName);
 	}
 	
 	//-----------------------------------------------------------------------------------------------------
-	// DATABASE MODELS 
+	// DATABASES DEFINITIONS 
 	//-----------------------------------------------------------------------------------------------------
 	public final DatabaseDefinitions getDatabaseDefinitions() throws TelosysToolsException {
 		DbAction dbAction = new DbAction(this);
@@ -514,9 +530,17 @@ public class TelosysProject {
 		return dbAction.getDatabaseDefinitionsList();
 	}		
 
-	public final DatabaseDefinition getDatabaseDefinition(String id) throws TelosysToolsException {
+	public final DatabaseDefinition getDatabaseDefinition(String databaseId) throws TelosysToolsException {
+		checkArgumentNotNull(databaseId, "databaseId");
 		DbAction dbAction = new DbAction(this);
-		return dbAction.getDatabaseDefinition(id);
+		return dbAction.getDatabaseDefinition(databaseId);
+	}
+	
+	public final boolean databaseIsDefined(String databaseId) throws TelosysToolsException {
+		checkArgumentNotNull(databaseId, "databaseId");
+		DbAction dbAction = new DbAction(this);
+		DatabaseDefinitions databaseDefinitions = dbAction.getDatabaseDefinitions();
+		return databaseDefinitions.containsDatabase(databaseId);
 	}
 	
 	//--------------------------------------------------------------------------------------------
@@ -524,91 +548,101 @@ public class TelosysProject {
 	//--------------------------------------------------------------------------------------------
 	/**
 	 * Basic connection test for the given database id
-	 * @param id
+	 * @param databaseId
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final boolean checkDatabaseConnection(String id) throws TelosysToolsException {
+	public final boolean checkDatabaseConnection(String databaseId) throws TelosysToolsException {
+		checkArgumentNotNull(databaseId, "databaseId");
 		DbAction dbAction = new DbAction(this);
-		return dbAction.checkDatabaseConnection(id);
+		return dbAction.checkDatabaseConnection(databaseId);
 	}
 	/**
-	 * Basic connection test for the given database id
-	 * @param databaseConfiguration
+	 * Basic connection test for the given database 
+	 * @param databaseDefinition
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final boolean checkDatabaseConnection(DatabaseDefinition databaseConfiguration) throws TelosysToolsException {
+	public final boolean checkDatabaseConnection(DatabaseDefinition databaseDefinition) throws TelosysToolsException {
+		checkArgumentNotNull(databaseDefinition, "databaseDefinition");
 		DbAction dbAction = new DbAction(this);
-		return dbAction.checkDatabaseConnection(databaseConfiguration);
+		return dbAction.checkDatabaseConnection(databaseDefinition);
 	}
 
 	/**
 	 * Test the connection for the given database id (and get information)
-	 * @param id
+	 * @param databaseId
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbConnectionStatus checkDatabaseConnectionWithStatus(String id) throws TelosysToolsException {
+	public final DbConnectionStatus checkDatabaseConnectionWithStatus(String databaseId) throws TelosysToolsException {
+		checkArgumentNotNull(databaseId, "databaseId");
 		DbAction dbAction = new DbAction(this);
-		return dbAction.checkDatabaseConnectionWithStatus(id);
+		return dbAction.checkDatabaseConnectionWithStatus(databaseId);
 	}
 	
 	/**
 	 * Test the connection for the given database configuration (and get information)
-	 * @param databaseConfiguration
+	 * @param databaseDefinition
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbConnectionStatus checkDatabaseConnectionWithStatus(DatabaseDefinition databaseConfiguration) throws TelosysToolsException {
+	public final DbConnectionStatus checkDatabaseConnectionWithStatus(DatabaseDefinition databaseDefinition) throws TelosysToolsException {
+		checkArgumentNotNull(databaseDefinition, "databaseDefinition");
 		DbAction dbAction = new DbAction(this);
-		return dbAction.checkDatabaseConnectionWithStatus(databaseConfiguration);
+		return dbAction.checkDatabaseConnectionWithStatus(databaseDefinition);
 	}
 	
 	/**
 	 * Returns a long string containing all the required meta-data 
-	 * @param id
+	 * @param databaseId
 	 * @param options
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final String getMetaData(String id, MetaDataOptions options) throws TelosysToolsException {
+	public final String getMetaData(String databaseId, MetaDataOptions options) throws TelosysToolsException {
+		checkArgumentNotNull(databaseId, "databaseId");
+		checkArgumentNotNull(options, "options");
 		DbAction dbAction = new DbAction(this);
-		return dbAction.getMetaData(id, options);
+		return dbAction.getMetaData(databaseId, options);
 	}
 	
 	/**
 	 * Returns a long string containing all the required meta-data 
-	 * @param databaseConfiguration
+	 * @param databaseDefinition
 	 * @param options
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final String getMetaData(DatabaseDefinition databaseConfiguration, MetaDataOptions options) throws TelosysToolsException {
+	public final String getMetaData(DatabaseDefinition databaseDefinition, MetaDataOptions options) throws TelosysToolsException {
+		checkArgumentNotNull(databaseDefinition, "databaseDefinition");
+		checkArgumentNotNull(options, "options");
 		DbAction dbAction = new DbAction(this);
-		return dbAction.getMetaData(databaseConfiguration, options);
+		return dbAction.getMetaData(databaseDefinition, options);
 	}
 	
 	/**
 	 * Returns the database information retrieved from meta-data
-	 * @param id
+	 * @param databaseId
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbInfo getDatabaseInfo(String id ) throws TelosysToolsException {
+	public final DbInfo getDatabaseInfo(String databaseId) throws TelosysToolsException {
+		checkArgumentNotNull(databaseId, "databaseId");
 		DbAction dbAction = new DbAction(this);
-		return dbAction.getDatabaseInfo(id);
+		return dbAction.getDatabaseInfo(databaseId);
 	}
 
 	/**
 	 * Returns the database information retrieved from meta-data
-	 * @param databaseConfiguration
+	 * @param databaseDefinition
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public final DbInfo getDatabaseInfo(DatabaseDefinition databaseConfiguration) throws TelosysToolsException {
+	public final DbInfo getDatabaseInfo(DatabaseDefinition databaseDefinition) throws TelosysToolsException {
+		checkArgumentNotNull(databaseDefinition, "databaseDefinition");
 		DbAction dbAction = new DbAction(this);
-		return dbAction.getDatabaseInfo(databaseConfiguration);
+		return dbAction.getDatabaseInfo(databaseDefinition);
 	}
 	
 	//--------------------------------------------------------------------------------------------

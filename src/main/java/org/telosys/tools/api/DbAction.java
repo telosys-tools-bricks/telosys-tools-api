@@ -151,15 +151,21 @@ public class DbAction {
 		return checkConnectionAndClose( getConnection(databaseId) );
 	}
 	
-	/**
-	 * Just check if it's possible to get a connection for the given database configuration
-	 * @param databaseConfiguration
-	 * @return
-	 * @throws TelosysToolsException
-	 */
+//	/**
+//	 * Just check if it's possible to get a connection for the given database configuration
+//	 * @param databaseConfiguration
+//	 * @return
+//	 * @throws TelosysToolsException
+//	 */
 //	public final boolean checkDatabaseConnection(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
 //		return checkConnectionAndClose( getConnection(databaseConfiguration) );
 //	}
+	/**
+	 * Just check if it's possible to get a connection for the given database
+	 * @param databaseDefinition
+	 * @return
+	 * @throws TelosysToolsException
+	 */
 	public final boolean checkDatabaseConnection(DatabaseDefinition databaseDefinition) throws TelosysToolsException {
 		return checkConnectionAndClose( getConnection(databaseDefinition) );
 	}
