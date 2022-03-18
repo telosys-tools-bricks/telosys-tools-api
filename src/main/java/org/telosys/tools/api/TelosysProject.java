@@ -130,8 +130,27 @@ public class TelosysProject {
 	}
 
 	//-----------------------------------------------------------------------------------------------------
-	// Project bundles management 
+	// BUNDLES OF TEMPLATES
 	//-----------------------------------------------------------------------------------------------------
+	/**
+	 * Returns the bundles folder for the current project
+	 * @return
+	 * @since 3.4.0
+	 */
+	public final File getBundlesFolder() {
+		return new File(getTelosysToolsCfg().getTemplatesFolderAbsolutePath() );
+	}
+
+	/**
+	 * Returns the bundle folder for the given bundle name
+	 * @param modelName
+	 * @return
+	 * @since 3.4.0
+	 */
+	public final File getBundleFolder(String bundleName) {
+		return new File(getTelosysToolsCfg().getTemplatesFolderAbsolutePath(bundleName));
+	}
+
 	/**
 	 * Returns a list of bundles available on the given user's name (on GitHub)
 	 * @param userName the GitHub user name (e.g. "telosys-tools")
@@ -176,7 +195,7 @@ public class TelosysProject {
 	}
 	
 	/**
-	 * Returns a list containig all the bundles installed for the current project
+	 * Returns a list containing all the bundles installed for the current project
 	 * @return
 	 * @throws TelosysToolsException
 	 */
