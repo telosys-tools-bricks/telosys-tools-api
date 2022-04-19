@@ -7,13 +7,13 @@
 	<parent>
 		<groupId>org.telosys</groupId>
 		<artifactId>telosys-tools-parent</artifactId>
-		<version>3.x.x</version>   <!-- parent version is always "3.x.x" -->
+		<version>4.x.x</version>
 		<relativePath>../telosys-tools-parent/pom.xml</relativePath>
 	</parent>
 
 	<name>telosys-tools-api</name>
 	<artifactId>telosys-tools-api</artifactId>
-	<version>3.4.0-SNAPSHOT</version>   <!-- also update version in JAVA file "TelosysApiVersion.java"  -->
+	<version>4.0.0</version>   <!-- also update version in JAVA file "TelosysApiVersion.java"  -->
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -26,11 +26,6 @@
 			<groupId>org.telosys</groupId>
 		  	<artifactId>telosys-tools-database</artifactId>
 	 	</dependency>		
-<!-- 	 	<dependency>
-			<groupId>org.telosys</groupId>
-		  	<artifactId>telosys-tools-repository</artifactId>
-	 	</dependency>
- -->
  	 	<dependency>
 			<groupId>org.telosys</groupId>
 		  	<artifactId>telosys-tools-dsl-parser</artifactId>
