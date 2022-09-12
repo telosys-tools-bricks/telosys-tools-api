@@ -13,7 +13,7 @@
 
 	<name>telosys-tools-api</name>
 	<artifactId>telosys-tools-api</artifactId>
-	<version>4.0.0</version>   <!-- also update version in JAVA file "TelosysApiVersion.java"  -->
+	<version>4.0.1</version>   <!-- also update version in JAVA file "TelosysApiVersion.java"  -->
 	<packaging>jar</packaging>
 
 	<dependencies>
