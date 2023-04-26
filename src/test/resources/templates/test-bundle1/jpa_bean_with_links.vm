@@ -342,5 +342,9 @@ attribute : $a
     //----------------------------------------------------------------------
     // toString METHOD
     //----------------------------------------------------------------------
-$java.toStringMethod($entity, $dataFields, "compositePrimaryKey", 4)
+## TEST ALL SIGNATURES FOR 'toStringMethod'
+$java.toStringMethod($entity, 4)
+$java.toStringMethod($entity, 4, '   ')
+$java.toStringMethod($entity, $entity.keyAttributes, 4 )
+$java.toStringMethod($entity, $entity.nonKeyAttributes , 4, '   ')
 }
