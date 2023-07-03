@@ -1,0 +1,9 @@
+
+Standardization : 
+
+getModels()            getBundles()
+getModelsAsFolders()   getBundlesAsFolders()
+getModelsFolder()      getBundlesFolder()
+getModelFolder(name)   getBundleFolder(name)
+
+getDslXxxx --> getXxxx
