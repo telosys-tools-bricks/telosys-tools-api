@@ -23,13 +23,12 @@ import org.telosys.tools.dsl.DslModelErrors;
  * @author Laurent GUERIN
  * 
  */
-public class TelosysModelException extends Exception { // TelosysToolsException {
+public class TelosysModelException extends Exception {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private final File modelFile ;
 	
-//    private final Map<String,List<String>> parsingErrors ;
     private final transient DslModelErrors dslModelErrors ;
 
     /**
@@ -38,7 +37,6 @@ public class TelosysModelException extends Exception { // TelosysToolsException 
      * @param message
      * @param dslModelErrors
      */
-//    public TelosysModelException(File modelFile, String message, Map<String,List<String>> parsingErrors) {
     public TelosysModelException(File modelFile, String message, DslModelErrors dslModelErrors) {
         super(message);
         this.modelFile = modelFile ;
@@ -51,6 +49,10 @@ public class TelosysModelException extends Exception { // TelosysToolsException 
         this.dslModelErrors = new DslModelErrors();
     }
     
+    public String getModelName() {
+    	return modelFile.getName() ;
+    }
+    
     public File getModelFile() {
     	return modelFile ;
     }
@@ -58,9 +60,7 @@ public class TelosysModelException extends Exception { // TelosysToolsException 
     public boolean hasParsingErrors() {
     	return dslModelErrors != null && dslModelErrors.getNumberOfErrors() > 0 ;
     }
-//    public Map<String, List<String>> getParsingErrors() {
-//    	return parsingErrors ;
-//    }
+
     public DslModelErrors getDslModelErrors() {
     	return dslModelErrors ;
     }

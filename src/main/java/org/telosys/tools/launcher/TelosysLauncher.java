@@ -166,11 +166,11 @@ public class TelosysLauncher {
 		GenerationTaskResult result ;
 		if ( entities.size() > 0 ) {
 			// Launch the generation for the selected entities with the given bundle name
-			result = telosysProject.launchGeneration(model, entities, bundleName);
+			result = telosysProject.launchGeneration(model, entities, bundleName, true);
 		}
 		else {
 			// Launch the generation for all entities with the given bundle name
-			result = telosysProject.launchGeneration(model, bundleName);
+			result = telosysProject.launchGeneration(model, bundleName, true);
 		}
 		return result;
 	}

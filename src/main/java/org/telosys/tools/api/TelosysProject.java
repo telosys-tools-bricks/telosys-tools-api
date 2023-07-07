@@ -286,30 +286,28 @@ public class TelosysProject {
 	// Generation 
 	//-----------------------------------------------------------------------------------------------------
 	/**
-	 * Launch a generation task for all the entities of the given model <br>
-	 * and all the targets of the given bundle
+	 * Launch a generation task for all the entities of the given model and all the targets of the given bundle
 	 * @param model
 	 * @param bundleName
+	 * @param copyResources
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public GenerationTaskResult launchGeneration(Model model, String bundleName ) 
-			throws TelosysToolsException {
-		return launchGeneration(model, null, bundleName, null, true);
+	public GenerationTaskResult launchGeneration(Model model, String bundleName, boolean copyResources ) throws TelosysToolsException {
+		return launchGeneration(model, null, bundleName, null, copyResources);
 	}
 	
 	/**
-	 * Launch a generation task for the given entities of the given model <br>
-	 * and all the targets of the given bundle
+	 * Launch a generation task for the given entities of the given model and all the targets of the given bundle
 	 * @param model
 	 * @param selectedEntities
 	 * @param bundleName
+	 * @param copyResources
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public GenerationTaskResult launchGeneration(Model model, List<String> selectedEntities,
-			String bundleName) throws TelosysToolsException {
-		return launchGeneration(model, selectedEntities, bundleName, null, true);
+	public GenerationTaskResult launchGeneration(Model model, List<String> selectedEntities, String bundleName, boolean copyResources) throws TelosysToolsException {
+		return launchGeneration(model, selectedEntities, bundleName, null, copyResources);
 	}
 	
 	/**
@@ -395,44 +393,24 @@ public class TelosysProject {
 		return DslModelUtil.getModelsInFolder(getModelsFolder());
 	}
 	
+	/**
+	 * Returns the model info file for the given model name
+	 * @param modelName
+	 * @return
+	 */
 	public final File getModelInfoFile(String modelName) { // v 3.4.0
+		checkArgumentNotNull(modelName, "modelName");
 		return DslModelUtil.getModelFileFromModelFolder(getModelFolder(modelName));
 	}
 	
 	public final File getModelInfoFile(File modelFolder) { // v 3.4.0
+		checkArgumentNotNull(modelFolder, "modelFolder");
 		return DslModelUtil.getModelFileFromModelFolder(modelFolder);
 	}
 	
 	//-----------------------------------------------------------------------------------------------------
 	// DSL MODELS 
 	//-----------------------------------------------------------------------------------------------------
-// use getModelInfoFile instead
-//	/**
-//	 * Returns a File instance for the given DSL model name  
-//	 * @param modelName
-//	 * @return
-//	 */
-//	public final File getDslModelFile(String modelName) {
-////		//--- Build the model file 
-////		String modelFileName = DslModelUtil.getModelShortFileName(modelName);
-////		return new File( getTelosysToolsCfg().getDslModelFileAbsolutePath(modelFileName));
-//
-//		return DslModelUtil.getModelFileFromModelFolder(getModelFolder(modelName));
-//	}
-
-//	/**
-//	 * Returns a File instance for the given DSL entity name in the given model name <br>
-//	 * There's no garanty that the file exists 
-//	 * @param modelName
-//	 * @param entityName
-//	 * @return the File instance (never null, even if the entity doesn't exist)
-//	 * @throws TelosysToolsException
-//	 */
-//	public final File buildDslEntityFile(String modelName, String entityName) throws TelosysToolsException {
-//		
-//		File modelFile = getDslModelFile(modelName);
-//		return DslModelUtil.buildEntityFile(modelFile, entityName);
-//	}
 
 	/**
 	 * Creates a new DSL model in the project <br>
@@ -468,16 +446,6 @@ public class TelosysProject {
 		checkArgumentNotNull(modelName, "modelName");
 		checkArgumentNotNull(entityName, "entityName");
 		return DslModelUtil.getEntityFile(getModelFolder(modelName), entityName);
-	}
-	
-	/**
-	 * Returns the model info file for the given model name
-	 * @param modelName
-	 * @return
-	 */
-	public final File getDslModelFile(String modelName) {
-		checkArgumentNotNull(modelName, "modelName");
-		return DslModelUtil.getModelFileFromModelFolder(getModelFolder(modelName));
 	}
 	
 	/**
@@ -517,7 +485,7 @@ public class TelosysProject {
 	 * @param modelName
 	 * @return
 	 */
-	public final boolean dslModelFolderExists(String modelName) {
+	public final boolean modelFolderExists(String modelName) {
 		checkArgumentNotNull(modelName, "modelName");
 		File file = getModelFolder(modelName);
 		return file.exists() && file.isDirectory();
@@ -663,46 +631,4 @@ public class TelosysProject {
 		return dbAction.getDatabaseInfo(databaseDefinition);
 	}
 	
-	//--------------------------------------------------------------------------------------------
-	// DB MODEL management
-	//--------------------------------------------------------------------------------------------
-//	/**
-//	 * Creates a new 'database model' from the given database id
-//	 * @param id
-//	 * @throws TelosysToolsException
-//	 */
-//	public final void createNewDbModel(Integer id ) throws TelosysToolsException {
-//		DbAction dbAction = new DbAction(this);
-//		dbAction.createNewDbModel(id, telosysToolsLogger);
-//	}
-	
-//	/**
-//	 * Creates a new 'database model' from the given database configuration
-//	 * @param databaseConfiguration
-//	 * @throws TelosysToolsException
-//	 */
-//	public final void createNewDbModel(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
-//		DbAction dbAction = new DbAction(this);
-//		dbAction.createNewDbModel(databaseConfiguration, telosysToolsLogger);
-//	}
-	
-//	/**
-//	 * Updates a 'database model' from the given database id
-//	 * @param id
-//	 * @throws TelosysToolsException
-//	 */
-//	public final ChangeLog updateDbModel(Integer id ) throws TelosysToolsException {
-//		DbAction dbAction = new DbAction(this);
-//		return dbAction.updateDbModel(id, telosysToolsLogger);
-//	}
-//
-//	/**
-//	 * Updates a 'database model' from the given database configuration
-//	 * @param databaseConfiguration
-//	 * @throws TelosysToolsException
-//	 */
-//	public final ChangeLog updateDbModel(DatabaseConfiguration databaseConfiguration) throws TelosysToolsException {
-//		DbAction dbAction = new DbAction(this);
-//		return dbAction.updateDbModel(databaseConfiguration, telosysToolsLogger);
-//	}
 }

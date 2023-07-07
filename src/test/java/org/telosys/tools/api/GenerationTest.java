@@ -88,7 +88,7 @@ public class GenerationTest {
 
 		String bundleName = TEST_BUNDLE1 ;
 		System.out.println(" --- Launch code generation for bundle '" + bundleName  + "' ..." );
-		GenerationTaskResult result = telosysProject.launchGeneration(model, bundleName);
+		GenerationTaskResult result = telosysProject.launchGeneration(model, bundleName, true);
 		
 		System.out.println("Error(s) count = " + result.getNumberOfGenerationErrors() ) ;
 		if ( result.getNumberOfGenerationErrors() > 0 ) {
