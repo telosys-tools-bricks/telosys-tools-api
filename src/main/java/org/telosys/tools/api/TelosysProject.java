@@ -151,6 +151,42 @@ public class TelosysProject {
 	}
 
 	/**
+	 * Returns all the bundles folders for the current project 
+	 * @return
+	 * @since 4.1.0
+	 */
+	public final List<File> getBundles() {
+		BundlesManager bundlesManager = new BundlesManager( getTelosysToolsCfg() );
+		return bundlesManager.getBundles(); 
+	}
+	
+	/**
+	 * Returns all the names of existing bunles for the current project 
+	 * @return
+	 * @since 4.1.0
+	 */
+	public final List<String> getBundleNames() {
+		BundlesManager bundlesManager = new BundlesManager( getTelosysToolsCfg() );
+		List<String> bundleNames = new LinkedList<>();
+		for (File file : bundlesManager.getBundles() ) {
+			bundleNames.add(file.getName());
+		}
+		return bundleNames;
+	}
+	
+	/**
+	 * Returns true if the bundle folder exists for the given bundle name
+	 * @param bundleName
+	 * @return
+	 * @since 4.1.0
+	 */
+	public final boolean bundleFolderExists(String bundleName) {
+		checkArgumentNotNull(bundleName, "bundleName");
+		File file = getBundleFolder(bundleName);
+		return file.exists() && file.isDirectory();
+	}
+
+	/**
 	 * Returns a list of bundles available on the given user's name (on GitHub)
 	 * @param userName the GitHub user name (e.g. "telosys-tools")
 	 * @return
@@ -193,18 +229,18 @@ public class TelosysProject {
 		return bm.downloadAndInstallBundle(userName, bundleName);
 	}
 	
-	/**
-	 * Returns a list containing all the bundles installed for the current project
-	 * @return
-	 * @throws TelosysToolsException
-	 */
-	public List<String> getInstalledBundles() throws TelosysToolsException {
-		BundlesManager bundlesManager = new BundlesManager( getTelosysToolsCfg() );
-		return bundlesManager.getProjectBundlesList();
-	}
+//	/**
+//	 * Returns a list containing all the bundles installed for the current project
+//	 * @return
+//	 * @throws TelosysToolsException
+//	 */
+//	public List<String> getInstalledBundles() throws TelosysToolsException {
+//		BundlesManager bundlesManager = new BundlesManager( getTelosysToolsCfg() );
+//		return bundlesManager.getProjectBundlesList();
+//	}
 	
 	/**
-	 * Returns the 'templates.cfg' File object for the given bundle name <br>
+	 * Returns the 'templates.cfg' file for the given bundle name <br>
 	 * There's no guarantee the returned file exists
 	 * @param bundleName
 	 * @return
@@ -215,12 +251,22 @@ public class TelosysProject {
 	}
 	
 	/**
+	 * Returns the 'templates.cfg' file for the given bundle folder <br>
+	 * There's no guarantee the returned file exists
+	 * @param bundleFolder
+	 * @return
+	 */
+	public File getBundleConfigFile(File bundleFolder) {
+		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
+		return bm.getBundleConfigFile(bundleFolder);
+	}
+	
+	/**
 	 * Deletes the given bundle
 	 * @param bundleName
 	 * @return true if found and deleted, false if not found
-	 * @throws TelosysToolsException
 	 */
-	public boolean deleteBundle(String bundleName) throws TelosysToolsException {
+	public boolean deleteBundle(String bundleName) {
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		return bm.deleteBundle(bundleName);
 	}
@@ -391,6 +437,21 @@ public class TelosysProject {
 	 */
 	public final List<File> getModels() {
 		return DslModelUtil.getModelsInFolder(getModelsFolder());
+	}
+	
+	/**
+	 * Returns all the names of existing models for the current project 
+	 * @return
+	 * @since 4.1.0
+	 * @return
+	 */
+	public final List<String> getModelNames() { 
+		List<String> modelNames = new LinkedList<>();
+		// Convert files to file names (strings)
+		for ( File f : getModels() ) {
+			modelNames.add(f.getName());
+		}
+		return modelNames;
 	}
 	
 	/**
