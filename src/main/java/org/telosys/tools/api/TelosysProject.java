@@ -22,7 +22,6 @@ import java.util.List;
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.TelosysToolsLogger;
-import org.telosys.tools.commons.bundles.BundleStatus;
 import org.telosys.tools.commons.bundles.BundlesFromGitHub;
 import org.telosys.tools.commons.bundles.BundlesManager;
 import org.telosys.tools.commons.bundles.TargetDefinition;
@@ -224,7 +223,7 @@ public class TelosysProject {
 	 * @param bundleName the bundle name, in other words the GitHub repository name 
 	 * @return
 	 */
-	public BundleStatus downloadAndInstallBundle(String userName, String bundleName) {
+	public boolean downloadAndInstallBundle(String userName, String bundleName) throws TelosysToolsException {
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		return bm.downloadAndInstallBundle(userName, bundleName);
 	}
