@@ -22,7 +22,7 @@ import java.util.List;
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.TelosysToolsLogger;
-import org.telosys.tools.commons.bundles.BundlesFromGitHub;
+import org.telosys.tools.commons.bundles.BundlesFromDepot;
 import org.telosys.tools.commons.bundles.BundlesManager;
 import org.telosys.tools.commons.bundles.TargetDefinition;
 import org.telosys.tools.commons.bundles.TargetsDefinitions;
@@ -32,6 +32,7 @@ import org.telosys.tools.commons.dbcfg.DbConnectionStatus;
 import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinition;
 import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinitions;
 import org.telosys.tools.commons.env.EnvironmentManager;
+import org.telosys.tools.commons.github.GitHubClient;
 import org.telosys.tools.commons.github.GitHubRateLimitResponse;
 import org.telosys.tools.commons.logger.ConsoleLogger;
 import org.telosys.tools.db.metadata.DbInfo;
@@ -187,15 +188,17 @@ public class TelosysProject {
 
 	/**
 	 * Returns a list of bundles available on the given user's name (on GitHub)
-	 * @param userName the GitHub user name (e.g. "telosys-tools")
+	 * @param depotName the depot name (e.g. GitHub user-name like "telosys-tools" )
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public BundlesFromGitHub getGitHubBundlesList(String userName) throws TelosysToolsException {
+//	public BundlesFromGitHub getGitHubBundlesList(String userName) throws TelosysToolsException {
+	public BundlesFromDepot getBundlesAvailableInDepot(String depotName) throws TelosysToolsException { // v 4.2.0
 		
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		try {
-			return bm.getGitHubBundlesList(userName);
+//			return bm.getGitHubBundlesList(userName);
+			return bm.getBundlesFromDepot(depotName); // v 4.2.0
 		} catch (Exception e) {
 			throw new TelosysToolsException("Cannot get bundles list", e);
 		}
@@ -208,12 +211,19 @@ public class TelosysProject {
 	 */
 	public GitHubRateLimitResponse getGitHubRateLimit() throws TelosysToolsException {
 		
-		BundlesManager bundlesManager = new BundlesManager( getTelosysToolsCfg() );
+//		BundlesManager bundlesManager = new BundlesManager( getTelosysToolsCfg() );
+//		try {
+//			return bundlesManager.getGitHubRateLimit();
+//		} catch (Exception e) {
+//			throw new TelosysToolsException("Cannot get bundles list", e);
+//		}
+		// v 4.2.0
+		GitHubClient gitHubClient = new GitHubClient( getTelosysToolsCfg().getCfgFileAbsolutePath() ) ;
 		try {
-			return bundlesManager.getGitHubRateLimit();
+			return gitHubClient.getRateLimit();
 		} catch (Exception e) {
-			throw new TelosysToolsException("Cannot get bundles list", e);
-		}
+			throw new TelosysToolsException("Cannot get GitHub API rate limit", e);
+		}		
 	}
 
 	/**
@@ -453,18 +463,24 @@ public class TelosysProject {
 		return modelNames;
 	}
 	
+	private static final String MODEL_NAME   = "modelName";
+	private static final String MODEL_FOLDER = "modelFolder";
+	private static final String ENTITY_NAME  = "entityName";
+	private static final String DATABASE_ID  = "databaseId";
+	private static final String DATABASE_DEFINITION  = "databaseDefinition";
+
 	/**
 	 * Returns the model info file for the given model name
 	 * @param modelName
 	 * @return
 	 */
 	public final File getModelInfoFile(String modelName) { // v 3.4.0
-		checkArgumentNotNull(modelName, "modelName");
+		checkArgumentNotNull(modelName, MODEL_NAME);
 		return DslModelUtil.getModelFileFromModelFolder(getModelFolder(modelName));
 	}
 	
 	public final File getModelInfoFile(File modelFolder) { // v 3.4.0
-		checkArgumentNotNull(modelFolder, "modelFolder");
+		checkArgumentNotNull(modelFolder, MODEL_FOLDER);
 		return DslModelUtil.getModelFileFromModelFolder(modelFolder);
 	}
 	
@@ -503,8 +519,8 @@ public class TelosysProject {
 	 * @return
 	 */
 	public final File getDslEntityFile(String modelName, String entityName) {
-		checkArgumentNotNull(modelName, "modelName");
-		checkArgumentNotNull(entityName, "entityName");
+		checkArgumentNotNull(modelName, MODEL_NAME);
+		checkArgumentNotNull(entityName, ENTITY_NAME);
 		return DslModelUtil.getEntityFile(getModelFolder(modelName), entityName);
 	}
 	
@@ -516,8 +532,8 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public final File createNewDslEntity(String modelName, String entityName) {
-		checkArgumentNotNull(modelName, "modelName");
-		checkArgumentNotNull(entityName, "entityName");
+		checkArgumentNotNull(modelName, MODEL_NAME);
+		checkArgumentNotNull(entityName, ENTITY_NAME);
 		return DslModelUtil.createNewEntity(getModelFolder(modelName), entityName);
 	}
 	
@@ -526,7 +542,7 @@ public class TelosysProject {
 	 * @param modelName the model name ( eg 'mymodel' )
 	 */
 	public final void deleteDslModel(String modelName) {		
-		checkArgumentNotNull(modelName, "modelName");
+		checkArgumentNotNull(modelName, MODEL_NAME);
 		deleteDslModel(getModelFolder(modelName));
 	}
 	
@@ -535,7 +551,7 @@ public class TelosysProject {
 	 * @param modelFolder 
 	 */
 	public final void deleteDslModel(File modelFolder) {		
-		checkArgumentNotNull(modelFolder, "modelFolder");
+		checkArgumentNotNull(modelFolder, MODEL_FOLDER);
 		//--- Delete the model file and model folder 
 		DslModelUtil.deleteModel(modelFolder);
 	}
@@ -546,7 +562,7 @@ public class TelosysProject {
 	 * @return
 	 */
 	public final boolean modelFolderExists(String modelName) {
-		checkArgumentNotNull(modelName, "modelName");
+		checkArgumentNotNull(modelName, MODEL_NAME);
 		File file = getModelFolder(modelName);
 		return file.exists() && file.isDirectory();
 	}
@@ -558,8 +574,8 @@ public class TelosysProject {
 	 * @return true if deletes, false if not found
 	 */
 	public final boolean deleteDslEntity(String modelName, String entityName) {		
-		checkArgumentNotNull(modelName, "modelName");
-		checkArgumentNotNull(entityName, "entityName");
+		checkArgumentNotNull(modelName, MODEL_NAME);
+		checkArgumentNotNull(entityName, ENTITY_NAME);
 		return DslModelUtil.deleteEntity(getModelFolder(modelName), entityName);
 	}
 	
@@ -577,13 +593,13 @@ public class TelosysProject {
 	}		
 
 	public final DatabaseDefinition getDatabaseDefinition(String databaseId) throws TelosysToolsException {
-		checkArgumentNotNull(databaseId, "databaseId");
+		checkArgumentNotNull(databaseId, DATABASE_ID);
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDatabaseDefinition(databaseId);
 	}
 	
 	public final boolean databaseIsDefined(String databaseId) throws TelosysToolsException {
-		checkArgumentNotNull(databaseId, "databaseId");
+		checkArgumentNotNull(databaseId, DATABASE_ID);
 		DbAction dbAction = new DbAction(this);
 		DatabaseDefinitions databaseDefinitions = dbAction.getDatabaseDefinitions();
 		return databaseDefinitions.containsDatabase(databaseId);
@@ -599,7 +615,7 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public final boolean checkDatabaseConnection(String databaseId) throws TelosysToolsException {
-		checkArgumentNotNull(databaseId, "databaseId");
+		checkArgumentNotNull(databaseId, DATABASE_ID);
 		DbAction dbAction = new DbAction(this);
 		return dbAction.checkDatabaseConnection(databaseId);
 	}
@@ -610,7 +626,7 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public final boolean checkDatabaseConnection(DatabaseDefinition databaseDefinition) throws TelosysToolsException {
-		checkArgumentNotNull(databaseDefinition, "databaseDefinition");
+		checkArgumentNotNull(databaseDefinition, DATABASE_DEFINITION);
 		DbAction dbAction = new DbAction(this);
 		return dbAction.checkDatabaseConnection(databaseDefinition);
 	}
@@ -622,7 +638,7 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public final DbConnectionStatus checkDatabaseConnectionWithStatus(String databaseId) throws TelosysToolsException {
-		checkArgumentNotNull(databaseId, "databaseId");
+		checkArgumentNotNull(databaseId, DATABASE_ID);
 		DbAction dbAction = new DbAction(this);
 		return dbAction.checkDatabaseConnectionWithStatus(databaseId);
 	}
@@ -634,7 +650,7 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public final DbConnectionStatus checkDatabaseConnectionWithStatus(DatabaseDefinition databaseDefinition) throws TelosysToolsException {
-		checkArgumentNotNull(databaseDefinition, "databaseDefinition");
+		checkArgumentNotNull(databaseDefinition, DATABASE_DEFINITION);
 		DbAction dbAction = new DbAction(this);
 		return dbAction.checkDatabaseConnectionWithStatus(databaseDefinition);
 	}
@@ -647,7 +663,7 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public final String getMetaData(String databaseId, MetaDataOptions options) throws TelosysToolsException {
-		checkArgumentNotNull(databaseId, "databaseId");
+		checkArgumentNotNull(databaseId, DATABASE_ID);
 		checkArgumentNotNull(options, "options");
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getMetaData(databaseId, options);
@@ -661,7 +677,7 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public final String getMetaData(DatabaseDefinition databaseDefinition, MetaDataOptions options) throws TelosysToolsException {
-		checkArgumentNotNull(databaseDefinition, "databaseDefinition");
+		checkArgumentNotNull(databaseDefinition, DATABASE_DEFINITION);
 		checkArgumentNotNull(options, "options");
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getMetaData(databaseDefinition, options);
@@ -674,7 +690,7 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public final DbInfo getDatabaseInfo(String databaseId) throws TelosysToolsException {
-		checkArgumentNotNull(databaseId, "databaseId");
+		checkArgumentNotNull(databaseId, DATABASE_ID);
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDatabaseInfo(databaseId);
 	}
@@ -686,7 +702,7 @@ public class TelosysProject {
 	 * @throws TelosysToolsException
 	 */
 	public final DbInfo getDatabaseInfo(DatabaseDefinition databaseDefinition) throws TelosysToolsException {
-		checkArgumentNotNull(databaseDefinition, "databaseDefinition");
+		checkArgumentNotNull(databaseDefinition, DATABASE_DEFINITION);
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDatabaseInfo(databaseDefinition);
 	}
