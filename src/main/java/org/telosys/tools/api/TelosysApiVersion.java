@@ -15,16 +15,59 @@
  */
 package org.telosys.tools.api;
 
+import org.telosys.tools.commons.VersionProvider;
+
 /**
- * Current version 
+ * "commons" version provider
+ *  
+ * New: since ver 4.2.0 version and build id are provided via a properties file
+ * updated at each Maven build using resources filtering
  * 
  * @author Laurent Guerin
  *
  */
 public class TelosysApiVersion {
 
-	public static final String VERSION = "4.1.0" ;
+	/**
+	 * Property name to get the VERSION from properties file
+	 */
+	private static final VersionProvider versionProvider = new VersionProvider("/telosys-api-build.properties") ;
 	
-	private TelosysApiVersion() {
+	/**
+	 * Private constructor
+	 */
+	private TelosysApiVersion() {}
+	
+	/**
+	 * Returns the project name 
+	 * @return
+	 */
+	public static final String getName() {
+		return versionProvider.getName();
 	}
+
+	/**
+	 * Returns the project version 
+	 * @return
+	 */
+	public static final String getVersion() {
+		return versionProvider.getVersion();
+	}
+
+	/**
+	 * Returns the project build-id 
+	 * @return
+	 */
+	public static final String getBuildId() {
+		return versionProvider.getBuildId();
+	}
+
+	/**
+	 * Returns the project version with build-id
+	 * @return
+	 */
+	public static final String getVersionWithBuilId() {
+		return versionProvider.getVersionWithBuilId();
+	}
+
 }
