@@ -31,10 +31,12 @@ import org.telosys.tools.commons.cfg.TelosysToolsCfgManager;
 import org.telosys.tools.commons.dbcfg.DbConnectionStatus;
 import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinition;
 import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinitions;
+import org.telosys.tools.commons.depot.DepotResponse;
 import org.telosys.tools.commons.env.EnvironmentManager;
 import org.telosys.tools.commons.github.GitHubClient;
 import org.telosys.tools.commons.github.GitHubRateLimitResponse;
 import org.telosys.tools.commons.logger.ConsoleLogger;
+import org.telosys.tools.commons.models.ModelsManager;
 import org.telosys.tools.db.metadata.DbInfo;
 import org.telosys.tools.dsl.DslModelManager;
 import org.telosys.tools.dsl.DslModelUtil;
@@ -188,7 +190,7 @@ public class TelosysProject {
 
 	/**
 	 * Returns a list of bundles available on the given user's name (on GitHub)
-	 * @param depotName the depot name (e.g. GitHub user-name like "telosys-tools" )
+	 * @param depotName the depot name (e.g. GitHub user-name like "telosys-templates" )
 	 * @return
 	 * @throws TelosysToolsException
 	 */
@@ -202,6 +204,18 @@ public class TelosysProject {
 		} catch (Exception e) {
 			throw new TelosysToolsException("Cannot get bundles list", e);
 		}
+	}
+	
+	/**
+	 * Returns a list of models available on the given user's name (on GitHub)
+	 * @param depotName the depot name (e.g. GitHub user-name like "telosys-models" )
+	 * @return
+	 * @throws TelosysToolsException
+	 * @since 4.2.0
+	 */
+	public DepotResponse getModelsAvailableInDepot(String depotName) throws TelosysToolsException { 
+		ModelsManager m = new ModelsManager( getTelosysToolsCfg() );
+		return m.getModelsFromDepot(depotName);
 	}
 	
 	/**
