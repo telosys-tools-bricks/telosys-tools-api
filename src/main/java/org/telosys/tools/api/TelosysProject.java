@@ -22,7 +22,6 @@ import java.util.List;
 import org.telosys.tools.commons.FileUtil;
 import org.telosys.tools.commons.TelosysToolsException;
 import org.telosys.tools.commons.TelosysToolsLogger;
-import org.telosys.tools.commons.bundles.BundlesFromDepot;
 import org.telosys.tools.commons.bundles.BundlesManager;
 import org.telosys.tools.commons.bundles.TargetDefinition;
 import org.telosys.tools.commons.bundles.TargetsDefinitions;
@@ -194,12 +193,10 @@ public class TelosysProject {
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-//	public BundlesFromGitHub getGitHubBundlesList(String userName) throws TelosysToolsException {
-	public BundlesFromDepot getBundlesAvailableInDepot(String depotName) throws TelosysToolsException { // v 4.2.0
+	public DepotResponse getBundlesAvailableInDepot(String depotName) throws TelosysToolsException { // v 4.2.0
 		
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		try {
-//			return bm.getGitHubBundlesList(userName);
 			return bm.getBundlesFromDepot(depotName); // v 4.2.0
 		} catch (Exception e) {
 			throw new TelosysToolsException("Cannot get bundles list", e);
@@ -225,12 +222,6 @@ public class TelosysProject {
 	 */
 	public GitHubRateLimitResponse getGitHubRateLimit() throws TelosysToolsException {
 		
-//		BundlesManager bundlesManager = new BundlesManager( getTelosysToolsCfg() );
-//		try {
-//			return bundlesManager.getGitHubRateLimit();
-//		} catch (Exception e) {
-//			throw new TelosysToolsException("Cannot get bundles list", e);
-//		}
 		// v 4.2.0
 		GitHubClient gitHubClient = new GitHubClient( getTelosysToolsCfg().getCfgFileAbsolutePath() ) ;
 		try {
@@ -251,16 +242,6 @@ public class TelosysProject {
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		return bm.downloadAndInstallBundle(userName, bundleName);
 	}
-	
-//	/**
-//	 * Returns a list containing all the bundles installed for the current project
-//	 * @return
-//	 * @throws TelosysToolsException
-//	 */
-//	public List<String> getInstalledBundles() throws TelosysToolsException {
-//		BundlesManager bundlesManager = new BundlesManager( getTelosysToolsCfg() );
-//		return bundlesManager.getProjectBundlesList();
-//	}
 	
 	/**
 	 * Returns the 'templates.cfg' file for the given bundle name <br>
