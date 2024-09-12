@@ -242,6 +242,20 @@ public class TelosysProject {
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		return bm.downloadAndInstallBundle(userName, bundleName);
 	}
+	public boolean downloadAndInstall(String depotName, String elementName, InstallationType installationType) throws TelosysToolsException {
+		switch(installationType) {
+		case BUNDLE:
+			BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
+			return bm.downloadAndInstallBundle(depotName, elementName);
+		case MODEL:
+			ModelsManager m = new ModelsManager( getTelosysToolsCfg() );
+			// TODO
+			//return m.downloadAndInstallModel(depotName, elementName);
+			return false;
+		default:
+			throw new TelosysToolsException("Unexpected InstallationType");
+		}
+	}
 	
 	/**
 	 * Returns the 'templates.cfg' file for the given bundle name <br>
