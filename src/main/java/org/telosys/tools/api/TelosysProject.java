@@ -249,9 +249,7 @@ public class TelosysProject {
 			return bm.downloadAndInstallBundle(depotName, elementName);
 		case MODEL:
 			ModelsManager m = new ModelsManager( getTelosysToolsCfg() );
-			// TODO
-			//return m.downloadAndInstallModel(depotName, elementName);
-			return false;
+			return m.downloadAndInstallModel(depotName, elementName);
 		default:
 			throw new TelosysToolsException("Unexpected InstallationType");
 		}
