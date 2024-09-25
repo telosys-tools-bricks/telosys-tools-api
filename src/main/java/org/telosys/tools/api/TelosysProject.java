@@ -281,8 +281,9 @@ public class TelosysProject {
 	 * Deletes the given bundle
 	 * @param bundleName
 	 * @return true if found and deleted, false if not found
+	 * @throws TelosysToolsException 
 	 */
-	public boolean deleteBundle(String bundleName) {
+	public boolean deleteBundle(String bundleName) throws TelosysToolsException {
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		return bm.deleteBundle(bundleName);
 	}
@@ -547,17 +548,19 @@ public class TelosysProject {
 	/**
 	 * Deletes the given DSL model  
 	 * @param modelName the model name ( eg 'mymodel' )
+	 * @throws TelosysToolsException 
 	 */
-	public final void deleteDslModel(String modelName) {		
+	public final void deleteModel(String modelName) throws TelosysToolsException {		
 		checkArgumentNotNull(modelName, MODEL_NAME);
-		deleteDslModel(getModelFolder(modelName));
+		deleteModel(getModelFolder(modelName));
 	}
 	
 	/**
 	 * Deletes the given DSL model  
 	 * @param modelFolder 
+	 * @throws TelosysToolsException 
 	 */
-	public final void deleteDslModel(File modelFolder) {		
+	public final void deleteModel(File modelFolder) throws TelosysToolsException {		
 		checkArgumentNotNull(modelFolder, MODEL_FOLDER);
 		//--- Delete the model file and model folder 
 		DslModelUtil.deleteModel(modelFolder);
@@ -575,12 +578,12 @@ public class TelosysProject {
 	}
 	
 	/**
-	 * Deletes the DSL entity in the given model name
+	 * Deletes the given entity in the given model name
 	 * @param modelName
 	 * @param entityName
 	 * @return true if deletes, false if not found
 	 */
-	public final boolean deleteDslEntity(String modelName, String entityName) {		
+	public final boolean deleteEntity(String modelName, String entityName) {		
 		checkArgumentNotNull(modelName, MODEL_NAME);
 		checkArgumentNotNull(entityName, ENTITY_NAME);
 		return DslModelUtil.deleteEntity(getModelFolder(modelName), entityName);
