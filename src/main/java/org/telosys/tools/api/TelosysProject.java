@@ -30,6 +30,7 @@ import org.telosys.tools.commons.cfg.TelosysToolsCfgManager;
 import org.telosys.tools.commons.dbcfg.DbConnectionStatus;
 import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinition;
 import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinitions;
+import org.telosys.tools.commons.depot.Depot;
 import org.telosys.tools.commons.depot.DepotResponse;
 import org.telosys.tools.commons.env.EnvironmentManager;
 import org.telosys.tools.commons.github.GitHubClient;
@@ -189,30 +190,25 @@ public class TelosysProject {
 
 	/**
 	 * Returns a list of bundles available on the given user's name (on GitHub)
-	 * @param depotName the depot name (e.g. GitHub user-name like "telosys-templates" )
+	 * @param depot the depot name (e.g. GitHub user-name like "telosys-templates" )
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public DepotResponse getBundlesAvailableInDepot(String depotName) throws TelosysToolsException { // v 4.2.0
-		
+	public DepotResponse getBundlesAvailableInDepot(String depot) throws TelosysToolsException { // v 4.2.0
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
-		try {
-			return bm.getBundlesFromDepot(depotName); // v 4.2.0
-		} catch (Exception e) {
-			throw new TelosysToolsException("Cannot get bundles list", e);
-		}
+		return bm.getBundlesFromDepot(new Depot(depot)); // v 4.2.0
 	}
 	
 	/**
 	 * Returns a list of models available on the given user's name (on GitHub)
-	 * @param depotName the depot name (e.g. GitHub user-name like "telosys-models" )
+	 * @param depot the depot name (e.g. GitHub user-name like "telosys-models" )
 	 * @return
 	 * @throws TelosysToolsException
 	 * @since 4.2.0
 	 */
-	public DepotResponse getModelsAvailableInDepot(String depotName) throws TelosysToolsException { 
+	public DepotResponse getModelsAvailableInDepot(String depot) throws TelosysToolsException { 
 		ModelsManager m = new ModelsManager( getTelosysToolsCfg() );
-		return m.getModelsFromDepot(depotName);
+		return m.getModelsFromDepot(new Depot(depot));
 	}
 	
 	/**
@@ -232,24 +228,21 @@ public class TelosysProject {
 	}
 
 	/**
-	 * Download and install a bundle (from GitHub repositories) 
-	 * 
-	 * @param userName the GitHub user name (e.g. "telosys-tools")
-	 * @param bundleName the bundle name, in other words the GitHub repository name 
+	 * Download and install a bundle or a model from the given depot
+	 * @param depot
+	 * @param elementName name of the element to download (bundle name or model name)
+	 * @param installationType
 	 * @return
+	 * @throws TelosysToolsException
 	 */
-	public boolean downloadAndInstallBundle(String userName, String bundleName) throws TelosysToolsException {
-		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
-		return bm.downloadAndInstallBundle(userName, bundleName);
-	}
-	public boolean downloadAndInstall(String depotName, String elementName, InstallationType installationType) throws TelosysToolsException {
+	public boolean downloadAndInstall(String depot, String elementName, InstallationType installationType) throws TelosysToolsException {
 		switch(installationType) {
 		case BUNDLE:
 			BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
-			return bm.downloadAndInstallBundle(depotName, elementName);
+			return bm.downloadAndInstallBundle(new Depot(depot), elementName);
 		case MODEL:
 			ModelsManager m = new ModelsManager( getTelosysToolsCfg() );
-			return m.downloadAndInstallModel(depotName, elementName);
+			return m.downloadAndInstallModel(new Depot(depot), elementName);
 		default:
 			throw new TelosysToolsException("Unexpected InstallationType");
 		}
