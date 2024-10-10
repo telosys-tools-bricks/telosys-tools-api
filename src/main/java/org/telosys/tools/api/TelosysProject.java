@@ -212,19 +212,14 @@ public class TelosysProject {
 	}
 	
 	/**
-	 * Returns GitHub API current rate limit 
+	 * Check GitHub "rate limit" endpoint is responding for the server defined in the given depot
+	 * @param depot
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public GitHubRateLimitResponse getGitHubRateLimit() throws TelosysToolsException {
-		
-		// v 4.2.0
+	public GitHubRateLimitResponse checkGitHub(String depot) throws TelosysToolsException { // v 4.2.0
 		GitHubClient gitHubClient = new GitHubClient( getTelosysToolsCfg().getCfgFileAbsolutePath() ) ;
-		try {
-			return gitHubClient.getRateLimit();
-		} catch (Exception e) {
-			throw new TelosysToolsException("Cannot get GitHub API rate limit", e);
-		}		
+		return gitHubClient.getRateLimit(new Depot(depot));
 	}
 
 	/**
