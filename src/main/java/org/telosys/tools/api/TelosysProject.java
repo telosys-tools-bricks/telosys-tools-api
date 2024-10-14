@@ -183,7 +183,7 @@ public class TelosysProject {
 	 * @since 4.1.0
 	 */
 	public final boolean bundleFolderExists(String bundleName) {
-		checkArgumentNotNull(bundleName, "bundleName");
+		checkArgumentNotNull(bundleName, BUNDLE_NAME);
 		File file = getBundleFolder(bundleName);
 		return file.exists() && file.isDirectory();
 	}
@@ -226,18 +226,19 @@ public class TelosysProject {
 	 * Download and install a bundle or a model from the given depot
 	 * @param depot
 	 * @param elementName name of the element to download (bundle name or model name)
+	 * @param branch 
 	 * @param installationType
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public boolean downloadAndInstall(String depot, String elementName, InstallationType installationType) throws TelosysToolsException {
+	public boolean downloadAndInstallBranch(String depot, String elementName, String branch, InstallationType installationType) throws TelosysToolsException {
 		switch(installationType) {
 		case BUNDLE:
 			BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
-			return bm.downloadAndInstallBundle(new Depot(depot), elementName);
+			return bm.downloadAndInstallBundleBranch(new Depot(depot), elementName, branch);
 		case MODEL:
 			ModelsManager m = new ModelsManager( getTelosysToolsCfg() );
-			return m.downloadAndInstallModel(new Depot(depot), elementName);
+			return m.downloadAndInstallModelBranch(new Depot(depot), elementName, branch);
 		default:
 			throw new TelosysToolsException("Unexpected InstallationType");
 		}
@@ -272,6 +273,7 @@ public class TelosysProject {
 	 * @throws TelosysToolsException 
 	 */
 	public boolean deleteBundle(String bundleName) throws TelosysToolsException {
+		checkArgumentNotNull(bundleName, BUNDLE_NAME);
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
 		return bm.deleteBundle(bundleName);
 	}
@@ -459,6 +461,7 @@ public class TelosysProject {
 		return modelNames;
 	}
 	
+	private static final String BUNDLE_NAME  = "bundleName";
 	private static final String MODEL_NAME   = "modelName";
 	private static final String MODEL_FOLDER = "modelFolder";
 	private static final String ENTITY_NAME  = "entityName";
@@ -538,9 +541,10 @@ public class TelosysProject {
 	 * @param modelName the model name ( eg 'mymodel' )
 	 * @throws TelosysToolsException 
 	 */
-	public final void deleteModel(String modelName) throws TelosysToolsException {		
+	public final boolean deleteModel(String modelName) throws TelosysToolsException {		
 		checkArgumentNotNull(modelName, MODEL_NAME);
-		deleteModel(getModelFolder(modelName));
+		ModelsManager mm = new ModelsManager( getTelosysToolsCfg() );
+		return mm.deleteModel(modelName);
 	}
 	
 	/**
