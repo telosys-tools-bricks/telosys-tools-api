@@ -17,7 +17,7 @@ public class TestsEnv {
 		File dbrepInputFile = new File( originalFileAbsolutePath ) ;
 		
 		// destination folder
-		String projectModelsFolder = FileUtil.buildFilePath(projectFolderAbsolutePath, TelosysToolsEnv.getInstance().getModelsFolder() );
+		String projectModelsFolder = FileUtil.buildFilePath(projectFolderAbsolutePath, TelosysToolsEnv.getModelsFolder() );
 		File destDir = new File(projectModelsFolder);
 		
 		System.out.println(" copy " + dbrepInputFile ); 
@@ -38,7 +38,7 @@ public class TestsEnv {
 		File sourceDir = new File( originalFolderAbsolutePath ) ;
 		
 		// destination folder
-		String projectModelsFolder = FileUtil.buildFilePath(projectFolderAbsolutePath, TelosysToolsEnv.getInstance().getModelsFolder() );
+		String projectModelsFolder = FileUtil.buildFilePath(projectFolderAbsolutePath, TelosysToolsEnv.getModelsFolder() );
 		File destDir = new File(FileUtil.buildFilePath(projectModelsFolder, dslModelFolder) );
 		
 		System.out.println(" copy " + sourceDir ); 
@@ -55,7 +55,7 @@ public class TestsEnv {
 		File sourceDir = new File( originalFolderAbsolutePath ) ;
 		
 		// destination folder
-		String projectModelsFolder = FileUtil.buildFilePath(projectFolderAbsolutePath, TelosysToolsEnv.getInstance().getTemplatesFolder() );
+		String projectModelsFolder = FileUtil.buildFilePath(projectFolderAbsolutePath, TelosysToolsEnv.getTemplatesFolder() );
 		File destDir = new File(FileUtil.buildFilePath(projectModelsFolder, bundleName) );
 		
 		System.out.println(" copy " + sourceDir ); 
