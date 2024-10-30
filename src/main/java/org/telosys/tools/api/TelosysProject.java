@@ -117,12 +117,7 @@ public class TelosysProject {
 		this.telosysToolsCfg = cfgManager.loadTelosysToolsCfg() ;
 		return this.telosysToolsCfg;
 	}
-	
-	public void saveTelosysToolsCfg(TelosysToolsCfg telosysToolsCfg) {
-		TelosysToolsCfgManager cfgManager = new TelosysToolsCfgManager( projectFolderAbsolutePath );
-		cfgManager.saveTelosysToolsCfg(telosysToolsCfg);
-	}
-	
+
 	public TelosysToolsCfg getTelosysToolsCfg() {
 		if ( this.telosysToolsCfg == null ) {
 			loadTelosysToolsCfg();
