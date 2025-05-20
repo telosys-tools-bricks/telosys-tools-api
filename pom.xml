@@ -13,7 +13,7 @@
 
 	<name>telosys-tools-api</name>
 	<artifactId>telosys-tools-api</artifactId>
-	<version>4.2.0</version>   <!-- Version & build-id updated at each build with "telosys-api-build.properties" -->
+	<version>4.2.1</version>   <!-- Version & build-id updated at each build with "telosys-api-build.properties" -->
 	<!-- Don't forget to update "telosys-tools-all" dependency + "telosys-tools-parent" -->
 	<packaging>jar</packaging>
 
