@@ -16,6 +16,7 @@
 package org.telosys.tools.api;
 
 import java.io.File;
+import java.sql.Connection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -593,6 +594,12 @@ public class TelosysProject {
 		checkArgumentNotNull(databaseId, DATABASE_ID);
 		DbAction dbAction = new DbAction(this);
 		return dbAction.getDatabaseDefinition(databaseId);
+	}
+	
+	public final Connection getDatabaseConnection(String databaseId) throws TelosysToolsException {
+		checkArgumentNotNull(databaseId, DATABASE_ID);
+		DbAction dbAction = new DbAction(this);
+		return dbAction.getDatabaseConnection(databaseId);
 	}
 	
 	public final boolean databaseIsDefined(String databaseId) throws TelosysToolsException {

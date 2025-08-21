@@ -120,6 +120,17 @@ public class DbAction {
 		return getDatabaseDefinitions().getDatabaseDefinition(databaseId);
 	}
 	
+	/**
+	 * Returns a connection for the given database-id
+	 * @param databaseId
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public final Connection getDatabaseConnection(String databaseId) throws TelosysToolsException {
+		DatabaseDefinition databaseDefinition = getDatabaseDefinitions().getDatabaseDefinition(databaseId);
+		return getConnection(databaseDefinition);
+	}
+	
 	//--------------------------------------------------------------------------------------------
 	// Check database connection
 	//--------------------------------------------------------------------------------------------
