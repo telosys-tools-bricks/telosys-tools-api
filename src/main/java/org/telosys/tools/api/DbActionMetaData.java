@@ -37,8 +37,15 @@ public class DbActionMetaData {
 	private DbActionMetaData() {
 	}
 	
-//	public static final String getMetaData(DatabaseConfiguration dbConfig, Connection con, MetaDataOptions options) throws SQLException
-	public static final String getMetaData(DatabaseDefinition dbConfig, Connection con, MetaDataOptions options) throws SQLException
+	/**
+	 * Get MetaData from the given connection according to the given options
+	 * @param databaseDefinition
+	 * @param con
+	 * @param options
+	 * @return
+	 * @throws SQLException
+	 */
+	public static final String getMetaData(DatabaseDefinition databaseDefinition, Connection con, MetaDataOptions options) throws SQLException
     {
     	StringBuilder sb = new StringBuilder();
 		//--- Get the database Meta-Data
@@ -50,130 +57,160 @@ public class DbActionMetaData {
 			reportDatabaseInfo(sb, metaDataManager.getDatabaseInfo(dbmd) );
 		}
 		if ( options.isCatalogs() ) {
-			//getMetaDataCatalogs(sb, metaDataManager, dbmd);
 			reportCatalogs(sb, metaDataManager.getCatalogs(dbmd));
 		}
 		if ( options.isSchemas() ) {
-			//getMetaDataSchemas(sb, metaDataManager, dbmd);
 			reportSchemas(sb, metaDataManager.getSchemas(dbmd));
 		}
 		
 		if ( options.isTables() || options.isColumns() || options.isPrimaryKeys() || options.isForeignKeys() ) {
-//			List<TableMetaData> tables = metaDataManager.getTables(dbmd,
-//					dbConfig.getMetadataCatalog(),
-//					dbConfig.getMetadataSchema(),
-//					dbConfig.getMetadataTableNamePattern(),
-//					dbConfig.getMetadataTableTypesArray(),
-//					dbConfig.getMetadataTableNameInclude(),
-//					dbConfig.getMetadataTableNameExclude());
 			List<TableMetaData> tables = metaDataManager.getTables(dbmd,
-					dbConfig.getCatalog(),
-					dbConfig.getSchema(),
-					dbConfig.getTableNamePattern(),
-					dbConfig.getTableTypesArray(),
-					dbConfig.getTableNameInclude(),
-					dbConfig.getTableNameExclude());
+					databaseDefinition.getCatalog(),
+					databaseDefinition.getSchema(),
+					databaseDefinition.getTableNamePattern(),
+					databaseDefinition.getTableTypesArray(),
+					databaseDefinition.getTableNameInclude(),
+					databaseDefinition.getTableNameExclude());
 	
 			if ( options.isTables() ) {
 				reportTables(sb, tables);
 			}
 			if ( options.isColumns() ) {
-//				getMetaDataColumns(sb, metaDataManager, dbmd, tables, dbConfig.getMetadataCatalog(), dbConfig.getMetadataSchema());
-				reportColumns(sb, metaDataManager, dbmd, tables, dbConfig.getCatalog(), dbConfig.getSchema());
+//				getAndReportColumns(sb, metaDataManager, dbmd, tables, databaseDefinition.getCatalog(), databaseDefinition.getSchema());
+				getAndReportColumns(sb, metaDataManager, dbmd, tables); // catalog and schema retrieved from table meta-data since ver 4.3.0
 			}
 			if ( options.isPrimaryKeys() ) {
-//				getMetaDataPrimaryKeys(sb, metaDataManager, dbmd, tables, dbConfig.getMetadataCatalog(), dbConfig.getMetadataSchema());
-				reportPrimaryKeys(sb, metaDataManager, dbmd, tables, dbConfig.getCatalog(), dbConfig.getSchema());
+//				getAndReportPrimaryKeys(sb, metaDataManager, dbmd, tables, databaseDefinition.getCatalog(), databaseDefinition.getSchema());
+				getAndReportPrimaryKeys(sb, metaDataManager, dbmd, tables); // catalog and schema retrieved from table meta-data since ver 4.3.0
 			}
 			if ( options.isForeignKeys() ) {
-//				getMetaDataForeignKeys(sb, metaDataManager, dbmd, tables, dbConfig.getMetadataCatalog(), dbConfig.getMetadataSchema());
-				reportForeignKeys(sb, metaDataManager, dbmd, tables, dbConfig.getCatalog(), dbConfig.getSchema());
+//				getAndReportForeignKeys(sb, metaDataManager, dbmd, tables, databaseDefinition.getCatalog(), databaseDefinition.getSchema());
+				getAndReportForeignKeys(sb, metaDataManager, dbmd, tables); // catalog and schema retrieved from table meta-data since ver 4.3.0
 			}
 		}
 		return sb.toString();
     }
 	
-//    private static final void getMetaDataCatalogs(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd ) throws SQLException {
-//    	reportCatalogs(sb, metaDataManager.getCatalogs(dbmd));
+//    /**
+//     * Prints the columns
+//     * @param sb
+//     * @param metaDataManager
+//     * @param dbmd
+//     * @param tables
+//     * @param catalog
+//     * @param schema
+//     * @throws SQLException
+//     */
+//    private static final void getAndReportColumns(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
+//    		List<TableMetaData> tables, String catalog, String schema) throws SQLException {
+//    	
+//    	if ( tables.isEmpty() ) {    		
+//    		sb.append("No table => no column.\n");
+//    	}
+//    	else {
+//			//--- Get the columns for each table
+//			for ( TableMetaData t : tables ) {
+//				String tableName = t.getTableName();
+//				List<ColumnMetaData> columns = metaDataManager.getColumns(dbmd, catalog, schema, tableName );
+//				reportColumns(sb, tableName, columns);
+//			}
+//    	}
 //    }
-
-//    private static final void getMetaDataSchemas(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd ) throws SQLException {
-//    	reportSchemas(sb, metaDataManager.getSchemas(dbmd));
-//    }
-
-    /**
-     * Prints the columns
-     * @param sb
-     * @param metaDataManager
-     * @param dbmd
-     * @param tables
-     * @param catalog
-     * @param schema
-     * @throws SQLException
-     */
-    private static final void reportColumns(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
-    		List<TableMetaData> tables, String catalog, String schema) throws SQLException {
+    private static final void getAndReportColumns(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
+    		List<TableMetaData> tables) throws SQLException {
     	
     	if ( tables.isEmpty() ) {    		
     		sb.append("No table => no column.\n");
     	}
     	else {
 			//--- Get the columns for each table
-			for ( TableMetaData t : tables ) {
-				String tableName = t.getTableName();
-				List<ColumnMetaData> columns = metaDataManager.getColumns(dbmd, catalog, schema, tableName );
+			for ( TableMetaData tableMetaData : tables ) {
+				String tableName = tableMetaData.getTableName();
+				List<ColumnMetaData> columns = metaDataManager.getColumns(dbmd, tableMetaData.getCatalogName(), tableMetaData.getSchemaName(), tableName );
+				//--- Report result
 				reportColumns(sb, tableName, columns);
 			}
     	}
     }
     
-    /**
-     * Prints the primary keys
-     * @param sb
-     * @param metaDataManager
-     * @param dbmd
-     * @param tables
-     * @param catalog
-     * @param schema
-     * @throws SQLException
-     */
-    private static final void reportPrimaryKeys(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
-    		List<TableMetaData> tables, String catalog, String schema) throws SQLException {
+//    /**
+//     * Prints the primary keys
+//     * @param sb
+//     * @param metaDataManager
+//     * @param dbmd
+//     * @param tables
+//     * @param catalog
+//     * @param schema
+//     * @throws SQLException
+//     */
+//    private static final void getAndReportPrimaryKeys(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
+//    		List<TableMetaData> tables, String catalog, String schema) throws SQLException {
+//
+//    	if ( tables.isEmpty()  ) {
+//			sb.append("No table => no primary key.\n");
+//		}
+//		else {
+//			//--- Get the PK columns for each table
+//			for ( TableMetaData t : tables ) {
+//				String tableName = t.getTableName();
+//				List<PrimaryKeyColumnMetaData> pkColumns = metaDataManager.getPKColumns(dbmd, catalog, schema, tableName);
+//				reportPrimaryKeys(sb, tableName, pkColumns);
+//			}
+//		}		
+//    }
+    private static final void getAndReportPrimaryKeys(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
+    		List<TableMetaData> tables) throws SQLException {
 
     	if ( tables.isEmpty()  ) {
 			sb.append("No table => no primary key.\n");
 		}
 		else {
-			//--- Get the columns for each table
-			for ( TableMetaData t : tables ) {
-				String tableName = t.getTableName();
-				List<PrimaryKeyColumnMetaData> pkColumns = metaDataManager.getPKColumns(dbmd, catalog, schema, tableName);
+			//--- Get the PK columns for each table
+			for ( TableMetaData tableMetaData : tables ) {
+				String tableName = tableMetaData.getTableName();
+				List<PrimaryKeyColumnMetaData> pkColumns = metaDataManager.getPKColumns(dbmd, tableMetaData.getCatalogName(), tableMetaData.getSchemaName(), tableName);
+				//--- Report result
 				reportPrimaryKeys(sb, tableName, pkColumns);
 			}
 		}		
     }
     
-    /**
-     * Prints the foreign keys
-     * @param sb
-     * @param metaDataManager
-     * @param dbmd
-     * @param tables
-     * @param catalog
-     * @param schema
-     * @throws SQLException
-     */
-    private static final void reportForeignKeys(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
-    		List<TableMetaData> tables, String catalog, String schema) throws SQLException {
+//    /**
+//     * Prints the foreign keys
+//     * @param sb
+//     * @param metaDataManager
+//     * @param dbmd
+//     * @param tables
+//     * @param catalog
+//     * @param schema
+//     * @throws SQLException
+//     */
+//    private static final void getAndReportForeignKeys(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
+//    		List<TableMetaData> tables, String catalog, String schema) throws SQLException {
+//
+//    	if ( tables.isEmpty()  ) {
+//			sb.append("No table => no foreign key.\n");
+//		}
+//		else {
+//			//--- Get the FK columns for each table
+//			for ( TableMetaData t : tables ) {
+//				String tableName = t.getTableName();
+//				List<ForeignKeyColumnMetaData> fkColumns = metaDataManager.getFKColumns(dbmd, catalog, schema, tableName);
+//				reportForeignKeys(sb, tableName, fkColumns);
+//			}
+//		}		
+//    }
+    private static final void getAndReportForeignKeys(StringBuilder sb, MetaDataManager metaDataManager, DatabaseMetaData dbmd, 
+    		List<TableMetaData> tables) throws SQLException {
 
     	if ( tables.isEmpty()  ) {
 			sb.append("No table => no foreign key.\n");
 		}
 		else {
-			//--- Get the columns for each table
-			for ( TableMetaData t : tables ) {
-				String tableName = t.getTableName();
-				List<ForeignKeyColumnMetaData> fkColumns = metaDataManager.getFKColumns(dbmd, catalog, schema, tableName);
+			//--- Get the FK columns for each table
+			for ( TableMetaData tableMetaData : tables ) {
+				String tableName = tableMetaData.getTableName();
+				List<ForeignKeyColumnMetaData> fkColumns = metaDataManager.getFKColumns(dbmd, tableMetaData.getCatalogName(), tableMetaData.getSchemaName(), tableName);
 				reportForeignKeys(sb, tableName, fkColumns);
 			}
 		}		
