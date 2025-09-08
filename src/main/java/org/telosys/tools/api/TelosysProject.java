@@ -543,16 +543,16 @@ public class TelosysProject {
 		return mm.deleteModel(modelName);
 	}
 	
-	/**
-	 * Deletes the given DSL model  
-	 * @param modelFolder 
-	 * @throws TelosysToolsException 
-	 */
-	public final void deleteModel(File modelFolder) throws TelosysToolsException {		
-		checkArgumentNotNull(modelFolder, MODEL_FOLDER);
-		//--- Delete the model file and model folder 
-		DslModelUtil.deleteModel(modelFolder);
-	}
+//	/**
+//	 * Deletes the given DSL model  
+//	 * @param modelFolder 
+//	 * @throws TelosysToolsException 
+//	 */
+//	public final void deleteModel(File modelFolder) throws TelosysToolsException {		
+//		checkArgumentNotNull(modelFolder, MODEL_FOLDER);
+//		//--- Delete the model file and model folder 
+//		DslModelUtil.deleteModel(modelFolder);
+//	}
 	
 	/**
 	 * Returns true if the model folder exists for the given model name
