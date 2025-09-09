@@ -32,6 +32,7 @@ import org.telosys.tools.commons.dbcfg.DbConnectionStatus;
 import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinition;
 import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinitions;
 import org.telosys.tools.commons.depot.Depot;
+import org.telosys.tools.commons.depot.DepotManager;
 import org.telosys.tools.commons.depot.DepotResponse;
 import org.telosys.tools.commons.env.EnvironmentManager;
 import org.telosys.tools.commons.github.GitHubClient;
@@ -186,25 +187,36 @@ public class TelosysProject {
 
 	/**
 	 * Returns a list of bundles available on the given user's name (on GitHub)
-	 * @param depot the depot name (e.g. GitHub user-name like "telosys-templates" )
+	 * @param depotDefinition the depot definition string (eg "github_org:organization-name" ) 
 	 * @return
 	 * @throws TelosysToolsException
 	 */
-	public DepotResponse getBundlesAvailableInDepot(String depot) throws TelosysToolsException { // v 4.2.0
+	public DepotResponse getBundlesAvailableInDepot(String depotDefinition) throws TelosysToolsException { // v 4.2.0
 		BundlesManager bm = new BundlesManager( getTelosysToolsCfg() );
-		return bm.getBundlesFromDepot(new Depot(depot)); // v 4.2.0
+		return bm.getBundlesFromDepot(new Depot(depotDefinition)); // v 4.2.0
 	}
 	
 	/**
-	 * Returns a list of models available on the given user's name (on GitHub)
-	 * @param depot the depot name (e.g. GitHub user-name like "telosys-models" )
+	 * Returns a list of models available in the given depot
+	 * @param depotDefinition the depot definition string (eg "github_org:organization-name" ) 
 	 * @return
 	 * @throws TelosysToolsException
 	 * @since 4.2.0
 	 */
-	public DepotResponse getModelsAvailableInDepot(String depot) throws TelosysToolsException { 
+	public DepotResponse getModelsAvailableInDepot(String depotDefinition) throws TelosysToolsException { 
 		ModelsManager m = new ModelsManager( getTelosysToolsCfg() );
-		return m.getModelsFromDepot(new Depot(depot));
+		return m.getModelsFromDepot(new Depot(depotDefinition));
+	}
+	
+	/**
+	 * Returns a list of elements (any repositories, models or bundles) available in the given depot
+	 * @param depotDefinition the depot definition string (eg "github_org:organization-name" ) 
+	 * @return
+	 * @throws TelosysToolsException
+	 * @since 4.3.0
+	 */
+	public DepotResponse getElementsAvailableInDepot(String depotDefinition) throws TelosysToolsException { 
+		return DepotManager.getElementsFromDepot(depotDefinition, getTelosysToolsCfg() );
 	}
 	
 	/**
@@ -533,7 +545,7 @@ public class TelosysProject {
 	}
 	
 	/**
-	 * Deletes the given DSL model  
+	 * Deletes the given model  
 	 * @param modelName the model name ( eg 'mymodel' )
 	 * @throws TelosysToolsException 
 	 */
@@ -542,17 +554,6 @@ public class TelosysProject {
 		ModelsManager mm = new ModelsManager( getTelosysToolsCfg() );
 		return mm.deleteModel(modelName);
 	}
-	
-//	/**
-//	 * Deletes the given DSL model  
-//	 * @param modelFolder 
-//	 * @throws TelosysToolsException 
-//	 */
-//	public final void deleteModel(File modelFolder) throws TelosysToolsException {		
-//		checkArgumentNotNull(modelFolder, MODEL_FOLDER);
-//		//--- Delete the model file and model folder 
-//		DslModelUtil.deleteModel(modelFolder);
-//	}
 	
 	/**
 	 * Returns true if the model folder exists for the given model name
