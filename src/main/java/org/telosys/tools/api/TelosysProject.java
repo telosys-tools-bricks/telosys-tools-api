@@ -126,6 +126,18 @@ public class TelosysProject {
 		}
 		return this.telosysToolsCfg;
 	}
+	
+	//-----------------------------------------------------------------------------------------------------
+	// Libraries
+	//-----------------------------------------------------------------------------------------------------
+	/**
+	 * Returns the 'lib' folder for the current project
+	 * @return
+	 * @since 4.3.0
+	 */
+	public final File getLibFolder() {
+		return new File(getTelosysToolsCfg().getLibrariesFolderAbsolutePath() );
+	}
 
 	//-----------------------------------------------------------------------------------------------------
 	// BUNDLES OF TEMPLATES
