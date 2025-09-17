@@ -27,7 +27,6 @@ import org.telosys.tools.commons.dbcfg.yaml.DatabaseConnectionTool;
 import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinition;
 import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinitions;
 import org.telosys.tools.commons.dbcfg.yaml.DatabaseDefinitionsLoader;
-import org.telosys.tools.commons.exception.TelosysYamlException;
 import org.telosys.tools.db.metadata.DbInfo;
 import org.telosys.tools.db.metadata.MetaDataManager;
 
@@ -94,11 +93,12 @@ public class DbAction {
 	 */
 	public final DatabaseDefinitions getDatabaseDefinitions() throws TelosysToolsException {
 		DatabaseDefinitionsLoader loader = new DatabaseDefinitionsLoader();
-		try {
-			return loader.load(this.telosysToolsCfg);
-		} catch (TelosysYamlException e) {
-			throw new TelosysToolsException("Cannot load databases config (YAML error)");
-		}
+//		try {
+//			return loader.load(this.telosysToolsCfg);
+//		} catch (TelosysYamlException e) {
+//			throw new TelosysToolsException("Cannot load databases config (YAML error)");
+//		}
+		return loader.load(this.telosysToolsCfg);
 	}
 
 	/**
