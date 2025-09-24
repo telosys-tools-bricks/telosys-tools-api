@@ -16,6 +16,9 @@
 package org.telosys.tools.api;
 
 import org.telosys.tools.commons.TelosysToolsException;
+import org.telosys.tools.commons.credentials.GitCredentials;
+import org.telosys.tools.commons.credentials.GitCredentialsManager;
+import org.telosys.tools.commons.credentials.GitCredentialsScope;
 import org.telosys.tools.commons.github.GitHubToken;
 
 /**
@@ -31,6 +34,9 @@ public class TelosysGlobal {
 	 */
 	private TelosysGlobal() {}
 	
+	//---------------------------------------------------------------------------------------
+	// GitHub Personal Access Token 
+	//---------------------------------------------------------------------------------------
 	/**
 	 * Returns true if a token is defined for the current user
 	 * @return
@@ -55,5 +61,54 @@ public class TelosysGlobal {
 	 */
 	public static final void removeGitHubToken() throws TelosysToolsException {
 		GitHubToken.clear();
+	}
+
+	
+	//---------------------------------------------------------------------------------------
+	// Git credentials 
+	//---------------------------------------------------------------------------------------
+	/**
+	 * Set the given credentials for the given scope
+	 * @param scope
+	 * @param userName
+	 * @param passwordOrToken
+	 * @throws TelosysToolsException
+	 */
+	public static final void setGitCredentials(GitCredentialsScope scope, String userName, String passwordOrToken ) throws TelosysToolsException {
+		GitCredentialsManager gitCredentialsManager = new GitCredentialsManager();
+		gitCredentialsManager.setCredentials(scope, new GitCredentials(userName, passwordOrToken));
+	}
+
+	/**
+	 * Get the credentials for the given scope
+	 * @param scope
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public static final GitCredentials getGitCredentials(GitCredentialsScope scope ) throws TelosysToolsException {
+		GitCredentialsManager gitCredentialsManager = new GitCredentialsManager();
+		return gitCredentialsManager.getCredentials(scope);
+	}
+	
+	/**
+	 * Remove the credentials for the given scope
+	 * @param scope
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public static final boolean removeGitCredentials(GitCredentialsScope scope ) throws TelosysToolsException {
+		GitCredentialsManager gitCredentialsManager = new GitCredentialsManager();
+		return gitCredentialsManager.removeCredentials(scope);
+	}
+
+	/**
+	 * Search usable credentials for the given scope ('global' scope is used as default if nothing for specific scope)
+	 * @param scope
+	 * @return
+	 * @throws TelosysToolsException
+	 */
+	public static final GitCredentials searchUsableCredentials(GitCredentialsScope scope ) throws TelosysToolsException {
+		GitCredentialsManager gitCredentialsManager = new GitCredentialsManager();
+		return gitCredentialsManager.searchUsableCredentials(scope);
 	}
 }
